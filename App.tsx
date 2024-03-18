@@ -1,104 +1,58 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
-import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import { atomEffect } from "jotai-effect";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  FlatList,
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputTextInputEventData,
+  View,
+} from "react-native";
 
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
-import { loadSoundAtom, playSoundAtom } from "./src/sound";
-
-type TimerStopped = {
-  type: "timer_stopped";
-  delai: number;
-};
-type TimerAcive = {
-  type: "timer_active";
-  event: number;
-};
-type Timer = TimerStopped | TimerAcive;
-function stop(timer: TimerAcive, now: number): TimerStopped {
-  return { type: "timer_stopped", delai: timer.event - now };
-}
-function start(timer: TimerStopped, now: number): TimerAcive {
-  return { type: "timer_active", event: timer.delai + now };
-}
-
-function timerToggle(timer: Timer, now: number): Timer {
-  if (timer.type === "timer_active") return stop(timer, now);
-  return start(timer, now);
-}
-function setDelai(timer: Timer, delai: number, now: number): Timer {
-  const t: TimerStopped = { type: "timer_stopped", delai };
-  if (timer.type === "timer_active") return start(t, now);
-  return t;
-}
-function getDelai(timer: Timer, now: number) {
-  const t = timer.type === "timer_stopped" ? timer : stop(timer, now);
-  return t.delai;
-}
-
-const second = 1000;
-const resolution = 200;
-const delai = 3000;
-
-const nowAtom = atom(0);
-nowAtom.onMount = (setAtom) => {
-  const timer = setInterval(() => {
-    return setAtom(Date.now());
-  }, resolution);
-  return () => clearInterval(timer);
-};
-
-const timerAtom = atom<Timer>({
-  type: "timer_stopped",
-  delai,
-});
-
-const resetAtom = atom(null, (get, set) =>
-  set(timerAtom, setDelai(get(timerAtom), delai, get(nowAtom))),
-);
-
-const delaiPositiveAtom = atom(
-  (get) => Math.max(0, getDelai(get(timerAtom), get(nowAtom))),
-  (get, set, value: number) =>
-    set(timerAtom, setDelai(get(timerAtom), value, get(nowAtom))),
-);
-
-const toggleAtom = atom(null, (get, set) => {
-  set(timerAtom, timerToggle(get(timerAtom), get(nowAtom)));
-});
-
-const activeAtom = atom((get) => get(timerAtom).type === "timer_active");
-
-const getAlarmEffect = (ringAtom: WritableAtom<null, [], void>) =>
-  atomEffect((get, set) => {
-    const timer = get(timerAtom);
-    if (timer.type === "timer_stopped") return;
-    const now = get(nowAtom);
-    if (getDelai(timer, now) > 0) return;
-    set(timerAtom, stop(timer, now));
-    set(resetAtom);
-    set(ringAtom);
-  });
-
-const alarmEffect = getAlarmEffect(playSoundAtom);
+import {
+  clearItemsAtom,
+  currentItemIdAtom,
+  insertItemAtom,
+  itemsAtom,
+  removeItemAtom,
+} from "./src/list";
+import { loadSoundAtom } from "./src/sound";
+import {
+  isTimerActiveAtom,
+  alarmEffect,
+  resetTimerAtom,
+  timerSecondsAtom,
+  toggleTimerAtom,
+} from "./src/timers";
 
 function Reset() {
-  const setDelai = useSetAtom(delaiPositiveAtom);
-  const reset = useCallback(() => setDelai(delai), [delai]);
+  const reset = useSetAtom(resetTimerAtom);
   return (
     <Pressable onPress={reset}>
-      <Text>Reset</Text>
+      <Text>reset</Text>
+    </Pressable>
+  );
+}
+
+function Clear() {
+  const clear = useSetAtom(clearItemsAtom);
+  return (
+    <Pressable onPress={clear}>
+      <Text>clear</Text>
     </Pressable>
   );
 }
 
 function Count() {
-  const toggle = useSetAtom(toggleAtom);
-  const active = useAtomValue(activeAtom);
-  const delai = useAtomValue(delaiPositiveAtom);
-  const seconds = Math.ceil(delai / second);
+  const toggle = useSetAtom(toggleTimerAtom);
+  const active = useAtomValue(isTimerActiveAtom);
+  const seconds = useAtomValue(timerSecondsAtom);
   return (
     <Pressable onPress={toggle}>
       <View
@@ -118,6 +72,68 @@ function Count() {
   );
 }
 
+function Item({ id }: { id: string }) {
+  const [seconds, setSeconds] = useAtom(timerSecondsAtom);
+  const [current, navigate] = useAtom(currentItemIdAtom);
+  const reset = useSetAtom(resetTimerAtom);
+  const active = current === id;
+  const activate = useCallback(() => {
+    navigate(id);
+    reset();
+  }, [navigate, reset, id]);
+  const insertItem = useSetAtom(insertItemAtom);
+  const insert = useCallback(() => insertItem(id), [insertItem, id]);
+  const removeItem = useSetAtom(removeItemAtom);
+  const remove = useCallback(() => removeItem(id), [removeItem, id]);
+  const onTextInput = useCallback((value: string) => {
+    const seconds_ = Number(value);
+    if (isNaN(seconds_)) return;
+    setSeconds(seconds_);
+  }, []);
+  return (
+    <Pressable onPress={activate}>
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          height: 30,
+        }}
+      >
+        <View style={{ width: 30 }}>
+          {active ? (
+            <Ionicons name="caret-forward-outline" size={20} color="green" />
+          ) : (
+            "-"
+          )}
+        </View>
+        <TextInput
+          style={{ padding: 5, backgroundColor: active ? "green" : "blue" }}
+          value={String(seconds)}
+          onChangeText={onTextInput}
+          keyboardType="decimal-pad"
+        />
+        <Pressable onPress={insert}>
+          <Ionicons name="add-circle-outline" size={20} />
+        </Pressable>
+        <Pressable onPress={remove}>
+          <Ionicons name="close-circle-outline" size={20} />
+        </Pressable>
+      </View>
+    </Pressable>
+  );
+}
+
+function List() {
+  const items = useAtomValue(itemsAtom);
+  return (
+    <FlatList
+      data={items}
+      renderItem={({ item }) => <Item {...item} />}
+      keyExtractor={({ id }) => id}
+    />
+  );
+}
+
 export default function App() {
   useSetAtom(loadSoundAtom)(duckSound);
   useAtom(alarmEffect);
@@ -125,6 +141,8 @@ export default function App() {
     <View style={styles.container}>
       <Count />
       <Reset />
+      <Clear />
+      <List />
       <StatusBar style="auto" />
     </View>
   );
