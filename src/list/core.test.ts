@@ -1,6 +1,6 @@
 import fc from "fast-check";
 
-import { insert, nextId, remove } from "./core";
+import { eq, insert, nextValue, remove } from "./core";
 
 describe("insert", () => {
   it("inserts from empty list", () => {
@@ -60,15 +60,15 @@ describe("remove", () => {
 
 describe("nextId", () => {
   it("returns falsy on empty array", () => {
-    expect(nextId([], "toto")).toBeFalsy();
+    expect(nextValue([], eq("toto"))).toBeFalsy();
   });
   it("finds next id", () => {
-    expect(nextId([{ id: "a" }, { id: "b" }], "a")).toBe("b");
+    expect(nextValue(["a", "b"], eq("a"))).toBe("b");
   });
   it("returns last id when there is no next", () => {
-    expect(nextId([{ id: "a" }, { id: "b" }], "b")).toBe("b");
+    expect(nextValue(["a", "b"], eq("b"))).toBe("b");
   });
   it("returns first id when not found", () => {
-    expect(nextId([{ id: "a" }, { id: "b" }], "c")).toBe("a");
+    expect(nextValue(["a", "b"], eq("c"))).toBe("a");
   });
 });

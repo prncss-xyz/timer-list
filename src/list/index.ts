@@ -1,63 +1,77 @@
-import { Getter, Setter, atom } from "jotai";
-import { focusAtom } from "jotai-optics";
+import { Getter, PrimitiveAtom, Setter, atom } from "jotai";
 
-import { insert, nextId, remove } from "./core";
+import { eq, insert, nextValue, remove } from "./core";
 
-interface IItem {
-  id: string;
-  seconds: number;
-}
+export type IItem = { seconds: number };
 
-export const itemsAtom = atom<IItem[]>([
-  { id: "0", seconds: 1 },
-  { id: "1", seconds: 2 },
-  { id: "2", seconds: 3 },
-]);
+const nullItem: IItem = { seconds: 0 };
+const defaultTimerAtom = atom<IItem>(nullItem);
+export type ItemAtom = typeof defaultTimerAtom;
 
-export const currentItemIdAtom = atom("0");
-const nextIdAtom = atom(3);
+export const itemsAtom = atom([defaultTimerAtom]);
 
-// atomFamily?
-export const itemSecondsAtomById = (id: string) =>
-  focusAtom(itemsAtom, (o) => o.find((item) => item.id === id).prop("seconds"));
+export const currentItemAtom = atom(defaultTimerAtom);
 
-export const currentItemSecondsAtom = atom((get) =>
-  get(itemSecondsAtomById(get(currentItemIdAtom))),
+export const getIsCurrentItemAtom = (itemAtom: ItemAtom) =>
+  atom(
+    (get) => get(currentItemAtom) === itemAtom,
+    (_get, set) => set(currentItemAtom, itemAtom),
+  );
+
+export const getSecondsAtom = (itemAtom: ItemAtom) =>
+  atom(
+    (get) => get(itemAtom).seconds,
+    (get, set, seconds: number) => set(itemAtom, { ...get(itemAtom), seconds }),
+  );
+
+export const currentItemSecondsAtom = atom(
+  (get) => get(get(currentItemAtom)).seconds,
+  (get, set, seconds: number) => {
+    const itemAtom = get(currentItemAtom);
+    return set(itemAtom, { ...get(itemAtom), seconds });
+  },
 );
 
-export const insertItemAtom = atom(null, (get, set, id: string) => {
-  const n = get(nextIdAtom);
-  set(nextIdAtom, n + 1);
+export const insertItemAtom = atom(
+  null,
+  (get, set, pos: PrimitiveAtom<IItem>) => {
+    const items = get(itemsAtom);
+    const index = Math.max(
+      0,
+      items.findIndex((item) => item === pos),
+    );
+    const item = atom(get(pos));
+    set(itemsAtom, insert(items, index, item));
+  },
+);
 
-  const items = get(itemsAtom);
-  let index = items.findIndex((item) => item.id === id);
-  if (index < 0) index = 0;
-  const item = {
-    id: String(n),
-    seconds: items[index]?.seconds ?? 0,
-  };
-  set(itemsAtom, insert(items, index, item));
-});
+export const removeItemAtom = atom(
+  null,
+  (get, set, pos: PrimitiveAtom<IItem>) => {
+    const items = get(itemsAtom);
+    if (items.length === 1) {
+      set(clearItemsAtom);
+      return;
+    }
+    const index = Math.max(
+      0,
+      items.findIndex((item) => item === pos),
+    );
+    set(itemsAtom, remove(items, index));
+  },
+);
 
-export const removeItemAtom = atom(null, (get, set, id: string) => {
-  const items = get(itemsAtom);
-  if (items.length === 1) {
-    set(clearItemsAtom);
-    return;
-  }
-  let index = items.findIndex((item) => item.id === id);
-  if (index < 0) index = 0;
-
-  set(itemsAtom, remove(items, index));
-});
-
-export const clearItemsAtom = atom(null, (get, set) => {
-  const item = get(itemsAtom)[0];
-  set(itemsAtom, [{ ...item, seconds: 0 }]);
-  set(currentItemIdAtom, item.id);
+export const clearItemsAtom = atom(null, (_get, set) => {
+  const item = atom<IItem>(nullItem);
+  set(itemsAtom, [item]);
+  set(currentItemAtom, item);
 });
 
 export const nextItem = (get: Getter, set: Setter) =>
-  set(currentItemIdAtom, nextId(get(itemsAtom), get(currentItemIdAtom)));
+  set(
+    currentItemAtom,
+    nextValue(get(itemsAtom), eq(get(currentItemAtom))) ??
+      atom<IItem>(nullItem),
+  );
 
 export const nextItemAtom = atom(null, nextItem);

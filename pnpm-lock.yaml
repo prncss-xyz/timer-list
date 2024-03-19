@@ -26,18 +26,9 @@ dependencies:
   jotai:
     specifier: ^2.7.0
     version: 2.7.0(@types/react@18.2.66)(react@18.2.0)
-  jotai-cache:
-    specifier: ^0.4.1
-    version: 0.4.1(jotai@2.7.0)
   jotai-effect:
     specifier: ^0.6.0
     version: 0.6.0(jotai@2.7.0)
-  jotai-optics:
-    specifier: ^0.3.2
-    version: 0.3.2(jotai@2.7.0)(optics-ts@2.4.1)
-  optics-ts:
-    specifier: ^2.4.1
-    version: 2.4.1
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -6472,30 +6463,12 @@ packages:
     resolution: {integrity: sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ==}
     dev: false
 
-  /jotai-cache@0.4.1(jotai@2.7.0):
-    resolution: {integrity: sha512-avlHVc8/SionaDL0/sqvMtYQyA4F7Jn6t0OMDVYzJNTT49fqaBlRhALTY1lxuQkG0beFNuJP4/EpM5eiabitrw==}
-    peerDependencies:
-      jotai: '>=2.0.0'
-    dependencies:
-      jotai: 2.7.0(@types/react@18.2.66)(react@18.2.0)
-    dev: false
-
   /jotai-effect@0.6.0(jotai@2.7.0):
     resolution: {integrity: sha512-PCewL5ThH3MXYI6+sQwvkk3o+gje4K1qw2YnyqjRVnZbIxqX3zHZv11JXqXosRkT8p3a51gd3pLv7+cBfyXz7A==}
     peerDependencies:
       jotai: '>=2.5.0'
     dependencies:
       jotai: 2.7.0(@types/react@18.2.66)(react@18.2.0)
-    dev: false
-
-  /jotai-optics@0.3.2(jotai@2.7.0)(optics-ts@2.4.1):
-    resolution: {integrity: sha512-RH6SvqU5hmkVqnHmaqf9zBXvIAs4jLxkDHS4fr5ljuBKHs8+HQ02v+9hX7ahTppxx6dUb0GGUE80jQKJ0kFTLw==}
-    peerDependencies:
-      jotai: '>=1.11.0'
-      optics-ts: '*'
-    dependencies:
-      jotai: 2.7.0(@types/react@18.2.66)(react@18.2.0)
-      optics-ts: 2.4.1
     dev: false
 
   /jotai@2.7.0(@types/react@18.2.66)(react@18.2.0):
@@ -7567,10 +7540,6 @@ packages:
       define-lazy-prop: 2.0.0
       is-docker: 2.2.1
       is-wsl: 2.2.0
-    dev: false
-
-  /optics-ts@2.4.1:
-    resolution: {integrity: sha512-HaYzMHvC80r7U/LqAd4hQyopDezC60PO2qF5GuIwALut2cl5rK1VWHsqTp0oqoJJWjiv6uXKqsO+Q2OO0C3MmQ==}
     dev: false
 
   /optionator@0.9.3:

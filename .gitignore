@@ -2,6 +2,8 @@
 
 assets/duck.mp3
 
+coverage/
+
 # dependencies
 node_modules/
 

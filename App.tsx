@@ -14,10 +14,11 @@ import {
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
 import {
+  ItemAtom,
   clearItemsAtom,
-  currentItemIdAtom,
+  getIsCurrentItemAtom,
+  getSecondsAtom,
   insertItemAtom,
-  itemSecondsAtomById,
   itemsAtom,
   removeItemAtom,
 } from "./src/list";
@@ -71,26 +72,36 @@ function Count() {
   );
 }
 
-function Item({ id }: { id: string }) {
+function Item({ itemAtom }: { itemAtom: ItemAtom }) {
   const [seconds, setSeconds] = useAtom(
-    useMemo(() => itemSecondsAtomById(id), [id]),
+    useMemo(() => getSecondsAtom(itemAtom), [itemAtom]),
   );
-  const [current, navigate] = useAtom(currentItemIdAtom);
   const reset = useSetAtom(resetTimerAtom);
-  const active = current === id;
+  const [active, navigate] = useAtom(
+    useMemo(() => getIsCurrentItemAtom(itemAtom), [itemAtom]),
+  );
   const activate = useCallback(() => {
-    navigate(id);
+    navigate();
     reset();
-  }, [navigate, reset, id]);
+  }, [navigate, reset, itemAtom]);
   const insertItem = useSetAtom(insertItemAtom);
-  const insert = useCallback(() => insertItem(id), [insertItem, id]);
+  const insert = useCallback(
+    () => insertItem(itemAtom),
+    [insertItem, itemAtom],
+  );
   const removeItem = useSetAtom(removeItemAtom);
-  const remove = useCallback(() => removeItem(id), [removeItem, id]);
-  const onTextInput = useCallback((value: string) => {
-    const seconds_ = Number(value);
-    if (isNaN(seconds_)) return;
-    setSeconds(seconds_);
-  }, []);
+  const remove = useCallback(
+    () => removeItem(itemAtom),
+    [removeItem, itemAtom],
+  );
+  const onTextInput = useCallback(
+    (value: string) => {
+      const seconds_ = Number(value);
+      if (isNaN(seconds_)) return;
+      setSeconds(seconds_);
+    },
+    [setSeconds],
+  );
   return (
     <Pressable onPress={activate}>
       <View
@@ -129,8 +140,8 @@ function List() {
   return (
     <FlatList
       data={items}
-      renderItem={({ item }) => <Item {...item} />}
-      keyExtractor={({ id }) => id}
+      renderItem={({ item }) => <Item itemAtom={item} />}
+      keyExtractor={String}
     />
   );
 }
