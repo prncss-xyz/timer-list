@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "test:watch": "jest --watch --coverage=false --changedSince=origin/main",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage=true --changedSince=origin/main",
     "test:debug": "jest -o --watch --coverage=false",
     "test:updateSnapshots": "jest -u --coverage=false",
     "start": "expo start",
@@ -18,7 +19,6 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg))"
     ],
-    "collectCoverage": true,
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/coverage/**",

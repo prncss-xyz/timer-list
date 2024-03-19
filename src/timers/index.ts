@@ -1,37 +1,38 @@
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
+import { focusAtom } from "jotai-optics";
 
 import { Timer, getDelai, setDelai, stop, timerToggle } from "./core";
-import { currentItemDurationAtom, nextItem } from "../list";
+import { currentItemSecondsAtom, nextItem } from "../list";
 import { nowAtom } from "../now";
 import { playSoundAtom } from "../sound";
 
-const delai0 = 1000;
-// Is it OK?
-atomEffect((_get, set) => set(resetTimerAtom));
-
 const timerAtom = atom<Timer>({
   type: "timer_stopped",
-  delai: delai0,
+  delai: 0,
 });
 
-export const resetTimerAtom = atom(null, (get, set) =>
-  set(
-    timerAtom,
-    setDelai(get(timerAtom), get(currentItemDurationAtom), get(nowAtom)),
+export const timerDelaiAtom = atom(
+  (get) => getDelai(get(timerAtom), get(nowAtom)),
+  (get, set, value: number) => {
+    console.log(setDelai(get(timerAtom), value, get(nowAtom)));
+    return set(timerAtom, setDelai(get(timerAtom), value, get(nowAtom)));
+  },
+);
+
+export const timerSecondsAtom = focusAtom(timerDelaiAtom, (o) =>
+  o.iso(
+    (x) => x / 1000,
+    (x) => x * 1000,
   ),
 );
 
-const timerDelaiAtom = atom(
-  (get) => getDelai(get(timerAtom), get(nowAtom)),
-  (get, set, value: number) =>
-    set(timerAtom, setDelai(get(timerAtom), value, get(nowAtom))),
+export const roundedTimerSecondsAtom = atom((get) =>
+  Math.ceil(Math.max(0, get(timerSecondsAtom))),
 );
 
-export const timerSecondsAtom = atom(
-  (get) => Math.ceil(Math.max(0, get(timerDelaiAtom)) / 1000),
-  (_get, set, seconds: number) =>
-    set(timerDelaiAtom, Math.max(0, seconds) * 1000),
+export const resetTimerAtom = atom(null, (get, set) =>
+  set(timerSecondsAtom, get(currentItemSecondsAtom) ?? 0),
 );
 
 export const toggleTimerAtom = atom(null, (get, set) =>
@@ -54,10 +55,6 @@ export const alarmEffect = atomEffect((get, set) => {
   // I know it can be an attom if I call `get(currentIndexAtom)` here, so it's related to dependencies
   // still prefer this form to have the correct dependencies infered
   nextItem(get, set);
-
-  // FIXME: why do we need to add this dependency?
-  /* get(currentIndexAtom); */
-  /* set(nextItemAtom); */
 
   set(resetTimerAtom);
 });

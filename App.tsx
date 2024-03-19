@@ -1,15 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   FlatList,
-  NativeSyntheticEvent,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TextInputTextInputEventData,
   View,
 } from "react-native";
 
@@ -19,6 +17,7 @@ import {
   clearItemsAtom,
   currentItemIdAtom,
   insertItemAtom,
+  itemSecondsAtomById,
   itemsAtom,
   removeItemAtom,
 } from "./src/list";
@@ -27,8 +26,8 @@ import {
   isTimerActiveAtom,
   alarmEffect,
   resetTimerAtom,
-  timerSecondsAtom,
   toggleTimerAtom,
+  roundedTimerSecondsAtom,
 } from "./src/timers";
 
 function Reset() {
@@ -52,7 +51,7 @@ function Clear() {
 function Count() {
   const toggle = useSetAtom(toggleTimerAtom);
   const active = useAtomValue(isTimerActiveAtom);
-  const seconds = useAtomValue(timerSecondsAtom);
+  const seconds = useAtomValue(roundedTimerSecondsAtom);
   return (
     <Pressable onPress={toggle}>
       <View
@@ -73,7 +72,9 @@ function Count() {
 }
 
 function Item({ id }: { id: string }) {
-  const [seconds, setSeconds] = useAtom(timerSecondsAtom);
+  const [seconds, setSeconds] = useAtom(
+    useMemo(() => itemSecondsAtomById(id), [id]),
+  );
   const [current, navigate] = useAtom(currentItemIdAtom);
   const reset = useSetAtom(resetTimerAtom);
   const active = current === id;
@@ -103,14 +104,14 @@ function Item({ id }: { id: string }) {
           {active ? (
             <Ionicons name="caret-forward-outline" size={20} color="green" />
           ) : (
-            "-"
+            <Text>-</Text>
           )}
         </View>
         <TextInput
           style={{ padding: 5, backgroundColor: active ? "green" : "blue" }}
-          value={String(seconds)}
+          value={String(seconds ?? 0)}
           onChangeText={onTextInput}
-          keyboardType="decimal-pad"
+          inputMode="decimal"
         />
         <Pressable onPress={insert}>
           <Ionicons name="add-circle-outline" size={20} />
