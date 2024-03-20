@@ -1,21 +1,32 @@
-import { Getter, PrimitiveAtom, Setter, atom } from "jotai";
+import { Getter, Setter, atom } from "jotai";
+import { atomEffect } from "jotai-effect";
 
-import { eq, insert, nextValue, remove } from "./core";
+import { insert, remove } from "./core";
+import { Item, nullItem } from "./model";
+import { loadItems, saveItems } from "./storage";
 
-export type IItem = { seconds: number };
-
-const nullItem: IItem = { seconds: 0 };
-const defaultTimerAtom = atom<IItem>(nullItem);
+const defaultTimerAtom = atom<Item>(nullItem);
 export type ItemAtom = typeof defaultTimerAtom;
 
 export const itemsAtom = atom([defaultTimerAtom]);
+itemsAtom.onMount = (setAtom) => {
+  loadItems().then((items) => setAtom(items.map((item) => atom(item))));
+};
 
-export const currentItemAtom = atom(defaultTimerAtom);
+export const saveListEffect = atomEffect((get) => {
+  // TODO: debounce
+  saveItems(get(itemsAtom).map((item) => get(item)));
+});
 
-export const getIsCurrentItemAtom = (itemAtom: ItemAtom) =>
+const currentIndexAtom = atom(0);
+const currentItemAtom = atom(
+  (get) => get(itemsAtom).at(get(currentIndexAtom)) ?? defaultTimerAtom,
+);
+
+export const getIsCurrentIndexAtom = (index: number) =>
   atom(
-    (get) => get(currentItemAtom) === itemAtom,
-    (_get, set) => set(currentItemAtom, itemAtom),
+    (get) => get(currentIndexAtom) === index,
+    (_get, set) => set(currentIndexAtom, index),
   );
 
 export const getSecondsAtom = (itemAtom: ItemAtom) =>
@@ -34,44 +45,35 @@ export const currentItemSecondsAtom = atom(
 
 export const insertItemAtom = atom(
   null,
-  (get, set, pos: PrimitiveAtom<IItem>) => {
+  (get, set, index: number, item: ItemAtom) => {
     const items = get(itemsAtom);
-    const index = Math.max(
-      0,
-      items.findIndex((item) => item === pos),
-    );
-    const item = atom(get(pos));
-    set(itemsAtom, insert(items, index, item));
+    set(itemsAtom, insert(items, index, atom(get(item))));
+    const currentIndex = get(currentIndexAtom);
+    if (index < currentIndex) set(currentIndexAtom, currentIndex + 1);
   },
 );
 
-export const removeItemAtom = atom(
-  null,
-  (get, set, pos: PrimitiveAtom<IItem>) => {
-    const items = get(itemsAtom);
-    if (items.length === 1) {
-      set(clearItemsAtom);
-      return;
-    }
-    const index = Math.max(
-      0,
-      items.findIndex((item) => item === pos),
-    );
-    set(itemsAtom, remove(items, index));
-  },
-);
+export const removeItemAtom = atom(null, (get, set, index: number) => {
+  const items = get(itemsAtom);
+  if (items.length === 1) {
+    set(clearItemsAtom);
+    return;
+  }
+  set(itemsAtom, remove(items, index));
+  const currentIndex = get(currentIndexAtom);
+  if (index > currentIndex) set(currentIndexAtom, currentIndex - 1);
+});
 
 export const clearItemsAtom = atom(null, (_get, set) => {
-  const item = atom<IItem>(nullItem);
+  const item = atom<Item>(nullItem);
   set(itemsAtom, [item]);
-  set(currentItemAtom, item);
+  set(currentIndexAtom, 0);
 });
 
 export const nextItem = (get: Getter, set: Setter) =>
   set(
-    currentItemAtom,
-    nextValue(get(itemsAtom), eq(get(currentItemAtom))) ??
-      atom<IItem>(nullItem),
+    currentIndexAtom,
+    Math.max(0, Math.min(get(currentIndexAtom) + 1, get(itemsAtom).length - 1)),
   );
 
 export const nextItemAtom = atom(null, nextItem);

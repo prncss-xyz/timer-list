@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
 import { Timer, getDelai, setDelai, stop, timerToggle } from "./core";
-import { currentItemSecondsAtom, nextItem, nextItemAtom } from "../list";
+import { currentItemSecondsAtom, nextItem } from "../list";
 import { nowAtom } from "../now";
 import { playSoundAtom } from "../sound";
 

@@ -16,11 +16,12 @@ import duckSound from "./assets/duck.mp3";
 import {
   ItemAtom,
   clearItemsAtom,
-  getIsCurrentItemAtom,
+  getIsCurrentIndexAtom,
   getSecondsAtom,
   insertItemAtom,
   itemsAtom,
   removeItemAtom,
+  saveListEffect,
 } from "./src/list";
 import { loadSoundAtom } from "./src/sound";
 import {
@@ -72,13 +73,13 @@ function Count() {
   );
 }
 
-function Item({ itemAtom }: { itemAtom: ItemAtom }) {
+function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
   const [seconds, setSeconds] = useAtom(
     useMemo(() => getSecondsAtom(itemAtom), [itemAtom]),
   );
   const reset = useSetAtom(resetTimerAtom);
   const [active, navigate] = useAtom(
-    useMemo(() => getIsCurrentItemAtom(itemAtom), [itemAtom]),
+    useMemo(() => getIsCurrentIndexAtom(index), [index]),
   );
   const activate = useCallback(() => {
     navigate();
@@ -86,14 +87,11 @@ function Item({ itemAtom }: { itemAtom: ItemAtom }) {
   }, [navigate, reset, itemAtom]);
   const insertItem = useSetAtom(insertItemAtom);
   const insert = useCallback(
-    () => insertItem(itemAtom),
-    [insertItem, itemAtom],
+    () => insertItem(index, itemAtom),
+    [insertItem, index, itemAtom],
   );
   const removeItem = useSetAtom(removeItemAtom);
-  const remove = useCallback(
-    () => removeItem(itemAtom),
-    [removeItem, itemAtom],
-  );
+  const remove = useCallback(() => removeItem(index), [removeItem, index]);
   const onTextInput = useCallback(
     (value: string) => {
       const seconds_ = Number(value);
@@ -140,7 +138,7 @@ function List() {
   return (
     <FlatList
       data={items}
-      renderItem={({ item }) => <Item itemAtom={item} />}
+      renderItem={({ item, index }) => <Item index={index} itemAtom={item} />}
       keyExtractor={String}
     />
   );
@@ -149,6 +147,7 @@ function List() {
 export default function App() {
   useSetAtom(loadSoundAtom)(duckSound);
   useAtom(alarmEffect);
+  useAtom(saveListEffect);
   return (
     <View style={styles.container}>
       <Count />
