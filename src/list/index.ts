@@ -4,6 +4,8 @@ import { atomEffect } from "jotai-effect";
 import { insert, remove } from "./core";
 import { Item, nullItem } from "./model";
 import { loadItems, saveItems } from "./storage";
+import { getDebouncer } from "../utils/debouncer";
+import { atomWithNativeStorage } from "../utils/storage";
 
 const defaultTimerAtom = atom<Item>(nullItem);
 export type ItemAtom = typeof defaultTimerAtom;
@@ -12,22 +14,16 @@ export const itemsAtom = atom([defaultTimerAtom]);
 itemsAtom.onMount = (setAtom) => {
   loadItems().then((items) => setAtom(items.map((item) => atom(item))));
 };
-
+const debouncer = getDebouncer(1000, saveItems);
 export const saveListEffect = atomEffect((get) => {
-  // TODO: debounce
-  saveItems(get(itemsAtom).map((item) => get(item)));
+  debouncer(get(itemsAtom).map((item) => get(item)));
 });
 
-const currentIndexAtom = atom(0);
+export const currentIndexAtom = atomWithNativeStorage(0, "index");
+
 const currentItemAtom = atom(
   (get) => get(itemsAtom).at(get(currentIndexAtom)) ?? defaultTimerAtom,
 );
-
-export const getIsCurrentIndexAtom = (index: number) =>
-  atom(
-    (get) => get(currentIndexAtom) === index,
-    (_get, set) => set(currentIndexAtom, index),
-  );
 
 export const getSecondsAtom = (itemAtom: ItemAtom) =>
   atom(
@@ -61,7 +57,9 @@ export const removeItemAtom = atom(null, (get, set, index: number) => {
   }
   set(itemsAtom, remove(items, index));
   const currentIndex = get(currentIndexAtom);
-  if (index > currentIndex) set(currentIndexAtom, currentIndex - 1);
+  if (index < currentIndex) index--;
+  index = Math.min(index, Math.max(0, items.length - 2));
+  set(currentIndexAtom, index);
 });
 
 export const clearItemsAtom = atom(null, (_get, set) => {
@@ -73,7 +71,7 @@ export const clearItemsAtom = atom(null, (_get, set) => {
 export const nextItem = (get: Getter, set: Setter) =>
   set(
     currentIndexAtom,
-    Math.max(0, Math.min(get(currentIndexAtom) + 1, get(itemsAtom).length - 1)),
+    Math.min(get(currentIndexAtom) + 1, Math.max(0, get(itemsAtom).length - 1)),
   );
 
 export const nextItemAtom = atom(null, nextItem);

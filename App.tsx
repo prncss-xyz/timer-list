@@ -16,7 +16,7 @@ import duckSound from "./assets/duck.mp3";
 import {
   ItemAtom,
   clearItemsAtom,
-  getIsCurrentIndexAtom,
+  currentIndexAtom,
   getSecondsAtom,
   insertItemAtom,
   itemsAtom,
@@ -31,6 +31,7 @@ import {
   toggleTimerAtom,
   roundedTimerSecondsAtom,
 } from "./src/timers";
+import { useActivateAtom } from "./src/utils/activate";
 
 function Reset() {
   const reset = useSetAtom(resetTimerAtom);
@@ -78,13 +79,11 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
     useMemo(() => getSecondsAtom(itemAtom), [itemAtom]),
   );
   const reset = useSetAtom(resetTimerAtom);
-  const [active, navigate] = useAtom(
-    useMemo(() => getIsCurrentIndexAtom(index), [index]),
-  );
-  const activate = useCallback(() => {
-    navigate();
+  const [active, activate] = useActivateAtom(index, currentIndexAtom);
+  const activate_ = useCallback(() => {
+    activate();
     reset();
-  }, [navigate, reset, itemAtom]);
+  }, [activate, reset, itemAtom]);
   const insertItem = useSetAtom(insertItemAtom);
   const insert = useCallback(
     () => insertItem(index, itemAtom),
@@ -101,7 +100,7 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
     [setSeconds],
   );
   return (
-    <Pressable onPress={activate}>
+    <Pressable onPress={activate_}>
       <View
         style={{
           alignItems: "center",
