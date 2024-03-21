@@ -1,22 +1,21 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
 import { TimeInput } from "./src/components/timeInput";
 import { TimeView } from "./src/components/timeView";
+import { useActivateAtom } from "./src/hooks/activate";
 import {
-  ItemAtom,
   clearItemsAtom,
   currentIndexAtom,
-  getSecondsAtom,
-  insertItemAtom,
+  duplicateItemAtom,
+  getIdItemSecondsAtom,
   itemsAtom,
   removeItemAtom,
-  saveListEffect,
 } from "./src/list";
 import { loadSoundAtom } from "./src/sound";
 import {
@@ -26,7 +25,6 @@ import {
   toggleTimerAtom,
   roundedTimerSecondsAtom,
 } from "./src/timers";
-import { useActivateAtom } from "./src/utils/activate";
 
 function Reset() {
   const reset = useSetAtom(resetTimerAtom);
@@ -63,23 +61,20 @@ function Count() {
   );
 }
 
-function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
+const Item = memo(({ index, id }: { index: number; id: string }) => {
   const [seconds, setSeconds] = useAtom(
-    useMemo(() => getSecondsAtom(itemAtom), [itemAtom]),
+    useMemo(() => getIdItemSecondsAtom(id), [id]),
   );
   const reset = useSetAtom(resetTimerAtom);
   const [active, activate] = useActivateAtom(index, currentIndexAtom);
   const activate_ = useCallback(() => {
     activate();
     reset();
-  }, [activate, reset, itemAtom]);
-  const insertItem = useSetAtom(insertItemAtom);
-  const insert = useCallback(
-    () => insertItem(index, itemAtom),
-    [insertItem, index, itemAtom],
-  );
+  }, [activate, reset]);
+  const duplicateItem = useSetAtom(duplicateItemAtom);
+  const insert = useCallback(() => duplicateItem(id), [duplicateItem, id]);
   const removeItem = useSetAtom(removeItemAtom);
-  const remove = useCallback(() => removeItem(index), [removeItem, index]);
+  const remove = useCallback(() => removeItem(id), [removeItem, id]);
   return (
     <Pressable onPress={activate_}>
       <View
@@ -96,7 +91,7 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
             <Text>-</Text>
           )}
         </View>
-        <TimeInput active={active} value={seconds} setValue={setSeconds} />
+        <TimeInput active={active} value={seconds ?? 0} setValue={setSeconds} />
         <Pressable onPress={insert}>
           <Ionicons name="add-circle-outline" size={20} />
         </Pressable>
@@ -106,15 +101,15 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
       </View>
     </Pressable>
   );
-}
+});
 
 function List() {
   const items = useAtomValue(itemsAtom);
   return (
     <FlatList
       data={items}
-      renderItem={({ item, index }) => <Item index={index} itemAtom={item} />}
-      keyExtractor={String}
+      renderItem={({ index, item: { id } }) => <Item index={index} id={id} />}
+      keyExtractor={({ id }) => id}
     />
   );
 }
@@ -122,7 +117,6 @@ function List() {
 export default function App() {
   useSetAtom(loadSoundAtom)(duckSound);
   useAtom(alarmEffect);
-  useAtom(saveListEffect);
   return (
     <View style={styles.container}>
       <Count />

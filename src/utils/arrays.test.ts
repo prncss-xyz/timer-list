@@ -1,6 +1,22 @@
 import fc from "fast-check";
 
-import { eq, insert, nextValue, remove } from "./core";
+import { insert, remove, replace } from "./arrays";
+
+describe("replace", () => {
+  it("should replace an element of a list", () => {
+    fc.assert(
+      fc.property(
+        fc.tuple(fc.array(fc.integer()), fc.array(fc.integer())),
+        ([xs, ys]) => {
+          const from = [...xs, 0, ...ys];
+          const to = [...xs, 1, ...ys];
+          const index = xs.length;
+          if (index < from.length) expect(replace(index, from, 1)).toEqual(to);
+        },
+      ),
+    );
+  });
+});
 
 describe("insert", () => {
   it("inserts from empty list", () => {
@@ -55,20 +71,5 @@ describe("remove", () => {
         },
       ),
     );
-  });
-});
-
-describe("nextId", () => {
-  it("returns falsy on empty array", () => {
-    expect(nextValue([], eq("toto"))).toBeFalsy();
-  });
-  it("finds next id", () => {
-    expect(nextValue(["a", "b"], eq("a"))).toBe("b");
-  });
-  it("returns last id when there is no next", () => {
-    expect(nextValue(["a", "b"], eq("b"))).toBe("b");
-  });
-  it("returns first id when not found", () => {
-    expect(nextValue(["a", "b"], eq("c"))).toBe("a");
   });
 });

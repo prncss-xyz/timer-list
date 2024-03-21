@@ -1,71 +1,75 @@
 import { Getter, Setter, atom } from "jotai";
-import { atomEffect } from "jotai-effect";
+import { focusAtom } from "jotai-optics";
 
-import { insert, remove } from "./core";
-import { Item, nullItem } from "./model";
-import { loadItems, saveItems } from "./storage";
-import { getDebouncer } from "../utils/debouncer";
+import { Item, nullLists, validateListsSchema } from "./model";
+import { insert, remove, replace } from "../utils/arrays";
 import { atomWithNativeStorage } from "../utils/storage";
+import { getUUID } from "../utils/uuid";
 
-const defaultTimerAtom = atom<Item>(nullItem);
-export type ItemAtom = typeof defaultTimerAtom;
-
-export const itemsAtom = atom([defaultTimerAtom]);
-itemsAtom.onMount = (setAtom) => {
-  loadItems().then((items) => setAtom(items.map((item) => atom(item))));
-};
-const debouncer = getDebouncer(1000, saveItems);
-export const saveListEffect = atomEffect((get) => {
-  debouncer(get(itemsAtom).map((item) => get(item)));
+const listsAtom = atomWithNativeStorage(nullLists, "lists", {
+  debounceDelai: 1000,
+  validate: validateListsSchema,
 });
 
-export const currentIndexAtom = atomWithNativeStorage(0, "index");
+export const currentIndexAtom = focusAtom(listsAtom, (o) => o.prop("index"));
 
-const currentItemAtom = atom(
-  (get) => get(itemsAtom).at(get(currentIndexAtom)) ?? defaultTimerAtom,
-);
+export const itemsAtom = focusAtom(listsAtom, (o) => o.prop("items"));
 
-export const getSecondsAtom = (itemAtom: ItemAtom) =>
-  atom(
-    (get) => get(itemAtom).seconds,
-    (get, set, seconds: number) => set(itemAtom, { ...get(itemAtom), seconds }),
+export const getIdItemAtom = (id: string) =>
+  focusAtom(listsAtom, (o) => o.prop("items").find((item) => item.id === id));
+
+export const getIdItemSecondsAtom = (id: string) =>
+  focusAtom(listsAtom, (o) =>
+    o
+      .prop("items")
+      .find((item) => item.id === id)
+      .prop("seconds"),
   );
 
-export const currentItemSecondsAtom = atom(
-  (get) => get(get(currentItemAtom)).seconds,
-  (get, set, seconds: number) => {
-    const itemAtom = get(currentItemAtom);
-    return set(itemAtom, { ...get(itemAtom), seconds });
+const currentItemAtom = atom(
+  (get) => {
+    const { index, items } = get(listsAtom);
+    return items[index];
+  },
+  (get, set, item: Item) => {
+    const lists = get(listsAtom);
+    const { index, items } = lists;
+    set(listsAtom, { ...lists, items: replace(index, items, item) });
   },
 );
 
-export const insertItemAtom = atom(
-  null,
-  (get, set, index: number, item: ItemAtom) => {
-    const items = get(itemsAtom);
-    set(itemsAtom, insert(items, index, atom(get(item))));
-    const currentIndex = get(currentIndexAtom);
-    if (index < currentIndex) set(currentIndexAtom, currentIndex + 1);
-  },
+export const currentItemSecondsAtom = focusAtom(currentItemAtom, (o) =>
+  o.prop("seconds"),
 );
 
-export const removeItemAtom = atom(null, (get, set, index: number) => {
-  const items = get(itemsAtom);
+export const duplicateItemAtom = atom(null, (get, set, id: string) => {
+  const lists = get(listsAtom);
+  let { items, index } = lists;
+  const itemIndex = items.findIndex((item) => item.id === id);
+  if (itemIndex < 0) return;
+  const item = { ...items[index], id: getUUID() };
+  items = insert(items, itemIndex, item);
+  if (itemIndex < index) index = index + 1;
+  set(listsAtom, { ...lists, index, items });
+});
+
+export const removeItemAtom = atom(null, (get, set, id: string) => {
+  const lists = get(listsAtom);
+  let { items, index } = lists;
   if (items.length === 1) {
     set(clearItemsAtom);
     return;
   }
-  set(itemsAtom, remove(items, index));
-  const currentIndex = get(currentIndexAtom);
-  if (index < currentIndex) index--;
-  index = Math.min(index, Math.max(0, items.length - 2));
-  set(currentIndexAtom, index);
+  let itemIndex = items.findIndex((item) => item.id === id);
+  if (itemIndex < 0) return;
+  items = remove(items, itemIndex);
+  if (itemIndex < index) itemIndex--;
+  itemIndex = Math.min(itemIndex, Math.max(0, items.length - 2));
+  set(listsAtom, { ...lists, index, items });
 });
 
 export const clearItemsAtom = atom(null, (_get, set) => {
-  const item = atom<Item>(nullItem);
-  set(itemsAtom, [item]);
-  set(currentIndexAtom, 0);
+  set(listsAtom, nullLists);
 });
 
 export const nextItem = (get: Getter, set: Setter) =>
