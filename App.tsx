@@ -2,17 +2,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
+import { TimeInput } from "./src/components/timeInput";
+import { TimeView } from "./src/components/timeView";
 import {
   ItemAtom,
   clearItemsAtom,
@@ -62,13 +57,7 @@ function Count() {
           backgroundColor: active ? "yellow" : "lightblue",
         }}
       >
-        <Text
-          style={{
-            padding: 5,
-          }}
-        >
-          {seconds}
-        </Text>
+        <TimeView value={seconds} />
       </View>
     </Pressable>
   );
@@ -91,14 +80,6 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
   );
   const removeItem = useSetAtom(removeItemAtom);
   const remove = useCallback(() => removeItem(index), [removeItem, index]);
-  const onTextInput = useCallback(
-    (value: string) => {
-      const seconds_ = Number(value);
-      if (isNaN(seconds_)) return;
-      setSeconds(seconds_);
-    },
-    [setSeconds],
-  );
   return (
     <Pressable onPress={activate_}>
       <View
@@ -115,12 +96,7 @@ function Item({ index, itemAtom }: { index: number; itemAtom: ItemAtom }) {
             <Text>-</Text>
           )}
         </View>
-        <TextInput
-          style={{ padding: 5, backgroundColor: active ? "green" : "blue" }}
-          value={String(seconds ?? 0)}
-          onChangeText={onTextInput}
-          inputMode="decimal"
-        />
+        <TimeInput active={active} value={seconds} setValue={setSeconds} />
         <Pressable onPress={insert}>
           <Ionicons name="add-circle-outline" size={20} />
         </Pressable>
