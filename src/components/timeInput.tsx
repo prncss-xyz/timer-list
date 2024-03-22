@@ -1,28 +1,31 @@
-import { useCallback } from "react";
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
 import { TextInput } from "react-native";
 
+import { getIdItemSecondsAtom } from "../list";
 import { fromSeconds, toSeconds } from "../utils/numbers";
 
-export function TimeInput({
-  active,
-  value,
-  setValue,
-}: {
-  active: boolean;
-  value: number;
-  setValue: (v: number) => void;
-}) {
+export function TimeInput({ id, color }: { id: string; color?: string }) {
+  const [seconds, setSeconds] = useAtom(
+    useMemo(() => getIdItemSecondsAtom(id), [id]),
+  );
   const onTextInput = useCallback(
     (value: string) => {
       const seconds_ = toSeconds(value);
-      setValue(seconds_);
+      setSeconds(seconds_);
     },
-    [setValue],
+    [setSeconds],
   );
   return (
     <TextInput
-      style={{ padding: 5, backgroundColor: active ? "green" : "blue" }}
-      value={fromSeconds(value)}
+      style={{
+        fontFamily: "Inter_400Regular",
+        fontSize: 16,
+        textAlign: "center",
+        padding: 5,
+        backgroundColor: color,
+      }}
+      value={fromSeconds(seconds ?? 0)}
       onChangeText={onTextInput}
       inputMode="decimal"
     />
