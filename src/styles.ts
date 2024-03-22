@@ -17,7 +17,13 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     fontSize: 20,
   },
-  base: {
+  timeInput: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 16,
+    textAlign: "center",
+    padding: 5,
+  },
+  app: {
     width: "100%",
     height: "100%",
     alignItems: "center",

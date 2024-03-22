@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import { TextInput } from "react-native";
 
 import { getIdItemSecondsAtom } from "../list";
+import { styles } from "../styles";
 import { fromSeconds, toSeconds } from "../utils/numbers";
 
 export function TimeInput({ id, color }: { id: string; color?: string }) {
@@ -18,13 +19,7 @@ export function TimeInput({ id, color }: { id: string; color?: string }) {
   );
   return (
     <TextInput
-      style={{
-        fontFamily: "Inter_400Regular",
-        fontSize: 16,
-        textAlign: "center",
-        padding: 5,
-        backgroundColor: color,
-      }}
+      style={[{ backgroundColor: color }, styles.timeInput]}
       value={fromSeconds(seconds ?? 0)}
       onChangeText={onTextInput}
       inputMode="decimal"
