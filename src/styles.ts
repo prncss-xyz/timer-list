@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const sizes = {
-  icon: 30,
+  icon: 40,
 };
 
 // https://www.radix-ui.com/colors
