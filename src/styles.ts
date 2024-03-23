@@ -24,13 +24,6 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     padding: 5,
   },
-  app: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
   dangerButton: {
     color: colors.danger,
     borderColor: colors.danger,

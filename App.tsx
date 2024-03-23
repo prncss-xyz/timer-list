@@ -2,7 +2,10 @@ import { Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
 import { StatusBar } from "expo-status-bar";
 import { ReactNode } from "react";
 import { View } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
@@ -11,7 +14,7 @@ import { List } from "./src/components/list";
 import { TimerBar } from "./src/components/timerBar";
 import { useInitCountDown } from "./src/countDown";
 import { useSound } from "./src/sound";
-import { colors, styles } from "./src/styles";
+import { colors } from "./src/styles";
 
 function WithFonts({ children }: { children: ReactNode }) {
   const [fontsLoaded] = useFonts({
@@ -23,17 +26,37 @@ function WithFonts({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function SafeContainer({ children }: { children: ReactNode }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: insets.top,
+        paddingRight: insets.right,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        backgroundColor: colors.background,
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
 export default function App() {
   useInitCountDown(useSound(duckSound));
   return (
     <WithFonts>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.app}>
+        <SafeContainer>
           <View
             style={{
               flex: 1,
               width: "100%",
-              backgroundColor: colors.background,
               alignItems: "stretch",
               justifyContent: "center",
             }}
@@ -54,7 +77,7 @@ export default function App() {
             <Clear />
             <StatusBar style="auto" />
           </View>
-        </SafeAreaView>
+        </SafeContainer>
       </SafeAreaProvider>
     </WithFonts>
   );
