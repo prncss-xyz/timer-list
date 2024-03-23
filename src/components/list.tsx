@@ -6,17 +6,17 @@ import { Pressable, View, SafeAreaView, FlatList } from "react-native";
 import { TimeInput } from "../components/timeInput";
 import { useActivateAtom } from "../hooks/activate";
 import {
-  removeItemAtom,
-  duplicateItemAtom,
+  removeIndexAtom,
+  duplicateIndexAtom,
   currentIndexAtom,
   itemsAtom,
 } from "../list";
 import { sizes, colors } from "../styles";
-import { resetTimerAtom, isTimerActiveAtom } from "../timers";
+import { isTimerActiveAtom } from "../timers";
 
-function Remove({ id, color }: { id: string; color: string }) {
-  const removeItem = useSetAtom(removeItemAtom);
-  const remove = useCallback(() => removeItem(id), [removeItem, id]);
+function Remove({ index, color }: { index: number; color: string }) {
+  const removeItem = useSetAtom(removeIndexAtom);
+  const remove = useCallback(() => removeItem(index), [removeItem, index]);
   return (
     <Pressable onPress={remove}>
       <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
@@ -24,9 +24,12 @@ function Remove({ id, color }: { id: string; color: string }) {
   );
 }
 
-function Duplicate({ id, color }: { id: string; color: string }) {
-  const duplicateItem = useSetAtom(duplicateItemAtom);
-  const duplicate = useCallback(() => duplicateItem(id), [duplicateItem, id]);
+function Duplicate({ index, color }: { index: number; color: string }) {
+  const duplicateItem = useSetAtom(duplicateIndexAtom);
+  const duplicate = useCallback(
+    () => duplicateItem(index),
+    [duplicateItem, index],
+  );
   return (
     <Pressable onPress={duplicate}>
       <Ionicons color={color} name="add-circle-outline" size={sizes.icon} />
@@ -35,14 +38,9 @@ function Duplicate({ id, color }: { id: string; color: string }) {
 }
 
 function Activate({ index, color }: { index: number; color: string }) {
-  const reset = useSetAtom(resetTimerAtom);
   const [active, activate] = useActivateAtom(index, currentIndexAtom);
-  const activate_ = useCallback(() => {
-    activate();
-    reset();
-  }, [activate, reset]);
   return (
-    <Pressable onPress={activate_}>
+    <Pressable onPress={active ? undefined : activate}>
       <Ionicons
         name={active ? "radio-button-on" : "radio-button-off"}
         size={sizes.icon}
@@ -85,8 +83,8 @@ const Item = memo(({ index, id }: { index: number; id: string }) => {
         <TimeInput id={id} color={color === colors.brand ? undefined : color} />
       </View>
       <View style={{ flexDirection: "row", gap, width }}>
-        <Remove id={id} color={color} />
-        <Duplicate id={id} color={color} />
+        <Remove index={index} color={color} />
+        <Duplicate index={index} color={color} />
       </View>
     </View>
   );

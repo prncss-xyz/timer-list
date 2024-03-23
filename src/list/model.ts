@@ -7,13 +7,22 @@ const itemSchema = z.object({
   seconds: z.number(),
 });
 export type Item = z.infer<typeof itemSchema>;
-export const nullItem: Item = { seconds: 0, id: getUUID() };
+export function getNullItem() {
+  return { seconds: 0, id: getUUID() };
+}
 
 const listsSchema = z.object({
   index: z.number(),
   items: z.array(itemSchema),
 });
 export type Lists = z.infer<typeof listsSchema>;
-export const nullLists: Lists = { index: 0, items: [nullItem] };
+export function getNullLists() {
+  return { index: 0, items: [getNullItem()] };
+}
 
-export const validateListsSchema = (v: unknown) => listsSchema.parse(v);
+export const validateListsSchema = (v: unknown) => {
+  try {
+    return listsSchema.parse(v);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_err) {}
+};

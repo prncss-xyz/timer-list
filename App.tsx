@@ -1,6 +1,6 @@
 import { Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
 import { StatusBar } from "expo-status-bar";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { ReactNode } from "react";
 import { View } from "react-native";
 
@@ -9,7 +9,7 @@ import duckSound from "./assets/duck.mp3";
 import { Clear } from "./src/components/clear";
 import { List } from "./src/components/list";
 import { TimerBar } from "./src/components/timerBar";
-import { loadSoundAtom } from "./src/sound";
+import { useSound } from "./src/sound";
 import { colors, styles } from "./src/styles";
 import { alarmEffect } from "./src/timers";
 
@@ -24,7 +24,7 @@ function WithFonts({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  useSetAtom(loadSoundAtom)(duckSound);
+  useSound(duckSound);
   useAtom(alarmEffect);
   return (
     <WithFonts>

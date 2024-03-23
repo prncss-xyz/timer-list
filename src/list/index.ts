@@ -1,22 +1,33 @@
-import { Getter, Setter, atom } from "jotai";
+import { atom } from "jotai";
+import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
 
-import { Item, nullLists, validateListsSchema } from "./model";
+import { Item, getNullLists, validateListsSchema } from "./model";
+import { resetTimerAtom } from "../timers";
 import { insert, remove, replace } from "../utils/arrays";
-import { atomWithNativeStorage } from "../utils/storage";
+import { getStorageAtom } from "../utils/storage";
 import { getUUID } from "../utils/uuid";
 
-const listsAtom = atomWithNativeStorage(nullLists, "lists", {
+const listsAtom = getStorageAtom(getNullLists(), "lists", {
   debounceDelai: 1000,
   validate: validateListsSchema,
+  normalize: (x) => {
+    if (x.index > x.items.length - 1) x = { ...x, index: x.items.length - 1 };
+    if (x.index < 0) x = { ...x, index: 0 };
+    return x;
+  },
+  effects: [
+    atomEffect((get, set) => {
+      get(currentSecondsAtom);
+      get(currentIdAtom);
+      set(resetTimerAtom);
+    }),
+  ],
 });
 
 export const currentIndexAtom = focusAtom(listsAtom, (o) => o.prop("index"));
 
 export const itemsAtom = focusAtom(listsAtom, (o) => o.prop("items"));
-
-export const getIdItemAtom = (id: string) =>
-  focusAtom(listsAtom, (o) => o.prop("items").find((item) => item.id === id));
 
 export const getIdItemSecondsAtom = (id: string) =>
   focusAtom(listsAtom, (o) =>
@@ -38,44 +49,35 @@ const currentItemAtom = atom(
   },
 );
 
-export const currentItemSecondsAtom = focusAtom(currentItemAtom, (o) =>
+const currentIdAtom = atom((get) => {
+  return get(currentItemAtom).id;
+});
+
+export const currentSecondsAtom = focusAtom(currentItemAtom, (o) =>
   o.prop("seconds"),
 );
 
-export const duplicateItemAtom = atom(null, (get, set, id: string) => {
+export const duplicateIndexAtom = atom(null, (get, set, index: number) => {
   const lists = get(listsAtom);
-  let { items, index } = lists;
-  const itemIndex = items.findIndex((item) => item.id === id);
-  if (itemIndex < 0) return;
-  const item = { ...items[index], id: getUUID() };
-  items = insert(items, itemIndex, item);
-  if (itemIndex < index) index = index + 1;
-  set(listsAtom, { ...lists, index, items });
+  let { items, index: currentIndex } = lists;
+  const item = { ...items[currentIndex], id: getUUID() };
+  items = insert(items, index, item);
+  if (index < currentIndex) currentIndex++;
+  set(listsAtom, { ...lists, index: currentIndex, items });
 });
 
-export const removeItemAtom = atom(null, (get, set, id: string) => {
+export const removeIndexAtom = atom(null, (get, set, index: number) => {
   const lists = get(listsAtom);
-  let { items, index } = lists;
+  let { items, index: currentIndex } = lists;
   if (items.length === 1) {
     set(clearItemsAtom);
     return;
   }
-  let itemIndex = items.findIndex((item) => item.id === id);
-  if (itemIndex < 0) return;
-  items = remove(items, itemIndex);
-  if (itemIndex < index) itemIndex--;
-  itemIndex = Math.min(itemIndex, Math.max(0, items.length - 2));
-  set(listsAtom, { ...lists, index, items });
+  items = remove(items, index);
+  if (index < currentIndex) index--;
+  set(listsAtom, { ...lists, index: currentIndex, items });
 });
 
 export const clearItemsAtom = atom(null, (_get, set) => {
-  set(listsAtom, nullLists);
+  set(listsAtom, getNullLists());
 });
-
-export const nextItem = (get: Getter, set: Setter) =>
-  set(
-    currentIndexAtom,
-    Math.min(get(currentIndexAtom) + 1, Math.max(0, get(itemsAtom).length - 1)),
-  );
-
-export const nextItemAtom = atom(null, nextItem);

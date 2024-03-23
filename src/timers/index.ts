@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
 import { Timer, getDelai, setDelai, stop, timerToggle } from "./core";
-import { currentItemSecondsAtom, nextItem } from "../list";
+import { currentIndexAtom, currentSecondsAtom } from "../list";
 import { nowAtom } from "../now";
 import { playSoundAtom } from "../sound";
 
@@ -26,9 +26,9 @@ export const roundedTimerSecondsAtom = atom((get) =>
   Math.ceil(Math.max(0, get(timerSecondsAtom))),
 );
 
-export const resetTimerAtom = atom(null, (get, set) =>
-  set(timerSecondsAtom, get(currentItemSecondsAtom) ?? 0),
-);
+export const resetTimerAtom = atom(null, (get, set) => {
+  set(timerSecondsAtom, get(currentSecondsAtom) ?? 0);
+});
 
 export const toggleTimerAtom = atom(null, (get, set) =>
   set(timerAtom, timerToggle(get(timerAtom), get(nowAtom))),
@@ -45,12 +45,5 @@ export const alarmEffect = atomEffect((get, set) => {
   if (getDelai(timer, now) > 0) return;
   set(timerAtom, stop(timer, now));
   set(playSoundAtom);
-
-  // HACK: why `nextItem` cannot be an atom?
-  // I know it can be an attom if I call `get(currentItemAtom)` here, so it's related to dependencies
-  // still prefer this form to have the correct dependencies infered
-  nextItem(get, set);
-  /* set(nextItemAtom); */
-
-  set(resetTimerAtom);
+  set(currentIndexAtom, (index) => index + 1);
 });
