@@ -4,27 +4,23 @@ import React from "react";
 import { Pressable, View } from "react-native";
 
 import { BaseText } from "./baseText";
+import { countDownSecondsAtom } from "../countDown";
 import { colors, sizes } from "../styles";
-import {
-  isTimerActiveAtom,
-  resetTimerAtom,
-  roundedTimerSecondsAtom,
-  toggleTimerAtom,
-} from "../timers";
+import { resetTimerAtom, timerActiveAtom, toggleTimerAtom } from "../timers";
 import { fromSeconds } from "../utils/numbers";
 
 function Reset({ color }: { color: string }) {
   const reset = useSetAtom(resetTimerAtom);
   return (
     <Pressable onPress={reset}>
-      <Ionicons color={color} name="play-skip-back-outline" size={20} />
+      <Ionicons color={color} name="play-skip-back-outline" size={sizes.icon} />
     </Pressable>
   );
 }
 
 function PausePlay({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
-  const active = useAtomValue(isTimerActiveAtom);
+  const active = useAtomValue(timerActiveAtom);
   return (
     <Pressable onPress={toggle}>
       <Ionicons
@@ -38,7 +34,7 @@ function PausePlay({ color }: { color: string }) {
 
 function Count({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
-  const seconds = useAtomValue(roundedTimerSecondsAtom);
+  const seconds = useAtomValue(countDownSecondsAtom);
   return (
     <Pressable onPress={toggle}>
       <View
@@ -57,7 +53,7 @@ function Count({ color }: { color: string }) {
 }
 
 export function TimerBar() {
-  const active = useAtomValue(isTimerActiveAtom);
+  const active = useAtomValue(timerActiveAtom);
   const color = active ? colors.playing : colors.selected;
   return (
     <View

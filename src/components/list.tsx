@@ -12,7 +12,7 @@ import {
   itemsAtom,
 } from "../list";
 import { sizes, colors } from "../styles";
-import { isTimerActiveAtom } from "../timers";
+import { timerActiveAtom } from "../timers";
 
 function Remove({ index, color }: { index: number; color: string }) {
   const removeItem = useSetAtom(removeIndexAtom);
@@ -52,7 +52,7 @@ function Activate({ index, color }: { index: number; color: string }) {
 
 const Item = memo(({ index, id }: { index: number; id: string }) => {
   const [active] = useActivateAtom(index, currentIndexAtom);
-  const playing = useAtomValue(isTimerActiveAtom);
+  const playing = useAtomValue(timerActiveAtom);
   const color = active
     ? playing
       ? colors.playing

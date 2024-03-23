@@ -13,13 +13,14 @@ const loadSoundAtom = atom(null, async (get, set, sample: any) => {
   set(soundAtom, sound);
 });
 
+const playSoundAtom = atom(null, (get) =>
+  setTimeout(() => get(soundAtom)?.playAsync(), 0),
+);
+
 export function useSound(duckSound: any) {
   const loadSound = useSetAtom(loadSoundAtom);
   useEffect(() => {
     loadSound(duckSound);
   }, []);
+  return useSetAtom(playSoundAtom);
 }
-
-export const playSoundAtom = atom(null, (get) =>
-  setTimeout(() => get(soundAtom)?.playAsync(), 0),
-);
