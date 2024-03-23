@@ -78,9 +78,13 @@ const Item = memo(({ index, id }: { index: number; id: string }) => {
           borderColor: color,
           borderWidth: 1,
           borderStyle: "solid",
+          justifyContent: "center",
         }}
       >
-        <TimeInput id={id} color={color === colors.brand ? undefined : color} />
+        <TimeInput
+          id={id}
+          color={color === colors.brand ? colors.background : color}
+        />
       </View>
       <View style={{ flexDirection: "row", gap, width }}>
         <Remove index={index} color={color} />
