@@ -62,7 +62,7 @@ export const currentSecondsAtom = focusAtom(currentItemAtom, (o) =>
 export const duplicateIndexAtom = atom(null, (get, set, index: number) => {
   const lists = get(listsAtom);
   let { items, index: currentIndex } = lists;
-  const item = { ...items[currentIndex], id: getUUID() };
+  const item = { ...items[index], id: getUUID() };
   items = insert(items, index, item);
   if (index < currentIndex) currentIndex++;
   set(listsAtom, { ...lists, index: currentIndex, items });
