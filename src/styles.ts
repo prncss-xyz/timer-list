@@ -4,11 +4,12 @@ export const sizes = {
   icon: 30,
 };
 
+// https://www.radix-ui.com/colors
 export const colors = {
-  playing: "pink",
-  brand: "blue",
-  danger: "red",
-  selected: "green",
+  playing: "#FF92AD",
+  brand: "#0090FF",
+  danger: "#FFC53D",
+  selected: "#3DD68C",
   background: "#fff",
 };
 
