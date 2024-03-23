@@ -2,6 +2,7 @@ import { Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
 import { StatusBar } from "expo-status-bar";
 import { ReactNode } from "react";
 import { View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 // @ts-ignore
 import duckSound from "./assets/duck.mp3";
@@ -26,33 +27,35 @@ export default function App() {
   useInitCountDown(useSound(duckSound));
   return (
     <WithFonts>
-      <View style={styles.app}>
-        <View
-          style={{
-            flex: 1,
-            width: "100%",
-            backgroundColor: colors.background,
-            alignItems: "stretch",
-            justifyContent: "center",
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <TimerBar />
-            <View
-              style={{
-                marginTop: 15,
-                marginBottom: 5,
-                borderColor: colors.brand,
-                borderBottomWidth: 1,
-                borderStyle: "solid",
-              }}
-            />
-            <List />
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.app}>
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              backgroundColor: colors.background,
+              alignItems: "stretch",
+              justifyContent: "center",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <TimerBar />
+              <View
+                style={{
+                  marginTop: 15,
+                  marginBottom: 5,
+                  borderColor: colors.brand,
+                  borderBottomWidth: 1,
+                  borderStyle: "solid",
+                }}
+              />
+              <List />
+            </View>
+            <Clear />
+            <StatusBar style="auto" />
           </View>
-          <Clear />
-          <StatusBar style="auto" />
-        </View>
-      </View>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </WithFonts>
   );
 }
