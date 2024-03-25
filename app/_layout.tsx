@@ -11,7 +11,7 @@ import {
 // @ts-ignore
 import beep from "../assets/beep.mp3";
 import { useInitCountDown } from "../src/countDown";
-import { useSound } from "../src/sound";
+import { usePlay } from "../src/sound";
 import { colors, sizes } from "../src/styles";
 
 function WithFonts({ children }: { children: ReactNode }) {
@@ -52,7 +52,7 @@ function Container({ children }: { children: ReactNode }) {
 }
 
 export default function HomeLayout() {
-  useInitCountDown(useSound(beep));
+  useInitCountDown(usePlay(beep));
   return (
     <WithFonts>
       <SafeAreaProvider>

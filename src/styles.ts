@@ -20,7 +20,8 @@ export const colors = {
   brand: "#0090FF",
   danger: "#FFC53D",
   selected: "#3DD68C",
-  background: "#fff",
+  /* background: "#fff", */
+  background: "yellow",
 };
 
 export const styles = StyleSheet.create({

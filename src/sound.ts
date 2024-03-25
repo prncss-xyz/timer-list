@@ -1,26 +1,18 @@
 import { Audio } from "expo-av";
-import { atom, useSetAtom } from "jotai";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const soundAtom = atom<Audio.Sound | undefined>(undefined);
+async function playSound(asset: any, setSound: (sound: Audio.Sound) => void) {
+  const { sound } = await Audio.Sound.createAsync(asset);
+  sound.playAsync();
+  setSound(sound);
+}
 
-//PERF: : this could cause a memory leak if new sound is loaded before loading of the first one has completed
-// however, in the current application this is not an issue
-const loadSoundAtom = atom(null, async (get, set, sample: any) => {
-  // not awaiting completion
-  get(soundAtom)?.unloadAsync();
-  const { sound } = await Audio.Sound.createAsync(sample);
-  set(soundAtom, sound);
-});
-
-const playSoundAtom = atom(null, (get) =>
-  setTimeout(() => get(soundAtom)?.playAsync(), 0),
-);
-
-export function useSound(duckSound: any) {
-  const loadSound = useSetAtom(loadSoundAtom);
+export function usePlay(asset: any) {
+  const [sound, setSound] = useState<Audio.Sound>();
   useEffect(() => {
-    loadSound(duckSound);
-  }, []);
-  return useSetAtom(playSoundAtom);
+    return () => {
+      sound?.unloadAsync();
+    };
+  }, [sound]);
+  return useCallback(() => playSound(asset, setSound), [asset, setSound]);
 }
