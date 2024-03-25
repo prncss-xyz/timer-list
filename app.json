@@ -37,7 +37,7 @@
       }
     },
     "experiments": {
-      "baseUrl": "https://prncss-xyz.github.io/timer-list"
+      "baseUrl": "/timer-list"
     }
   }
 }
