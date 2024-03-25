@@ -9,7 +9,7 @@ import {
 } from "react-native-safe-area-context";
 
 // @ts-ignore
-import duckSound from "../assets/duck.mp3";
+import beep from "../assets/beep.mp3";
 import { useInitCountDown } from "../src/countDown";
 import { useSound } from "../src/sound";
 import { colors, sizes } from "../src/styles";
@@ -52,7 +52,7 @@ function Container({ children }: { children: ReactNode }) {
 }
 
 export default function HomeLayout() {
-  useInitCountDown(useSound(duckSound));
+  useInitCountDown(useSound(beep));
   return (
     <WithFonts>
       <SafeAreaProvider>
