@@ -9,6 +9,7 @@ import {
   timerActiveAtom,
   timerElapsedAtom,
 } from "./timers";
+import { fromSeconds } from "./utils/seconds";
 
 const countDownMsAtom = atom((get) => {
   const elapsed = get(timerElapsedAtom);
@@ -33,3 +34,7 @@ export function useInitCountDown(alarm: () => void) {
   const effect = useMemo(() => getAlarmEffect(alarm), [alarm]);
   useAtomValue(effect);
 }
+
+export const countDownTextAtom = atom((get) =>
+  fromSeconds(get(countDownSecondsAtom)),
+);

@@ -51,9 +51,17 @@ const currentItemAtom = atom(
   },
 );
 
-const currentIdAtom = atom((get) => {
-  return get(currentItemAtom).id;
-});
+export const currentIdAtom = atom(
+  (get) => {
+    return get(currentItemAtom).id;
+  },
+  (get, set, id: string) => {
+    const lists = get(listsAtom);
+    const { items } = lists;
+    const index = items.findIndex((item) => item.id === id);
+    set(listsAtom, { ...lists, index, items });
+  },
+);
 
 export const currentSecondsAtom = focusAtom(currentItemAtom, (o) =>
   o.prop("seconds"),

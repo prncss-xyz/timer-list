@@ -3,11 +3,10 @@ import { useAtomValue, useSetAtom } from "jotai/react";
 import React from "react";
 import { Pressable, View } from "react-native";
 
-import { BaseText } from "./baseText";
-import { countDownSecondsAtom } from "../countDown";
+import { TimerView } from "./timerView";
+import { countDownTextAtom } from "../countDown";
 import { colors, sizes } from "../styles";
 import { resetTimerAtom, timerActiveAtom, toggleTimerAtom } from "../timers";
-import { fromSeconds } from "../utils/numbers";
 
 function Reset({ color }: { color: string }) {
   const reset = useSetAtom(resetTimerAtom);
@@ -34,20 +33,10 @@ function PausePlay({ color }: { color: string }) {
 
 function Count({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
-  const seconds = useAtomValue(countDownSecondsAtom);
+  const text = useAtomValue(countDownTextAtom);
   return (
     <Pressable onPress={toggle}>
-      <View
-        style={{
-          backgroundColor: color,
-          borderColor: color,
-          borderWidth: 1,
-          borderStyle: "solid",
-          padding: 5,
-        }}
-      >
-        <BaseText>{fromSeconds(seconds)}</BaseText>
-      </View>
+      <TimerView color={color} text={text} />
     </Pressable>
   );
 }

@@ -4,7 +4,7 @@ import { Text, Pressable } from "react-native";
 import { clearItemsAtom } from "../list";
 import { styles } from "../styles";
 
-export function Clear() {
+export function ClearList() {
   const clear = useSetAtom(clearItemsAtom);
   return (
     <Pressable onPress={clear}>

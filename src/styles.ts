@@ -2,6 +2,16 @@ import { StyleSheet } from "react-native";
 
 export const sizes = {
   icon: 40,
+  timerViewWidth: 120,
+  screenMaxWidth: 500,
+};
+export const spaces = {
+  5: 5,
+  15: 15,
+  gridGap: 20,
+};
+export const borderWidths = {
+  light: 1,
 };
 
 // https://www.radix-ui.com/colors
@@ -18,17 +28,21 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     fontSize: 20,
   },
-  timeInput: {
-    fontFamily: "Inter_400Regular",
-    fontSize: 16,
+  timerView: {
     textAlign: "center",
     padding: 5,
+    borderWidth: borderWidths.light,
+    borderStyle: "solid",
+    width: sizes.timerViewWidth,
+    alignItems: "flex-start",
+    justifyContent: "center",
   },
   dangerButton: {
     color: colors.danger,
     borderColor: colors.danger,
+    margin: 5,
     padding: 5,
-    borderWidth: 1,
+    borderWidth: borderWidths.light,
     borderRadius: 3,
     textAlign: "center",
     textTransform: "uppercase",
