@@ -12,9 +12,9 @@ import {
   itemsAtom,
   currentIdAtom,
   getIdItemSecondsTextAtom,
-} from "@/list";
+} from "@/stores/timerLists";
+import { timerActiveAtom } from "@/stores/timers";
 import { sizes, colors } from "@/styles";
-import { timerActiveAtom } from "@/timers";
 
 function Remove({ id, color }: { id: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
@@ -49,7 +49,7 @@ function Activate({ id, color }: { id: string; color: string }) {
   );
 }
 
-export function ListTimerView({ id, color }: { id: string; color: string }) {
+export function Count({ id, color }: { id: string; color: string }) {
   const setCurrentId = useSetAtom(currentIdAtom);
   const onPress = useCallback(() => {
     router.push(`/set-timer/${id}`);
@@ -87,7 +87,7 @@ const Item = memo(({ id }: { id: string }) => {
       <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
         <Activate color={color} id={id} />
       </View>
-      <ListTimerView id={id} color={color} />
+      <Count id={id} color={color} />
       <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
         <Remove id={id} color={color} />
         <Duplicate id={id} color={color} />
@@ -96,7 +96,7 @@ const Item = memo(({ id }: { id: string }) => {
   );
 });
 
-export function List() {
+export function TimerList() {
   const items = useAtomValue(itemsAtom);
   return (
     <FlatList

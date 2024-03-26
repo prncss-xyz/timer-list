@@ -1,14 +1,14 @@
-import { ClearList } from "../src/components/clearList";
-import { HeadSeparator } from "../src/components/headSeparator";
-import { List } from "../src/components/list";
-import { TimerBar } from "../src/components/timerBar";
+import { ClearList } from "@/components/clearList";
+import { HeadSeparator } from "@/components/headSeparator";
+import { TimerBar } from "@/components/timerBar";
+import { TimerList } from "@/components/timerList";
 
 export default function Page() {
   return (
     <>
       <TimerBar />
       <HeadSeparator />
-      <List />
+      <TimerList />
       <ClearList />
     </>
   );

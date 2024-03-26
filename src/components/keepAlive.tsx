@@ -1,7 +1,7 @@
 import { useKeepAwake } from "expo-keep-awake";
 import { useAtomValue } from "jotai";
 
-import { timerActiveAtom } from "@/timers";
+import { timerActiveAtom } from "@/stores/timers";
 
 function KeepAlive() {
   useKeepAwake();

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { getUUID } from "../utils/uuid";
+import { getUUID } from "@/utils/uuid";
 
 const itemSchema = z.object({
   id: z.string(),

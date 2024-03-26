@@ -2,9 +2,12 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
 
-import { Item, getNullTimerList, validateListsSchema } from "./model";
-
-import { resetTimerAtom } from "@/timers";
+import {
+  Item,
+  getNullTimerList,
+  validateListsSchema,
+} from "@/stores/timerLists/model";
+import { resetTimerAtom } from "@/stores/timers";
 import { insert, remove, replace } from "@/utils/arrays";
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getStorageAtom } from "@/utils/storage";

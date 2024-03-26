@@ -9,12 +9,11 @@ import {
 } from "react-native-safe-area-context";
 
 // @ts-ignore
-import beep from "../assets/beep.mp3";
-import { useInitCountDown } from "../src/countDown";
-import { usePlay } from "../src/sound";
-import { colors, sizes } from "../src/styles";
-
+import beep from "@/assets/beep.mp3";
 import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
+import { usePlay } from "@/hooks/sound";
+import { useInitCountDown } from "@/stores/countDown";
+import { colors, sizes } from "@/styles";
 
 function WithFonts({ children }: { children: ReactNode }) {
   const [fontsLoaded] = useFonts({
@@ -53,7 +52,7 @@ function Container({ children }: { children: ReactNode }) {
   );
 }
 
-export default function HomeLayout() {
+export default function Layout() {
   useInitCountDown(usePlay(beep));
   return (
     <WithFonts>

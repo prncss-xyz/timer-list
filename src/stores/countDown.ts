@@ -2,14 +2,15 @@ import { atom, useAtomValue } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { useMemo } from "react";
 
-import { currentIndexAtom, currentSecondsAtom } from "./list";
+import { currentIndexAtom, currentSecondsAtom } from "./timerLists";
 import {
   resetTimerAtom,
   stopTimerAtom,
   timerActiveAtom,
   timerElapsedAtom,
 } from "./timers";
-import { fromSeconds } from "./utils/seconds";
+
+import { fromSeconds } from "@/utils/seconds";
 
 const countDownMsAtom = atom((get) => {
   const elapsed = get(timerElapsedAtom);

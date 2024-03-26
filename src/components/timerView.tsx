@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 
-import { colors, styles } from "../styles";
+import { colors, styles } from "@/styles";
 
 export function TimerView({ color, text }: { color: string; text: string }) {
   return (

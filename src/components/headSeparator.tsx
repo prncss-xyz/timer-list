@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { borderWidths, colors, spaces } from "../styles";
+import { borderWidths, colors, spaces } from "@/styles";
 
 export function HeadSeparator() {
   return (

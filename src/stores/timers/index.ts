@@ -1,7 +1,8 @@
 import { atom } from "jotai";
 
 import { Timer, getElapsed, stop, setElapsed, timerToggle } from "./core";
-import { nowAtom } from "../now";
+
+import { nowAtom } from "@/stores/now";
 
 const timerAtom = atom<Timer>({
   type: "timer_stopped",

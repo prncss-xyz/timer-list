@@ -1,8 +1,8 @@
 import { useSetAtom } from "jotai";
 import { Text, Pressable } from "react-native";
 
-import { clearItemsAtom } from "../list";
-import { styles } from "../styles";
+import { clearItemsAtom } from "@/stores/timerLists";
+import { styles } from "@/styles";
 
 export function ClearList() {
   const clear = useSetAtom(clearItemsAtom);

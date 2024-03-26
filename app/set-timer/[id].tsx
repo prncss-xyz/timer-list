@@ -17,15 +17,11 @@ import React, {
 } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { HeadSeparator } from "../../src/components/headSeparator";
-import { TimerView } from "../../src/components/timerView";
-import { getIdItemSecondsAtom } from "../../src/list";
-import { borderWidths, colors, sizes, spaces, styles } from "../../src/styles";
-import {
-  fromSeconds,
-  normalizeSeconds,
-  toSeconds,
-} from "../../src/utils/seconds";
+import { HeadSeparator } from "@/components/headSeparator";
+import { TimerView } from "@/components/timerView";
+import { getIdItemSecondsAtom } from "@/stores/timerLists";
+import { borderWidths, colors, sizes, spaces, styles } from "@/styles";
+import { fromSeconds, normalizeSeconds, toSeconds } from "@/utils/seconds";
 
 const InitialTextScope = createScope({
   seconds: 0,

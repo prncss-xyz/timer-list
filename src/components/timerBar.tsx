@@ -4,9 +4,14 @@ import React from "react";
 import { Pressable, View } from "react-native";
 
 import { TimerView } from "./timerView";
-import { countDownTextAtom } from "../countDown";
-import { colors, sizes } from "../styles";
-import { resetTimerAtom, timerActiveAtom, toggleTimerAtom } from "../timers";
+
+import { countDownTextAtom } from "@/stores/countDown";
+import {
+  resetTimerAtom,
+  timerActiveAtom,
+  toggleTimerAtom,
+} from "@/stores/timers";
+import { colors, sizes } from "@/styles";
 
 function Reset({ color }: { color: string }) {
   const reset = useSetAtom(resetTimerAtom);
