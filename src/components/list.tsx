@@ -4,23 +4,21 @@ import { useSetAtom, useAtomValue } from "jotai";
 import React, { useCallback, memo, useMemo } from "react";
 import { Pressable, View, FlatList } from "react-native";
 
-import { TimerView } from "../components/timerView";
-import { useActivateAtom } from "../hooks/activate";
+import { TimerView } from "@/components/timerView";
+import { useActivateAtom } from "@/hooks/activate";
 import {
-  removeIndexAtom,
-  duplicateIndexAtom,
-  currentIndexAtom,
+  removeIdAtom,
+  duplicateIdAtom,
   itemsAtom,
-  getIdItemSecondsAtom,
   currentIdAtom,
-} from "../list";
-import { sizes, colors } from "../styles";
-import { timerActiveAtom } from "../timers";
-import { fromSeconds } from "../utils/seconds";
+  getIdItemSecondsTextAtom,
+} from "@/list";
+import { sizes, colors } from "@/styles";
+import { timerActiveAtom } from "@/timers";
 
-function Remove({ index, color }: { index: number; color: string }) {
-  const removeItem = useSetAtom(removeIndexAtom);
-  const remove = useCallback(() => removeItem(index), [removeItem, index]);
+function Remove({ id, color }: { id: string; color: string }) {
+  const removeItem = useSetAtom(removeIdAtom);
+  const remove = useCallback(() => removeItem(id), [removeItem, id]);
   return (
     <Pressable onPress={remove}>
       <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
@@ -28,12 +26,9 @@ function Remove({ index, color }: { index: number; color: string }) {
   );
 }
 
-function Duplicate({ index, color }: { index: number; color: string }) {
-  const duplicateItem = useSetAtom(duplicateIndexAtom);
-  const duplicate = useCallback(
-    () => duplicateItem(index),
-    [duplicateItem, index],
-  );
+function Duplicate({ id, color }: { id: string; color: string }) {
+  const duplicateItem = useSetAtom(duplicateIdAtom);
+  const duplicate = useCallback(() => duplicateItem(id), [duplicateItem, id]);
   return (
     <Pressable onPress={duplicate}>
       <Ionicons color={color} name="add-circle-outline" size={sizes.icon} />
@@ -41,8 +36,8 @@ function Duplicate({ index, color }: { index: number; color: string }) {
   );
 }
 
-function Activate({ index, color }: { index: number; color: string }) {
-  const [active, activate] = useActivateAtom(index, currentIndexAtom);
+function Activate({ id, color }: { id: string; color: string }) {
+  const [active, activate] = useActivateAtom(id, currentIdAtom);
   return (
     <Pressable onPress={active ? undefined : activate}>
       <Ionicons
@@ -54,15 +49,14 @@ function Activate({ index, color }: { index: number; color: string }) {
   );
 }
 
-// FIXME:
 export function ListTimerView({ id, color }: { id: string; color: string }) {
-  const seconds = useAtomValue(useMemo(() => getIdItemSecondsAtom(id), [id]));
   const setCurrentId = useSetAtom(currentIdAtom);
   const onPress = useCallback(() => {
     router.push(`/set-timer/${id}`);
     setCurrentId(id);
   }, [setCurrentId, id]);
-  const text = fromSeconds(seconds ?? 0);
+  const text =
+    useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id])) ?? "";
   return (
     <Pressable onPress={onPress}>
       <TimerView color={color} text={text} />
@@ -73,8 +67,8 @@ export function ListTimerView({ id, color }: { id: string; color: string }) {
 const itemGap = 5;
 const itemWidth = sizes.icon * 2 + itemGap;
 
-const Item = memo(({ index, id }: { index: number; id: string }) => {
-  const [active] = useActivateAtom(index, currentIndexAtom);
+const Item = memo(({ id }: { id: string }) => {
+  const [active] = useActivateAtom(id, currentIdAtom);
   const playing = useAtomValue(timerActiveAtom);
   const color = active
     ? playing
@@ -91,12 +85,12 @@ const Item = memo(({ index, id }: { index: number; id: string }) => {
       }}
     >
       <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
-        <Activate color={color} index={index} />
+        <Activate color={color} id={id} />
       </View>
       <ListTimerView id={id} color={color} />
       <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
-        <Remove index={index} color={color} />
-        <Duplicate index={index} color={color} />
+        <Remove id={id} color={color} />
+        <Duplicate id={id} color={color} />
       </View>
     </View>
   );
@@ -108,7 +102,7 @@ export function List() {
     <FlatList
       contentContainerStyle={{ gap: 5 }}
       data={items}
-      renderItem={({ index, item: { id } }) => <Item index={index} id={id} />}
+      renderItem={({ item: { id } }) => <Item id={id} />}
       keyExtractor={({ id }) => id}
     />
   );

@@ -11,18 +11,18 @@ export function getNullItem() {
   return { seconds: 0, id: getUUID() };
 }
 
-const listsSchema = z.object({
+const timerListSchema = z.object({
   index: z.number(),
   items: z.array(itemSchema),
 });
-export type Lists = z.infer<typeof listsSchema>;
-export function getNullLists() {
+export type TimerList = z.infer<typeof timerListSchema>;
+export function getNullTimerList() {
   return { index: 0, items: [getNullItem()] };
 }
 
 export const validateListsSchema = (v: unknown) => {
   try {
-    return listsSchema.parse(v);
+    return timerListSchema.parse(v);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_err) {}
 };
