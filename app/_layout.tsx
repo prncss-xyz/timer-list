@@ -14,6 +14,9 @@ import { useInitCountDown } from "../src/countDown";
 import { usePlay } from "../src/sound";
 import { colors, sizes } from "../src/styles";
 
+import { useInitTimer } from "@/timers";
+import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
+
 function WithFonts({ children }: { children: ReactNode }) {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -53,8 +56,10 @@ function Container({ children }: { children: ReactNode }) {
 
 export default function HomeLayout() {
   useInitCountDown(usePlay(beep));
+  useInitTimer();
   return (
     <WithFonts>
+      <KeepAliveWhenTimerActive />
       <SafeAreaProvider>
         <Container>
           <Slot />

@@ -1,4 +1,6 @@
-import { atom } from "jotai";
+import { activateKeepAwakeAsync, deactivateKeepAwake, useKeepAwake } from "expo-keep-awake";
+import { atom, useAtomValue } from "jotai";
+import { atomEffect } from "jotai-effect";
 
 import { Timer, getElapsed, stop, setElapsed, timerToggle } from "./core";
 import { nowAtom } from "../now";
@@ -31,3 +33,22 @@ export const stopTimerAtom = atom(null, (get, set) => {
   const timer = get(timerAtom);
   if (timer.type === "timer_active") set(timerAtom, stop(timer, get(nowAtom)));
 });
+
+const awakeAtom = atom(false);
+
+const awakeEffect = atomEffect((get, set) => {
+  const timerActive = get(timerActiveAtom);
+  const awake = get(awakeAtom);
+  if (timerActive === awake) return;
+  if (timerActive) {
+    activateKeepAwakeAsync();
+    set(awakeAtom, true);
+    return;
+  }
+  set(awakeAtom, false);
+  deactivateKeepAwake();
+});
+
+export function useInitTimer() {
+  useAtomValue(awakeEffect);
+}
