@@ -1,19 +1,15 @@
-import { atom } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
+import { useMemo } from "react";
 
-import {
-  Item,
-  getNullTimerList,
-  validateListsSchema,
-} from "@/stores/timerLists/model";
-import { resetTimerAtom } from "@/stores/timers";
-import { insert, remove, replace } from "@/utils/arrays";
+import { Item, getNullTimerList, validateListsSchema } from "./model";
+
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getStorageAtom } from "@/utils/storage";
 import { getUUID } from "@/utils/uuid";
 
-const timerListsAtom = getStorageAtom(getNullTimerList(), "timerList", {
+const timerListsAtom = getStorageAtom(getNullTimerList(), "lists", {
   debounceDelai: 1000,
   validate: validateListsSchema,
   normalize: (lists) => {
@@ -23,13 +19,6 @@ const timerListsAtom = getStorageAtom(getNullTimerList(), "timerList", {
     if (items.length === 0) lists = getNullTimerList();
     return lists;
   },
-  effects: [
-    atomEffect((get, set) => {
-      get(currentSecondsAtom);
-      get(currentIdAtom);
-      set(resetTimerAtom);
-    }),
-  ],
 });
 
 export const currentIndexAtom = focusAtom(timerListsAtom, (o) =>
@@ -62,8 +51,9 @@ const currentItemAtom = atom(
   },
   (get, set, item: Item) => {
     const lists = get(timerListsAtom);
-    const { index, items } = lists;
-    set(timerListsAtom, { ...lists, items: replace(index, items, item) });
+    let { index, items } = lists;
+    items = items.toSpliced(index, 1, item);
+    set(timerListsAtom, { ...lists, items });
   },
 );
 
@@ -75,7 +65,7 @@ export const currentIdAtom = atom(
     const lists = get(timerListsAtom);
     const { items } = lists;
     const index = items.findIndex((item) => item.id === id);
-    set(timerListsAtom, { ...lists, index, timerItems: items });
+    set(timerListsAtom, { ...lists, index, items });
   },
 );
 
@@ -89,9 +79,9 @@ export const duplicateIdAtom = atom(null, (get, set, id: string) => {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
   const item = { ...items[index], id: getUUID() };
-  items = insert(items, index, item);
-  if (index < currentIndex) currentIndex++;
-  set(timerListsAtom, { ...lists, index: currentIndex, timerItems: items });
+  items = items.toSpliced(index, 0, item);
+  if (index <= currentIndex) currentIndex++;
+  set(timerListsAtom, { ...lists, index: currentIndex, items });
 });
 
 export const removeIdAtom = atom(null, (get, set, id: string) => {
@@ -99,11 +89,24 @@ export const removeIdAtom = atom(null, (get, set, id: string) => {
   let { items, index: currentIndex } = lists;
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
-  items = remove(items, index);
+  items = items.toSpliced(index, 1);
   if (index < currentIndex) currentIndex--;
-  set(timerListsAtom, { ...lists, index: currentIndex, timerItems: items });
+  set(timerListsAtom, { ...lists, index: currentIndex, items });
 });
 
 export const clearItemsAtom = atom(null, (_get, set) => {
   set(itemsAtom, []);
 });
+
+export function useInitTimerLists(cb: () => void) {
+  const effect = useMemo(
+    () =>
+      atomEffect((get) => {
+        get(currentSecondsAtom);
+        get(currentIdAtom);
+        cb();
+      }),
+    [cb],
+  );
+  useAtomValue(effect);
+}

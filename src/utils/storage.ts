@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Atom, PrimitiveAtom, atom } from "jotai";
+import { PrimitiveAtom, atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
 import { getDebouncer } from "./debouncer";
@@ -8,7 +8,6 @@ type StorageOpts<T> = Partial<{
   debounceDelai: number;
   validate: (v: unknown) => T | undefined;
   normalize: (t: T) => T;
-  effects: Atom<void>[];
 }>;
 
 function loadData<T>(key: string, cb: (data: T) => void) {
@@ -29,6 +28,8 @@ enum Step {
   Loaded,
 }
 
+// Jotai provides an AtomWithStorage utility; however it makes atoms async, which entails lots of complication
+// later in the code, and prevents from using focusAtom; so we use this instead
 function getStorageEffect<T>(
   key: string,
   dataAtom: PrimitiveAtom<T>,
@@ -66,11 +67,9 @@ export function getStorageAtom<T>(
 ) {
   const dataAtom = atom(init);
   const normalize = opts?.normalize ?? ((t) => t);
-  const effects = opts?.effects ?? [];
   const storageEffect = getStorageEffect(key, dataAtom, opts);
   return atom(
     (get) => {
-      effects.forEach(get);
       get(storageEffect);
       return get(dataAtom);
     },
