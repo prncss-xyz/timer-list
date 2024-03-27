@@ -49,7 +49,7 @@ function TextScope({ children }: { children: ReactNode }) {
     <ScopeProvider
       scope={InitialTextScope}
       value={{
-        seconds: seconds ?? 0,
+        seconds,
         onChange: (value: number) => (secondsRef.current = value),
       }}
     >

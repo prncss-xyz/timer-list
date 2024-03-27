@@ -4,6 +4,7 @@ import { focusAtom } from "jotai-optics";
 
 import { Item, TimerList, getNullTimerList } from "./model";
 
+import { definedAtom } from "@/utils/definedAtom";
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getUUID } from "@/utils/uuid";
 
@@ -15,7 +16,7 @@ const normalize = (lists: TimerList) => {
   return lists;
 };
 
-const rawTimerListAtom = atom(getNullTimerList());
+const rawTimerListAtom = atom(normalize({ index: 0, items: [] }));
 export const timerListAtom = focusAtom(rawTimerListAtom, (o) =>
   o.rewrite(normalize),
 );
@@ -55,22 +56,19 @@ export const currentSecondsAtom = focusAtom(currentItemAtom, (o) =>
   o.prop("seconds"),
 );
 
-export const getIdItemSecondsAtom = (id: string) =>
-  focusAtom(timerListAtom, (o) =>
-    o
-      .prop("items")
-      .find((item) => item.id === id)
-      .prop("seconds"),
+export const getIdItemAtom = (id: string) =>
+  definedAtom(
+    focusAtom(timerListAtom, (o) =>
+      o.prop("items").find((item) => item.id === id),
+    ),
+    { id: "", seconds: 0 },
   );
 
+export const getIdItemSecondsAtom = (id: string) =>
+  focusAtom(getIdItemAtom(id), (o) => o.prop("seconds"));
+
 export const getIdItemSecondsTextAtom = (id: string) =>
-  focusAtom(timerListAtom, (o) =>
-    o
-      .prop("items")
-      .find((item) => item.id === id)
-      .prop("seconds")
-      .iso(fromSeconds, toSeconds),
-  );
+  focusAtom(getIdItemSecondsAtom(id), (o) => o.iso(fromSeconds, toSeconds));
 
 export const duplicateIdAtom = atom(null, (get, set, id: string) => {
   const lists = get(timerListAtom);

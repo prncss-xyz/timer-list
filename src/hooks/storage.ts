@@ -18,7 +18,6 @@ function saveData(key: string, value: unknown) {
   AsyncStorage.setItem(key, jsonValue);
 }
 
-// TODO: save only after promise is resolved
 export function useStorageAtom<T>(
   key: string,
   dataAtom: PrimitiveAtom<T>,

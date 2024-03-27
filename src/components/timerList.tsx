@@ -55,8 +55,7 @@ export function Count({ id, color }: { id: string; color: string }) {
     router.push(`/set-timer/${id}`);
     setCurrentId(id);
   }, [setCurrentId, id]);
-  const text =
-    useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id])) ?? "";
+  const text = useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id]));
   return (
     <Pressable onPress={onPress}>
       <TimerView color={color} text={text} />
