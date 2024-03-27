@@ -5,7 +5,7 @@ import React, { useCallback, memo, useMemo } from "react";
 import { Pressable, View, FlatList } from "react-native";
 
 import { TimerView } from "@/components/timerView";
-import { useActivateAtom } from "@/hooks/activate";
+import { useActivateAtom } from "@/hooks/activateAtom";
 import {
   removeIdAtom,
   duplicateIdAtom,

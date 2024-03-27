@@ -1,7 +1,8 @@
 import { Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { ReactNode } from "react";
+import { useSetAtom } from "jotai";
+import { ReactNode } from "react";
 import { View } from "react-native";
 import {
   SafeAreaProvider,
@@ -13,11 +14,11 @@ import beep from "../assets/beep.mp3";
 
 import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
 import { usePlay } from "@/hooks/sound";
-import { useInitCountDown } from "@/stores/countDown";
-import { colors, sizes } from "@/styles";
-import { useInitTimerLists } from "@/stores/timerLists";
-import { useSetAtom } from "jotai";
+import { useInitCountDown } from "@/stores/countDown/init";
+import { useInitNow } from "@/stores/now/init";
+import { useInitTimerLists } from "@/stores/timerLists/init";
 import { resetTimerAtom } from "@/stores/timers";
+import { colors, sizes } from "@/styles";
 
 function WithFonts({ children }: { children: ReactNode }) {
   const [fontsLoaded] = useFonts({
@@ -57,8 +58,10 @@ function Container({ children }: { children: ReactNode }) {
 }
 
 export default function Layout() {
+  useInitNow();
   useInitCountDown(usePlay(beep));
-  useInitTimerLists(useSetAtom(resetTimerAtom));
+  const ready = useInitTimerLists(useSetAtom(resetTimerAtom));
+  if (!ready) return null;
   return (
     <WithFonts>
       <KeepAliveWhenTimerActive />

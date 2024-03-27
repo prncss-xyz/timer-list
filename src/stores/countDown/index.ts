@@ -1,14 +1,13 @@
-import { atom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
-import { useMemo } from "react";
 
-import { currentIndexAtom, currentSecondsAtom } from "./timerLists";
+import { currentSecondsAtom, currentIndexAtom } from "../timerLists";
 import {
-  resetTimerAtom,
-  stopTimerAtom,
-  timerActiveAtom,
   timerElapsedAtom,
-} from "./timers";
+  timerActiveAtom,
+  stopTimerAtom,
+  resetTimerAtom,
+} from "../timers";
 
 import { fromSeconds } from "@/utils/seconds";
 
@@ -30,11 +29,6 @@ export const getAlarmEffect = (alarm: () => void) =>
     set(resetTimerAtom);
     alarm();
   });
-
-export function useInitCountDown(alarm: () => void) {
-  const effect = useMemo(() => getAlarmEffect(alarm), [alarm]);
-  useAtomValue(effect);
-}
 
 export const countDownTextAtom = atom((get) =>
   fromSeconds(get(countDownSecondsAtom)),

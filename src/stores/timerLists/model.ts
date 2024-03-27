@@ -20,7 +20,7 @@ export function getNullTimerList() {
   return { index: 0, items: [getNullItem()] };
 }
 
-export const validateListsSchema = (v: unknown) => {
+export const validateTimerListSchema = (v: unknown) => {
   try {
     return timerListSchema.parse(v);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
