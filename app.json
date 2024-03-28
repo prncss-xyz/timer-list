@@ -37,7 +37,8 @@
       }
     },
     "experiments": {
-      "baseUrl": "/timer-list"
+      "baseUrl": "/timer-list",
+      "typeRoutes": true
     }
   }
 }

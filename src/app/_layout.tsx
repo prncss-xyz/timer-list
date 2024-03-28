@@ -3,15 +3,14 @@ import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useSetAtom } from "jotai";
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import {
   SafeAreaProvider,
-  useSafeAreaInsets,
+  /* useSafeAreaInsets, */
 } from "react-native-safe-area-context";
 
 // @ts-ignore
-import beep from "../assets/beep.mp3";
-
+import beep from "@/../assets/beep.mp3";
 import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
 import { usePlay } from "@/hooks/sound";
 import { useInitCountDown } from "@/stores/countDown/init";
@@ -31,16 +30,16 @@ function WithFonts({ children }: { children: ReactNode }) {
 }
 
 function Container({ children }: { children: ReactNode }) {
-  const insets = useSafeAreaInsets();
+  /* const insets = useSafeAreaInsets(); */
   return (
-    <View
+    <SafeAreaView
       style={{
         height: "100%",
         alignItems: "center",
-        paddingTop: insets.top,
-        paddingRight: insets.right,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
+        /* paddingTop: insets.top, */
+        /* paddingRight: insets.right, */
+        /* paddingBottom: insets.bottom, */
+        /* paddingLeft: insets.left, */
         backgroundColor: colors.background,
       }}
     >
@@ -53,7 +52,7 @@ function Container({ children }: { children: ReactNode }) {
       >
         {children}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
