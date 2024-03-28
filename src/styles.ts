@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const sizes = {
   icon: 40,
-  timerViewWidth: 120,
+  timerViewMinWidth: 120,
   screenMaxWidth: 500,
 };
 export const spaces = {
@@ -29,14 +29,33 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     fontSize: 20,
   },
-  timerView: {
-    textAlign: "center",
+  timerViewBar: {
     padding: 5,
+    paddingLeft: 17,
     borderWidth: borderWidths.light,
     borderStyle: "solid",
-    width: sizes.timerViewWidth,
+    width: sizes.timerViewMinWidth,
     alignItems: "flex-start",
     justifyContent: "center",
+  },
+  timerViewList: {
+    padding: 5,
+    textAlign: "center",
+    borderWidth: borderWidths.light,
+    borderStyle: "solid",
+    minWidth: sizes.timerViewMinWidth,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  confirmButton: {
+    color: colors.selected,
+    borderColor: colors.selected,
+    margin: 5,
+    padding: 5,
+    borderWidth: borderWidths.light,
+    borderRadius: 3,
+    textAlign: "center",
+    textTransform: "uppercase",
   },
   dangerButton: {
     color: colors.danger,

@@ -8,13 +8,7 @@ import {
 } from "bunshi/dist/react";
 import { router, useLocalSearchParams } from "expo-router";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { HeadSeparator } from "@/components/headSeparator";
@@ -25,52 +19,42 @@ import { fromSeconds, normalizeSeconds, toSeconds } from "@/utils/seconds";
 
 const InitialTextScope = createScope({
   seconds: 0,
-  onChange: (_seconds: number) => {},
+  setSeconds: (_seconds: number) => {},
 });
 
-// we use a ref/effect to make sure value updates only when page unmounts
-// a more naive approach (update each time ScopeProvider unmounts) causes an infinite rerendering cycle
-// if an external events causes secondsAtom to update
-// this is not happening in the current state of application but felt it would impaired maintenability
+const textMolecule = molecule((_getMol, getScope) => {
+  const { seconds, setSeconds } = getScope(InitialTextScope);
+  const rawTextAtom = atom(fromSeconds(seconds));
+  const textAtom = atom(
+    (get) => get(rawTextAtom),
+    (get, set, cb: (text: string) => string) => {
+      const value = normalizeSeconds(cb(get(rawTextAtom)));
+      return set(rawTextAtom, value);
+    },
+  );
+  const update = atom(null, (get) => {
+    setSeconds(toSeconds(get(textAtom)));
+  });
+  return { textAtom, update };
+});
+
 function TextScope({ children }: { children: ReactNode }) {
   const id = String(useLocalSearchParams().id);
   const [seconds, setSeconds] = useAtom(
     useMemo(() => getIdItemSecondsAtom(id), [id]),
   );
-  const secondsRef = useRef<number | undefined>(undefined);
-  useEffect(() => {
-    return () => {
-      const { current } = secondsRef;
-      if (current === undefined) return;
-      setSeconds(current);
-    };
-  }, [secondsRef, setSeconds]);
   return (
     <ScopeProvider
       scope={InitialTextScope}
       value={{
         seconds,
-        onChange: (value: number) => (secondsRef.current = value),
+        setSeconds,
       }}
     >
       {children}
     </ScopeProvider>
   );
 }
-
-const textMolecule = molecule((_getMol, getScope) => {
-  const { seconds, onChange } = getScope(InitialTextScope);
-  const rawTextAtom = atom(fromSeconds(seconds));
-  const textAtom = atom(
-    (get) => get(rawTextAtom),
-    (get, set, cb: (text: string) => string) => {
-      const value = normalizeSeconds(cb(get(rawTextAtom)));
-      onChange(toSeconds(value));
-      return set(rawTextAtom, value);
-    },
-  );
-  return textAtom;
-});
 
 function appendText(text: string) {
   return (str: string) => str + text;
@@ -85,13 +69,18 @@ function clearText() {
 }
 
 function Count() {
-  const text = useAtomValue(useMolecule(textMolecule));
+  const text = useAtomValue(useMolecule(textMolecule).textAtom);
   return <TimerView color={colors.brand} text={text} />;
 }
 
 function Close() {
+  const update = useSetAtom(useMolecule(textMolecule).update);
+  const onPress = useCallback(() => {
+    update();
+    router.back();
+  }, [update]);
   return (
-    <Pressable onPress={router.back}>
+    <Pressable onPress={onPress}>
       <Ionicons color={colors.brand} name="close" size={sizes.icon} />
     </Pressable>
   );
@@ -141,7 +130,7 @@ function DigitButton({
 }
 
 function Digit({ text }: { text: string }) {
-  const setText = useSetAtom(useMolecule(textMolecule));
+  const setText = useSetAtom(useMolecule(textMolecule).textAtom);
   const onPress = useCallback(() => setText(appendText(text)), [setText, text]);
   return (
     <DigitButton onPress={onPress}>
@@ -151,7 +140,7 @@ function Digit({ text }: { text: string }) {
 }
 
 function Backspace() {
-  const setText = useSetAtom(useMolecule(textMolecule));
+  const setText = useSetAtom(useMolecule(textMolecule).textAtom);
   const onPress = useCallback(() => setText(backspaceText), [setText]);
   return (
     <Pressable
@@ -169,8 +158,21 @@ function Backspace() {
   );
 }
 
+function Done() {
+  const update = useSetAtom(useMolecule(textMolecule).update);
+  const onPress = useCallback(() => {
+    update();
+    router.back();
+  }, [update]);
+  return (
+    <Pressable onPress={onPress}>
+      <Text style={styles.confirmButton}>done</Text>
+    </Pressable>
+  );
+}
+
 function ClearTimer() {
-  const setText = useSetAtom(useMolecule(textMolecule));
+  const setText = useSetAtom(useMolecule(textMolecule).textAtom);
   const onPress = useCallback(() => setText(clearText), [setText]);
   return (
     <Pressable onPress={onPress}>
@@ -238,7 +240,8 @@ export default function Page() {
       >
         <Grid />
       </View>
-      <ClearTimer />
+      <Done />
+      {/* <ClearTimer /> */}
     </TextScope>
   );
 }

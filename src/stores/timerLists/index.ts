@@ -16,7 +16,17 @@ const normalize = (lists: TimerList) => {
   return lists;
 };
 
-const rawTimerListAtom = atom(normalize({ index: 0, items: [] }));
+/* const rawTimerListAtom = atom(normalize({ index: 0, items: [] })); */
+const rawTimerListAtom = atom(
+  normalize({
+    index: 0,
+    items: [
+      { seconds: 2, id: "a" },
+      { seconds: 3, id: "b" },
+      { seconds: 1, id: "c" },
+    ],
+  }),
+);
 export const timerListAtom = focusAtom(rawTimerListAtom, (o) =>
   o.rewrite(normalize),
 );

@@ -2,9 +2,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
 import React, { useCallback, memo, useMemo } from "react";
-import { Pressable, View, FlatList } from "react-native";
+import { Text, Pressable, View, FlatList } from "react-native";
 
-import { TimerView } from "@/components/timerView";
 import { useActivateAtom } from "@/hooks/activateAtom";
 import {
   removeIdAtom,
@@ -14,7 +13,7 @@ import {
   getIdItemSecondsTextAtom,
 } from "@/stores/timerLists";
 import { timerActiveAtom } from "@/stores/timers";
-import { sizes, colors } from "@/styles";
+import { sizes, colors, styles } from "@/styles";
 
 function Remove({ id, color }: { id: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
@@ -32,6 +31,15 @@ function Duplicate({ id, color }: { id: string; color: string }) {
   return (
     <Pressable onPress={duplicate}>
       <Ionicons color={color} name="add-circle-outline" size={sizes.icon} />
+    </Pressable>
+  );
+}
+
+function Edit({ id, color }: { id: string; color: string }) {
+  const [active, activate] = useActivateAtom(id, currentIdAtom);
+  return (
+    <Pressable onPress={active ? undefined : activate}>
+      <Ionicons name="pencil" size={sizes.icon} color={color} />
     </Pressable>
   );
 }
@@ -63,8 +71,22 @@ export function Count({ id, color }: { id: string; color: string }) {
   );
 }
 
-const itemGap = 5;
-const itemWidth = sizes.icon * 2 + itemGap;
+export function TimerView({ color, text }: { color: string; text: string }) {
+  return (
+    <Text
+      style={[
+        {
+          backgroundColor: color === colors.brand ? colors.background : color,
+          borderColor: color,
+        },
+        styles.timerViewList,
+        styles.baseText,
+      ]}
+    >
+      {text}
+    </Text>
+  );
+}
 
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, currentIdAtom);
@@ -80,17 +102,16 @@ const Item = memo(({ id }: { id: string }) => {
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        gap: itemGap,
+        gap: 10,
       }}
     >
-      <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
-        <Activate color={color} id={id} />
+      <Activate color={color} id={id} />
+      <View style={{ flex: 1 }}>
+        <Count id={id} color={color} />
       </View>
-      <Count id={id} color={color} />
-      <View style={{ flexDirection: "row", gap: itemGap, width: itemWidth }}>
-        <Remove id={id} color={color} />
-        <Duplicate id={id} color={color} />
-      </View>
+      <Remove id={id} color={color} />
+      <Duplicate id={id} color={color} />
+      <Edit color={color} id={id} />
     </View>
   );
 });

@@ -10,7 +10,7 @@ export function TimerView({ color, text }: { color: string; text: string }) {
           backgroundColor: color === colors.brand ? colors.background : color,
           borderColor: color,
         },
-        styles.timerView,
+        styles.timerViewBar,
         styles.baseText,
       ]}
     >
