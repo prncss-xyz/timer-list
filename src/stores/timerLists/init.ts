@@ -9,5 +9,5 @@ import { useStorageAtom } from "@/hooks/storage";
 export function useInitTimerLists(cb: () => void) {
   const effect = useMemo(() => getTimerUpdateEffect(cb), [cb]);
   useAtomValue(effect);
-  return useStorageAtom("timerLists_", timerListAtom, validateTimerListSchema);
+  return useStorageAtom("timerLists", timerListAtom, validateTimerListSchema);
 }
