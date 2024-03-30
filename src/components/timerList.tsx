@@ -36,9 +36,13 @@ function Duplicate({ id, color }: { id: string; color: string }) {
 }
 
 function Edit({ id, color }: { id: string; color: string }) {
-  const [active, activate] = useActivateAtom(id, currentIdAtom);
+  const setCurrentId = useSetAtom(currentIdAtom);
+  const onPress = useCallback(() => {
+    router.push(`/set-timer/${id}`);
+    setCurrentId(id);
+  }, [setCurrentId, id]);
   return (
-    <Pressable onPress={active ? undefined : activate}>
+    <Pressable onPress={onPress}>
       <Ionicons name="pencil" size={sizes.icon} color={color} />
     </Pressable>
   );
@@ -58,14 +62,11 @@ function Activate({ id, color }: { id: string; color: string }) {
 }
 
 export function Count({ id, color }: { id: string; color: string }) {
-  const setCurrentId = useSetAtom(currentIdAtom);
-  const onPress = useCallback(() => {
-    router.push(`/set-timer/${id}`);
-    setCurrentId(id);
-  }, [setCurrentId, id]);
+  const navigate = useSetAtom(currentIdAtom);
+  const activate = useCallback(() => navigate(id), [navigate, id]);
   const text = useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id]));
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={activate}>
       <TimerView color={color} text={text} />
     </Pressable>
   );

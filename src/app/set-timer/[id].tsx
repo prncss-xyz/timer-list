@@ -74,13 +74,8 @@ function Count() {
 }
 
 function Close() {
-  const update = useSetAtom(useMolecule(textMolecule).update);
-  const onPress = useCallback(() => {
-    update();
-    router.back();
-  }, [update]);
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={router.back}>
       <Ionicons color={colors.brand} name="close" size={sizes.icon} />
     </Pressable>
   );
