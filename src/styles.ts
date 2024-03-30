@@ -29,6 +29,10 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     fontSize: 20,
   },
+  iconPlace: {
+    width: sizes.icon,
+    height: sizes.icon,
+  },
   timerViewBar: {
     padding: 5,
     paddingLeft: 17,

@@ -11,12 +11,12 @@ import {
   timerActiveAtom,
   toggleTimerAtom,
 } from "@/stores/timers";
-import { colors, sizes } from "@/styles";
+import { colors, sizes, styles } from "@/styles";
 
 function Reset({ color }: { color: string }) {
   const reset = useSetAtom(resetTimerAtom);
   return (
-    <Pressable onPress={reset}>
+    <Pressable onPress={reset} style={styles.iconPlace}>
       <Ionicons color={color} name="play-skip-back-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -26,7 +26,7 @@ function PausePlay({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
   const active = useAtomValue(timerActiveAtom);
   return (
-    <Pressable onPress={toggle}>
+    <Pressable onPress={toggle} style={styles.iconPlace}>
       <Ionicons
         color={color}
         name={active ? "pause" : "play"}

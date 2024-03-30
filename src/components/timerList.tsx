@@ -19,7 +19,7 @@ function Remove({ id, color }: { id: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
   const remove = useCallback(() => removeItem(id), [removeItem, id]);
   return (
-    <Pressable onPress={remove}>
+    <Pressable onPress={remove} style={styles.iconPlace}>
       <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -29,7 +29,7 @@ function Duplicate({ id, color }: { id: string; color: string }) {
   const duplicateItem = useSetAtom(duplicateIdAtom);
   const duplicate = useCallback(() => duplicateItem(id), [duplicateItem, id]);
   return (
-    <Pressable onPress={duplicate}>
+    <Pressable onPress={duplicate} style={styles.iconPlace}>
       <Ionicons color={color} name="add-circle-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -42,7 +42,7 @@ function Edit({ id, color }: { id: string; color: string }) {
     setCurrentId(id);
   }, [setCurrentId, id]);
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={styles.iconPlace}>
       <Ionicons name="pencil" size={sizes.icon} color={color} />
     </Pressable>
   );
@@ -51,7 +51,7 @@ function Edit({ id, color }: { id: string; color: string }) {
 function Activate({ id, color }: { id: string; color: string }) {
   const [active, activate] = useActivateAtom(id, currentIdAtom);
   return (
-    <Pressable onPress={active ? undefined : activate}>
+    <Pressable onPress={active ? undefined : activate} style={styles.iconPlace}>
       <Ionicons
         name={active ? "radio-button-on" : "radio-button-off"}
         size={sizes.icon}

@@ -75,7 +75,7 @@ function Count() {
 
 function Close() {
   return (
-    <Pressable onPress={router.back}>
+    <Pressable onPress={router.back} style={styles.iconPlace}>
       <Ionicons color={colors.brand} name="close" size={sizes.icon} />
     </Pressable>
   );
@@ -176,47 +176,28 @@ function ClearTimer() {
   );
 }
 
-function Row({ children }: { children: ReactNode }) {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        gap: spaces.gridGap,
-      }}
-    >
-      {children}
-    </View>
-  );
-}
-
 function Grid() {
   return (
     <View
       style={{
-        flexDirection: "column",
+        flexDirection: "row",
+        flexWrap: "wrap",
         gap: spaces.gridGap,
+        maxWidth: 2 * spaces.gridGap + 3 * sizes.icon,
       }}
     >
-      <Row>
-        <Digit text="1" />
-        <Digit text="2" />
-        <Digit text="3" />
-      </Row>
-      <Row>
-        <Digit text="4" />
-        <Digit text="5" />
-        <Digit text="6" />
-      </Row>
-      <Row>
-        <Digit text="7" />
-        <Digit text="8" />
-        <Digit text="9" />
-      </Row>
-      <Row>
-        <Digit text="00" />
-        <Digit text="0" />
-        <Backspace />
-      </Row>
+      <Digit text="1" />
+      <Digit text="2" />
+      <Digit text="3" />
+      <Digit text="4" />
+      <Digit text="5" />
+      <Digit text="6" />
+      <Digit text="7" />
+      <Digit text="8" />
+      <Digit text="9" />
+      <Digit text="00" />
+      <Digit text="0" />
+      <Backspace />
     </View>
   );
 }
