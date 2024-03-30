@@ -6,8 +6,8 @@ import { validateTimerListSchema } from "./model";
 
 import { useStorageAtom } from "@/hooks/storage";
 
-export function useInitTimerLists(cb: () => void) {
+export function useInitTimerList(cb: () => void) {
   const effect = useMemo(() => getTimerUpdateEffect(cb), [cb]);
   useAtomValue(effect);
-  return useStorageAtom("timerLists", timerListAtom, validateTimerListSchema);
+  return useStorageAtom("timerList", timerListAtom, validateTimerListSchema);
 }

@@ -1,3 +1,4 @@
+// we use the plural form in filename as it will eventually manage many lisits
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
@@ -21,9 +22,9 @@ const rawTimerListAtom = atom(
   normalize({
     index: 0,
     items: [
-      { seconds: 2, id: "a" },
-      { seconds: 3, id: "b" },
-      { seconds: 1, id: "c" },
+      { seconds: 1, id: getUUID() },
+      { seconds: 2, id: getUUID() },
+      { seconds: 3, id: getUUID() },
     ],
   }),
 );

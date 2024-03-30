@@ -12,7 +12,7 @@ import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
 import { usePlay } from "@/hooks/sound";
 import { useInitCountDown } from "@/stores/countDown/init";
 import { useInitNow } from "@/stores/now/init";
-import { useInitTimerLists } from "@/stores/timerLists/init";
+import { useInitTimerList } from "@/stores/timerLists/init";
 import { resetTimerAtom } from "@/stores/timers";
 import { colors, sizes } from "@/styles";
 
@@ -46,7 +46,7 @@ function Container({ children }: { children: ReactNode }) {
 export default function Layout() {
   useInitNow();
   useInitCountDown(usePlay(require("@/../assets/beep.mp3")));
-  const ready = useInitTimerLists(useSetAtom(resetTimerAtom));
+  const ready = useInitTimerList(useSetAtom(resetTimerAtom));
   if (!ready) return null;
   return (
     <>
