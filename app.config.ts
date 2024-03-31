@@ -24,6 +24,10 @@ const config: ExpoConfig = {
       backgroundColor: "#ffffff",
     },
     package: "com.prncssxyz.timerlist",
+    blockedPermissions: [
+      "android.permission.RECORD_AUDIO",
+      "android.permission.CAMERA",
+    ],
   },
   web: {
     bundler: "metro",
