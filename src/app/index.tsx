@@ -1,15 +1,10 @@
-import { ClearList } from "@/components/clearList";
-import { HeadSeparator } from "@/components/headSeparator";
-import { TimerBar } from "@/components/timerBar";
-import { TimerList } from "@/components/timerList";
+import { useRouter, useFocusEffect } from "expo-router";
 
 export default function Page() {
-  return (
-    <>
-      <TimerBar />
-      <HeadSeparator />
-      <TimerList />
-      <ClearList />
-    </>
-  );
+  const router = useRouter();
+  useFocusEffect(() => {
+    router.replace("/list");
+  });
+
+  return null;
 }
