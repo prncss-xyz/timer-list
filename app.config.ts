@@ -31,7 +31,15 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
-    ["expo-font", { fonts: ["./assets/fonts/Inter-Regular.otf"] }],
+    [
+      "expo-font",
+      {
+        fonts: [
+          "node_modules/@expo-google-fonts/inter/Inter_400Regular.ttf",
+          "node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf",
+        ],
+      },
+    ],
   ],
   extra: {
     router: {
