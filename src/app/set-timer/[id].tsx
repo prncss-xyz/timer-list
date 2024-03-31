@@ -8,6 +8,7 @@ import {
 } from "bunshi/dist/react";
 import { router, useLocalSearchParams } from "expo-router";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { focusAtom } from "jotai-optics";
 import React, { ReactNode, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
@@ -25,17 +26,11 @@ const InitialTextScope = createScope({
 const textMolecule = molecule((_getMol, getScope) => {
   const { seconds, setSeconds } = getScope(InitialTextScope);
   const rawTextAtom = atom(fromSeconds(seconds));
-  const textAtom = atom(
-    (get) => get(rawTextAtom),
-    (get, set, cb: (text: string) => string) => {
-      const value = normalizeSeconds(cb(get(rawTextAtom)));
-      return set(rawTextAtom, value);
-    },
-  );
-  const update = atom(null, (get) => {
+  const textAtom = focusAtom(rawTextAtom, (o) => o.rewrite(normalizeSeconds));
+  const updateAtom = atom(null, (get) => {
     setSeconds(toSeconds(get(textAtom)));
   });
-  return { textAtom, update };
+  return { textAtom, updateAtom };
 });
 
 function TextScope({ children }: { children: ReactNode }) {
@@ -62,10 +57,6 @@ function appendText(text: string) {
 
 function backspaceText(str: string) {
   return str.slice(0, -1);
-}
-
-function clearText() {
-  return "";
 }
 
 function Count() {
@@ -154,7 +145,7 @@ function Backspace() {
 }
 
 function Done() {
-  const update = useSetAtom(useMolecule(textMolecule).update);
+  const update = useSetAtom(useMolecule(textMolecule).updateAtom);
   const onPress = useCallback(() => {
     update();
     router.back();
@@ -168,7 +159,7 @@ function Done() {
 
 function ClearTimer() {
   const setText = useSetAtom(useMolecule(textMolecule).textAtom);
-  const onPress = useCallback(() => setText(clearText), [setText]);
+  const onPress = useCallback(() => setText(""), [setText]);
   return (
     <Pressable onPress={onPress}>
       <Text style={styles.dangerButton}>clear</Text>

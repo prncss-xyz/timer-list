@@ -39,6 +39,7 @@ export function toSeconds(input: string) {
 }
 
 export function normalizeSeconds(input: string) {
+  console.log("nnn")
   return toString(parse(input));
 }
 
