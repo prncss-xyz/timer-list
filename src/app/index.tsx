@@ -1,5 +1,15 @@
-import { Text } from "react-native";
+import { ClearList } from "@/components/clearList";
+import { HeadSeparator } from "@/components/headSeparator";
+import { TimerBar } from "@/components/timerBar";
+import { TimerList } from "@/components/timerList";
 
 export default function Page() {
-  return <Text>Hello!</Text>;
+  return (
+    <>
+      <TimerBar />
+      <HeadSeparator />
+      <TimerList />
+      <ClearList />
+    </>
+  );
 }
