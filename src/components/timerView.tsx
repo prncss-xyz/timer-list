@@ -11,7 +11,7 @@ export function TimerView({ color, text }: { color: string; text: string }) {
           borderColor: color,
         },
         styles.timerViewBar,
-        styles.baseText,
+        styles.clockText,
       ]}
     >
       {text}

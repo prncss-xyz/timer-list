@@ -35,7 +35,7 @@ const config: ExpoConfig = {
       "expo-font",
       {
         fonts: [
-          "node_modules/@expo-google-fonts/inter/Inter_400Regular.ttf",
+          "node_modules/@expo-google-fonts/inter/Inter_600SemiBold.ttf",
           "node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf",
         ],
       },

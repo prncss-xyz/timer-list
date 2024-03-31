@@ -6,8 +6,7 @@ export function HeadSeparator() {
   return (
     <View
       style={{
-        marginTop: spaces[15],
-        marginBottom: spaces[5],
+        marginTop: spaces[40],
         borderColor: colors.brand,
         borderBottomWidth: borderWidths.light,
         borderStyle: "solid",

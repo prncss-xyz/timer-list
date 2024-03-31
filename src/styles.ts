@@ -2,12 +2,13 @@ import { StyleSheet } from "react-native";
 
 export const sizes = {
   icon: 40,
-  timerViewMinWidth: 120,
+  timerViewMinWidth: 140,
   screenMaxWidth: 500,
 };
 export const spaces = {
   5: 5,
   15: 15,
+  40: 40,
   gridGap: 20,
 };
 export const borderWidths = {
@@ -21,13 +22,19 @@ export const colors = {
   danger: "#FFC53D",
   selected: "#3DD68C",
   background: "#fff",
-  /* background: "yellow", */
 };
 
 export const styles = StyleSheet.create({
-  baseText: {
-    fontFamily: "Inter_400Regular",
+  clockText: {
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600",
+    fontSize: 24,
+  },
+  digitText: {
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600",
     fontSize: 20,
+    color: colors.brand,
   },
   iconPlace: {
     width: sizes.icon,
@@ -35,7 +42,7 @@ export const styles = StyleSheet.create({
   },
   timerViewBar: {
     padding: 5,
-    paddingLeft: 17,
+    paddingLeft: 21,
     borderWidth: borderWidths.light,
     borderStyle: "solid",
     width: sizes.timerViewMinWidth,
@@ -44,14 +51,13 @@ export const styles = StyleSheet.create({
   },
   timerViewList: {
     padding: 5,
-    textAlign: "center",
-    borderWidth: borderWidths.light,
-    borderStyle: "solid",
     minWidth: sizes.timerViewMinWidth,
     alignItems: "flex-start",
     justifyContent: "center",
   },
   confirmButton: {
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600",
     color: colors.selected,
     borderColor: colors.selected,
     margin: 5,
@@ -62,6 +68,8 @@ export const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   dangerButton: {
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600",
     color: colors.danger,
     borderColor: colors.danger,
     margin: 5,

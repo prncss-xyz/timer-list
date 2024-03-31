@@ -48,19 +48,6 @@ function Edit({ id, color }: { id: string; color: string }) {
   );
 }
 
-function Activate({ id, color }: { id: string; color: string }) {
-  const [active, activate] = useActivateAtom(id, currentIdAtom);
-  return (
-    <Pressable onPress={active ? undefined : activate} style={styles.iconPlace}>
-      <Ionicons
-        name={active ? "radio-button-on" : "radio-button-off"}
-        size={sizes.icon}
-        color={color}
-      />
-    </Pressable>
-  );
-}
-
 export function Count({ id, color }: { id: string; color: string }) {
   const navigate = useSetAtom(currentIdAtom);
   const activate = useCallback(() => navigate(id), [navigate, id]);
@@ -74,18 +61,21 @@ export function Count({ id, color }: { id: string; color: string }) {
 
 export function TimerView({ color, text }: { color: string; text: string }) {
   return (
-    <Text
-      style={[
-        {
-          backgroundColor: color === colors.brand ? colors.background : color,
-          borderColor: color,
-        },
-        styles.timerViewList,
-        styles.baseText,
-      ]}
-    >
+    <Text style={[{ color }, styles.timerViewList, styles.clockText]}>
       {text}
     </Text>
+  );
+}
+
+function Separtor() {
+  return (
+    <View
+      style={{
+        width: "100%",
+        borderColor: colors.brand,
+        borderWidth: 0.5,
+      }}
+    />
   );
 }
 
@@ -100,13 +90,13 @@ const Item = memo(({ id }: { id: string }) => {
   return (
     <View
       style={{
+        padding: 10,
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        gap: 10,
+        gap: 15,
       }}
     >
-      <Activate color={color} id={id} />
       <View style={{ flex: 1 }}>
         <Count id={id} color={color} />
       </View>
@@ -121,7 +111,8 @@ export function TimerList() {
   const items = useAtomValue(itemsAtom);
   return (
     <FlatList
-      contentContainerStyle={{ gap: 5 }}
+      contentContainerStyle={{}}
+      ItemSeparatorComponent={() => <Separtor />}
       data={items}
       renderItem={({ item: { id } }) => <Item id={id} />}
       keyExtractor={({ id }) => id}

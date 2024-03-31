@@ -23,9 +23,9 @@ function Container({ children }: { children: ReactNode }) {
       style={{
         height: "100%",
         alignItems: "center",
-        paddingTop: insets.top,
+        paddingTop: insets.top + 10,
         paddingRight: insets.right,
-        paddingBottom: insets.bottom,
+        paddingBottom: insets.bottom + 10,
         paddingLeft: insets.left,
         backgroundColor: colors.background,
       }}

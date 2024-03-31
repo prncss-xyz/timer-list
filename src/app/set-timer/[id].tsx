@@ -120,7 +120,7 @@ function Digit({ text }: { text: string }) {
   const onPress = useCallback(() => setText(appendText(text)), [setText, text]);
   return (
     <DigitButton onPress={onPress}>
-      <Text style={styles.baseText}>{text}</Text>
+      <Text style={styles.digitText}>{text}</Text>
     </DigitButton>
   );
 }

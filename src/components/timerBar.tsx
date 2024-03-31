@@ -54,7 +54,7 @@ export function TimerBar() {
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "flex-end",
+        alignItems: "center",
       }}
     >
       <PausePlay color={color} />
