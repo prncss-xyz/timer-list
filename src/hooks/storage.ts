@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { PrimitiveAtom, atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { PrimitiveAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomEffect } from "jotai-effect";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { getDebouncer } from "@/utils/debouncer";
 
@@ -18,8 +18,6 @@ function saveData(key: string, value: unknown) {
   AsyncStorage.setItem(key, jsonValue);
 }
 
-const resolvedAtom = atom(false);
-
 export function useStorageAtom<T>(
   key: string,
   dataAtom: PrimitiveAtom<T>,
@@ -30,16 +28,16 @@ export function useStorageAtom<T>(
     [key],
   );
   const setData = useSetAtom(dataAtom);
-  const [resolved, setResolved] = useAtom(resolvedAtom);
+  const [resolved, setResolved] = useState(false);
   const first = useRef(true);
   // we will return this as a promise starting with reat 19
   useEffect(() => {
     loadData(key).then((data) => {
+      setResolved(true);
       if (data === undefined) return;
       const validated = validate(data);
       if (validated === undefined) return;
       setData(validated);
-      setResolved(true);
     });
   }, [key, validate, setData]);
   const effect = useMemo(

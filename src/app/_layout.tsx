@@ -46,8 +46,8 @@ function Container({ children }: { children: ReactNode }) {
 export default function Layout() {
   useInitNow();
   useInitCountDown(usePlay(require("@/../assets/beep.mp3")));
-  /* const ready = useInitTimerList(useSetAtom(resetTimerAtom)); */
-  /* if (!ready) return null; */
+  const ready = useInitTimerList(useSetAtom(resetTimerAtom));
+  if (!ready) return null;
   return (
     <>
       <KeepAliveWhenTimerActive />
