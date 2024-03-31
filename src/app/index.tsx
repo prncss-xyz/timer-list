@@ -1,4 +1,5 @@
 import { useRouter, useFocusEffect } from "expo-router";
+import { Text } from "react-native";
 
 export default function Page() {
   const router = useRouter();
@@ -6,5 +7,5 @@ export default function Page() {
     router.replace("/list");
   });
 
-  return null;
+  return <Text>redirectiong...</Text>;
 }
