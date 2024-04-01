@@ -13,7 +13,7 @@ import {
   getIdItemSecondsTextAtom,
 } from "@/stores/timerLists";
 import { timerActiveAtom } from "@/stores/timers";
-import { sizes, colors, styles } from "@/styles";
+import { sizes, colors, styles, borderWidths, spaces } from "@/styles";
 
 function Remove({ id, color }: { id: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
@@ -61,7 +61,14 @@ export function Count({ id, color }: { id: string; color: string }) {
 
 export function TimerView({ color, text }: { color: string; text: string }) {
   return (
-    <Text style={[{ color }, styles.timerViewList, styles.clockText]}>
+    <Text
+      style={[
+        { color },
+        styles.timerViewList,
+        styles.mono500,
+        styles.clockText,
+      ]}
+    >
       {text}
     </Text>
   );
@@ -73,7 +80,8 @@ function Separtor() {
       style={{
         width: "100%",
         borderColor: colors.brand,
-        borderWidth: 0.5,
+        borderWidth: 0,
+        borderBottomWidth: borderWidths.light,
       }}
     />
   );
@@ -90,18 +98,18 @@ const Item = memo(({ id }: { id: string }) => {
   return (
     <View
       style={{
-        padding: 10,
+        padding: spaces[10],
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        gap: 15,
+        gap: spaces[15],
       }}
     >
       <View style={{ flex: 1 }}>
         <Count id={id} color={color} />
       </View>
-      <Remove id={id} color={color} />
       <Duplicate id={id} color={color} />
+      <Remove id={id} color={color} />
       <Edit color={color} id={id} />
     </View>
   );

@@ -15,7 +15,14 @@ import { Pressable, Text, View } from "react-native";
 import { HeadSeparator } from "@/components/headSeparator";
 import { TimerView } from "@/components/timerView";
 import { getIdItemSecondsAtom } from "@/stores/timerLists";
-import { borderWidths, colors, sizes, spaces, styles } from "@/styles";
+import {
+  borderWidths,
+  colors,
+  fontSizes,
+  sizes,
+  spaces,
+  styles,
+} from "@/styles";
 import { fromSeconds, normalizeSeconds, toSeconds } from "@/utils/seconds";
 
 const InitialTextScope = createScope({
@@ -59,7 +66,7 @@ function backspaceText(str: string) {
   return str.slice(0, -1);
 }
 
-function Count() {
+function Timer() {
   const text = useAtomValue(useMolecule(textMolecule).textAtom);
   return <TimerView color={colors.brand} text={text} />;
 }
@@ -83,7 +90,7 @@ function ListBar() {
       }}
     >
       <View style={{ width: sizes.icon }} />
-      <Count />
+      <Timer />
       <Close />
     </View>
   );
@@ -100,8 +107,8 @@ function DigitButton({
     <Pressable
       onPress={onPress}
       style={{
-        width: sizes.icon,
-        height: sizes.icon,
+        width: sizes.digit,
+        height: sizes.digit,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -120,7 +127,14 @@ function Digit({ text }: { text: string }) {
   const onPress = useCallback(() => setText(appendText(text)), [setText, text]);
   return (
     <DigitButton onPress={onPress}>
-      <Text style={styles.digitText}>{text}</Text>
+      <Text
+        style={[
+          styles.mono500,
+          { fontSize: fontSizes[20], color: colors.brand },
+        ]}
+      >
+        {text}
+      </Text>
     </DigitButton>
   );
 }
@@ -132,14 +146,14 @@ function Backspace() {
     <Pressable
       onPress={onPress}
       style={{
-        width: sizes.icon,
-        height: sizes.icon,
+        width: sizes.digit,
+        height: sizes.digit,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Ionicons color={colors.brand} name="backspace" size={sizes.icon} />
+      <Ionicons color={colors.brand} name="backspace" size={sizes.digit} />
     </Pressable>
   );
 }
@@ -152,7 +166,14 @@ function Done() {
   }, [update]);
   return (
     <Pressable onPress={onPress}>
-      <Text style={styles.confirmButton}>done</Text>
+      <Text
+        style={[
+          styles.button,
+          { color: colors.selected, borderColor: colors.selected },
+        ]}
+      >
+        done
+      </Text>
     </Pressable>
   );
 }
@@ -162,19 +183,20 @@ function ClearTimer() {
   const onPress = useCallback(() => setText(""), [setText]);
   return (
     <Pressable onPress={onPress}>
-      <Text style={styles.dangerButton}>clear</Text>
+      <Text style={styles.button}>clear</Text>
     </Pressable>
   );
 }
 
 function Grid() {
+  const gap = spaces[15];
   return (
     <View
       style={{
         flexDirection: "row",
         flexWrap: "wrap",
-        gap: spaces.gridGap,
-        maxWidth: 2 * spaces.gridGap + 3 * sizes.icon,
+        gap,
+        maxWidth: 2 * gap + 3 * sizes.digit,
       }}
     >
       <Digit text="1" />

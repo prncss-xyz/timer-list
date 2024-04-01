@@ -9,8 +9,10 @@ export function TimerView({ color, text }: { color: string; text: string }) {
         {
           backgroundColor: color === colors.brand ? colors.background : color,
           borderColor: color,
+          color: colors.text,
         },
         styles.timerViewBar,
+        styles.mono500,
         styles.clockText,
       ]}
     >

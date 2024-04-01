@@ -9,12 +9,14 @@ import {
 } from "react-native-safe-area-context";
 
 import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
+import { useInter } from "@/fonts/inter";
+import { useRobotoMono } from "@/fonts/roboto-mono";
 import { usePlay } from "@/hooks/sound";
 import { useInitCountDown } from "@/stores/countDown/init";
 import { useInitNow } from "@/stores/now/init";
 import { useInitTimerList } from "@/stores/timerLists/init";
 import { resetTimerAtom } from "@/stores/timers";
-import { colors, sizes } from "@/styles";
+import { colors, sizes, spaces } from "@/styles";
 
 function Container({ children }: { children: ReactNode }) {
   const insets = useSafeAreaInsets();
@@ -23,9 +25,9 @@ function Container({ children }: { children: ReactNode }) {
       style={{
         height: "100%",
         alignItems: "center",
-        paddingTop: insets.top + 10,
+        paddingTop: insets.top + spaces[10],
         paddingRight: insets.right,
-        paddingBottom: insets.bottom + 10,
+        paddingBottom: insets.bottom + spaces[10],
         paddingLeft: insets.left,
         backgroundColor: colors.background,
       }}
@@ -46,8 +48,10 @@ function Container({ children }: { children: ReactNode }) {
 export default function Layout() {
   useInitNow();
   useInitCountDown(usePlay(require("@/../assets/beep.mp3")));
-  const ready = useInitTimerList(useSetAtom(resetTimerAtom));
-  if (!ready) return null;
+  const timerReady = useInitTimerList(useSetAtom(resetTimerAtom));
+  const interReady = useInter();
+  const robotoMonoReady = useRobotoMono();
+  if (!timerReady || !interReady || !robotoMonoReady) return null;
   return (
     <>
       <KeepAliveWhenTimerActive />

@@ -33,18 +33,7 @@ const config: ExpoConfig = {
     bundler: "metro",
     favicon: "./assets/favicon.png",
   },
-  plugins: [
-    "expo-router",
-    [
-      "expo-font",
-      {
-        fonts: [
-          "node_modules/@expo-google-fonts/inter/Inter_600SemiBold.ttf",
-          "node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf",
-        ],
-      },
-    ],
-  ],
+  plugins: ["expo-router"],
   extra: {
     router: {
       origin: false,
