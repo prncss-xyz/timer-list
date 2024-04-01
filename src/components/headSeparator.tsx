@@ -1,12 +1,12 @@
 import { View } from "react-native";
 
-import { borderWidths, colors, spaces } from "@/styles";
+import { borderWidths, colors, sizes } from "@/styles";
 
 export function HeadSeparator() {
   return (
     <View
       style={{
-        marginTop: spaces[40],
+        height: sizes.headSeparator,
         borderColor: colors.brand,
         borderBottomWidth: borderWidths.light,
         borderStyle: "solid",

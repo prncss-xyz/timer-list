@@ -1,8 +1,9 @@
 import { Platform, StyleSheet } from "react-native";
 
 export const sizes = {
-  digit: 50,
+  headSeparator: 35,
   icon: 35,
+  digit: 50,
   screenMaxWidth: 500,
 };
 
@@ -25,11 +26,11 @@ export const borderWidths = {
 // https://www.radix-ui.com/colors
 export const colors = {
   text: "black",
+  background: "#fff",
   playing: "#FF92AD",
   brand: "#0090FF",
   danger: "#FFC53D",
   selected: "#3DD68C",
-  background: "#fff",
 };
 
 export const styles = StyleSheet.create({
