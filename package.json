@@ -24,6 +24,9 @@
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
       "!**/__tests__/**"
+    ],
+    "testPathIgnorePatterns": [
+      "tests/"
     ]
   },
   "dependencies": {

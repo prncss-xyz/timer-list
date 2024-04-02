@@ -837,6 +837,7 @@ exports[`set-timer should rendrer properly 1`] = `
     </View>
   </View>,
   <View
+    accessibilityLabel="done"
     accessibilityState={
       {
         "busy": undefined,
