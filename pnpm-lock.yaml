@@ -17,9 +17,6 @@ dependencies:
   '@react-native-async-storage/async-storage':
     specifier: '1.21'
     version: 1.21.0(react-native@0.73.6)
-  bunshi:
-    specifier: ^2.1.4
-    version: 2.1.4(react@18.2.0)
   expo:
     specifier: ~50.0.14
     version: 50.0.14(@babel/core@7.24.3)(@react-native/babel-preset@0.73.21)
@@ -3754,21 +3751,6 @@ packages:
 
   /builtins@1.0.3:
     resolution: {integrity: sha512-uYBjakWipfaO/bXI7E8rq6kpwHRZK5cNYrUv2OzZSI/FvmdMyXJ2tG9dKcjEC5YHmHpUAwsargWIZNWdxb/bnQ==}
-    dev: false
-
-  /bunshi@2.1.4(react@18.2.0):
-    resolution: {integrity: sha512-8kHpSsfFQu3Dj6nuVP5qr6wwqeXHbdu/hqrT1hdv6N4KcIQ0amHJYR0iSgjYhxazS6NlQb6JacP1/A7EJ+ZRAg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-      vue: '>=3'
-    peerDependenciesMeta:
-      react:
-        optional: true
-      vue:
-        optional: true
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /bytes@3.0.0:

@@ -19,7 +19,11 @@ function Remove({ id, color }: { id: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
   const remove = useCallback(() => removeItem(id), [removeItem, id]);
   return (
-    <Pressable onPress={remove} style={styles.iconPlace}>
+    <Pressable
+      accessibilityLabel="remove"
+      onPress={remove}
+      style={styles.iconPlace}
+    >
       <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -29,7 +33,11 @@ function Duplicate({ id, color }: { id: string; color: string }) {
   const duplicateItem = useSetAtom(duplicateIdAtom);
   const duplicate = useCallback(() => duplicateItem(id), [duplicateItem, id]);
   return (
-    <Pressable onPress={duplicate} style={styles.iconPlace}>
+    <Pressable
+      accessibilityLabel="duplicate"
+      onPress={duplicate}
+      style={styles.iconPlace}
+    >
       <Ionicons color={color} name="add-circle-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -42,18 +50,22 @@ function Edit({ id, color }: { id: string; color: string }) {
     setCurrentId(id);
   }, [setCurrentId, id]);
   return (
-    <Pressable onPress={onPress} style={styles.iconPlace}>
+    <Pressable
+      accessibilityLabel="edit"
+      onPress={onPress}
+      style={styles.iconPlace}
+    >
       <Ionicons name="pencil" size={sizes.icon} color={color} />
     </Pressable>
   );
 }
 
-export function Count({ id, color }: { id: string; color: string }) {
+export function Duration({ id, color }: { id: string; color: string }) {
   const navigate = useSetAtom(currentIdAtom);
   const activate = useCallback(() => navigate(id), [navigate, id]);
   const text = useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id]));
   return (
-    <Pressable onPress={activate}>
+    <Pressable accessibilityLabel="duration" onPress={activate}>
       <TimerView color={color} text={text} />
     </Pressable>
   );
@@ -97,6 +109,7 @@ const Item = memo(({ id }: { id: string }) => {
     : colors.brand;
   return (
     <View
+      accessibilityLabel={active ? "selected" : undefined}
       style={{
         padding: spaces[10],
         alignItems: "center",
@@ -106,7 +119,7 @@ const Item = memo(({ id }: { id: string }) => {
       }}
     >
       <View style={{ flex: 1 }}>
-        <Count id={id} color={color} />
+        <Duration id={id} color={color} />
       </View>
       <Duplicate id={id} color={color} />
       <Remove id={id} color={color} />
