@@ -1,5 +1,4 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { atom } from "jotai";
 import { useAtomValue, useSetAtom } from "jotai/react";
 import React from "react";
 import { Pressable, View } from "react-native";

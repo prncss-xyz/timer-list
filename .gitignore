@@ -42,3 +42,7 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

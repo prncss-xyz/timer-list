@@ -133,7 +133,7 @@ function Done({ setText }: { setText: (text: string) => void }) {
     router.back();
   }, [update]);
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} accessibilityLabel="done">
       <Text
         style={[
           styles.button,

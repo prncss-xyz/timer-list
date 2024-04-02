@@ -1,6 +1,4 @@
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-#
+name: Deploy Pages
 on:
   push:
     branches:
@@ -24,8 +22,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/build
       - name: Perpare
         run: pnpm run build:web

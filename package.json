@@ -9,6 +9,7 @@
     "test:coverage": "jest --coverage=true",
     "test:debug": "jest -o --watch --coverage=false",
     "test:updateSnapshots": "jest -u --coverage=false",
+    "test:e2e": "playwright test",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -58,8 +59,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
+    "@playwright/test": "^1.42.1",
     "@testing-library/react-native": "^12.4.5",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.2",
     "@types/react": "~18.2.67",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^12.0.0",
