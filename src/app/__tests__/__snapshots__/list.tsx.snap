@@ -200,7 +200,7 @@ exports[`list page should render properly 1`] = `
         style={null}
       >
         <View
-          accessibilityLabel="selected"
+          accessibilityLabel="current"
           style={
             {
               "alignItems": "center",

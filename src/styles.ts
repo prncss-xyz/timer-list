@@ -30,7 +30,7 @@ export const colors = {
   playing: "#FF92AD",
   brand: "#0090FF",
   danger: "#FFC53D",
-  selected: "#3DD68C",
+  current: "#3DD68C",
 };
 
 export const styles = StyleSheet.create({

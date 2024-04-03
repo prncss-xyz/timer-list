@@ -56,7 +56,7 @@ function Countdown({ color }: { color: string }) {
 
 export function TimerBar() {
   const active = useAtomValue(timerActiveAtom);
-  const color = active ? colors.playing : colors.selected;
+  const color = active ? colors.playing : colors.current;
   return (
     <View
       style={{

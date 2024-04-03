@@ -137,7 +137,7 @@ function Done({ setText }: { setText: (text: string) => void }) {
       <Text
         style={[
           styles.button,
-          { color: colors.selected, borderColor: colors.selected },
+          { color: colors.current, borderColor: colors.current },
         ]}
       >
         done

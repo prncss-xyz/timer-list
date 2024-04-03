@@ -24,15 +24,15 @@ function getStore() {
 describe("timerList", () => {
   describe("index", () => {
     describe("removeIdAtom", () => {
-      describe("it should preserve selected atom id", () => {
-        test("when deletion occurs before selected", () => {
+      describe("it should preserve current atom id", () => {
+        test("when deletion occurs before current", () => {
           const store = getStore();
           const before = store.get(currentIdAtom);
           store.set(removeIdAtom, "a");
           const after = store.get(currentIdAtom);
           expect(after).toBe(before);
         });
-        test("when deletion occurs after selected", () => {
+        test("when deletion occurs after current", () => {
           const store = getStore();
           const before = store.get(currentIdAtom);
           store.set(removeIdAtom, "c");
@@ -40,7 +40,7 @@ describe("timerList", () => {
           expect(after).toBe(before);
         });
       });
-      describe("when selected is deleted", () => {
+      describe("when current is deleted", () => {
         it("should keep last position if last element is deleted", () => {
           const store = getStore();
           store.set(currentIndexAtom, 2);
@@ -48,7 +48,7 @@ describe("timerList", () => {
           const after = store.get(currentIndexAtom);
           expect(after).toBe(1);
         });
-        it("should keep same selected index otherwise", () => {
+        it("should keep same current index otherwise", () => {
           const store = getStore();
           store.set(removeIdAtom, "b");
           const after = store.get(currentIndexAtom);
@@ -57,21 +57,21 @@ describe("timerList", () => {
       });
     });
     describe("duplicateIdAtom", () => {
-      describe("it should select newly created element when creation occurs on selected", () => {
+      describe("it should select newly created element when creation occurs on current", () => {
         const store = getStore();
         store.set(duplicateIdAtom, "b");
         const after = store.get(currentIndexAtom);
         expect(after).toBe(2);
       });
-      describe("it should preserve selected atom id", () => {
-        test("when deletion occurs before selected", () => {
+      describe("it should preserve current atom id", () => {
+        test("when deletion occurs before current", () => {
           const store = getStore();
           const before = store.get(currentIdAtom);
           store.set(duplicateIdAtom, "a");
           const after = store.get(currentIdAtom);
           expect(after).toBe(before);
         });
-        test("when deletion occurs after selected", () => {
+        test("when deletion occurs after current", () => {
           const store = getStore();
           const before = store.get(currentIdAtom);
           store.set(duplicateIdAtom, "c");

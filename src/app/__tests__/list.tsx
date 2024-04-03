@@ -159,7 +159,7 @@ describe("list page", () => {
     );
     fireEvent.press(screen.getAllByLabelText("duration")[2]);
     within(
-      within(screen.getByLabelText("selected")).getByLabelText("duration"),
+      within(screen.getByLabelText("current")).getByLabelText("duration"),
     ).getByText("00:00:03");
     fireEvent.press(screen.getAllByLabelText("duration")[1]);
     // waiting for effect to happen
@@ -228,7 +228,7 @@ describe("list page", () => {
     );
     fireEvent.press(screen.getAllByLabelText("edit")[1]);
     within(
-      within(screen.getByLabelText("selected")).getByLabelText("duration"),
+      within(screen.getByLabelText("current")).getByLabelText("duration"),
     ).getByText("00:00:02");
     expect(router.push).toHaveBeenCalledWith("/set-timer/b");
   });

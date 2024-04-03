@@ -105,11 +105,11 @@ const Item = memo(({ id }: { id: string }) => {
   const color = active
     ? playing
       ? colors.playing
-      : colors.selected
+      : colors.current
     : colors.brand;
   return (
     <View
-      accessibilityLabel={active ? "selected" : undefined}
+      accessibilityLabel={active ? "current" : undefined}
       style={{
         padding: spaces[10],
         alignItems: "center",
