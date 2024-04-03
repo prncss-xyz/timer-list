@@ -7,7 +7,7 @@ import { colors, styles } from "@/styles";
 export function ClearList() {
   const clear = useSetAtom(clearItemsAtom);
   return (
-    <Pressable onPress={clear}>
+    <Pressable accessibilityLabel="clear all" onPress={clear}>
       <Text
         style={[
           styles.button,
