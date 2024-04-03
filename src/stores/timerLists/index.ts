@@ -3,19 +3,11 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
 
-import { Item, TimerList, getNullTimerList } from "./model";
+import { Item, normalize } from "./model";
 
 import { definedAtom } from "@/utils/definedAtom";
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getUUID } from "@/utils/uuid";
-
-const normalize = (lists: TimerList) => {
-  const { index, items } = lists;
-  if (index > items.length - 1) lists = { ...lists, index: items.length - 1 };
-  if (index < 0) lists = { ...lists, index: 0 };
-  if (items.length === 0) lists = getNullTimerList();
-  return lists;
-};
 
 /* const rawTimerListAtom = atom(normalize({ index: 0, items: [] })); */
 const rawTimerListAtom = atom(

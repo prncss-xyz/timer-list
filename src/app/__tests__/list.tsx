@@ -5,11 +5,14 @@ import {
   screen,
   within,
 } from "@testing-library/react-native";
-import { createStore, Provider } from "jotai";
+import { createStore, Provider, useSetAtom } from "jotai";
+import { ReactNode } from "react";
 
 import Page from "@/app/list";
 import { nowAtom } from "@/stores/now";
 import { timerListAtom } from "@/stores/timerLists";
+import { useInitTimerList } from "@/stores/timerLists/init";
+import { useInitCountDown } from "@/stores/countDown/init";
 
 describe("list page", () => {
   it("should render properly", () => {
@@ -28,7 +31,7 @@ describe("list page", () => {
     );
     expect(tree).toMatchSnapshot();
   });
-  it("should decrease count when playing", () => {
+  it("should decrease count when playing, and keep count when not playing (plause-play button)", () => {
     const store = createStore();
     store.set(timerListAtom, {
       index: 0,
@@ -59,6 +62,59 @@ describe("list page", () => {
       store.set(nowAtom, (now) => now + 1000);
     });
   });
+  it("should decrease count when playing, and keep count when not playing (countdown button)", () => {
+    const store = createStore();
+    store.set(timerListAtom, {
+      index: 0,
+      items: [
+        { seconds: 2, id: "a" },
+        { seconds: 3, id: "b" },
+      ],
+    });
+    render(
+      <Provider store={store}>
+        <Page />
+      </Provider>,
+    );
+    // start playing
+    fireEvent.press(screen.getByLabelText("countdown"));
+    act(() => {
+      store.set(nowAtom, (now) => now + 1000);
+    });
+    within(screen.getByLabelText("countdown")).getByText("00:00:01");
+    // stop playing
+    fireEvent.press(screen.getByLabelText("countdown"));
+    act(() => {
+      store.set(nowAtom, (now) => now + 1000);
+    });
+    within(screen.getByLabelText("countdown")).getByText("00:00:01");
+    fireEvent.press(screen.getByLabelText("countdown"));
+    act(() => {
+      store.set(nowAtom, (now) => now + 1000);
+    });
+  });
+  it("should reset timer", () => {
+    const store = createStore();
+    store.set(timerListAtom, {
+      index: 0,
+      items: [
+        { seconds: 2, id: "a" },
+        { seconds: 3, id: "b" },
+      ],
+    });
+    render(
+      <Provider store={store}>
+        <Page />
+      </Provider>,
+    );
+    // start playing
+    fireEvent.press(screen.getByLabelText("play"));
+    act(() => {
+      store.set(nowAtom, (now) => now + 1000);
+    });
+    fireEvent.press(screen.getByLabelText("reset"));
+    within(screen.getByLabelText("countdown")).getByText("00:00:02");
+  });
   it("should clear list", () => {
     const store = createStore();
     store.set(timerListAtom, {
@@ -74,12 +130,41 @@ describe("list page", () => {
         <Page />
       </Provider>,
     );
-    act(() => {
-      fireEvent.press(screen.getByText("clear all"));
-    });
+    fireEvent.press(screen.getByText("clear all"));
     const res = screen.getAllByLabelText("duration");
     expect(res.length).toBe(1);
     expect(within(res[0]).getByText("00:00:00"));
+  });
+  it("select timer by clicking, and fire on change", async () => {
+    const cb = jest.fn();
+    function Context({ children }: { children: ReactNode }) {
+      useInitTimerList(cb);
+      return children;
+    }
+    const store = createStore();
+    store.set(timerListAtom, {
+      index: 0,
+      items: [
+        { seconds: 1, id: "a" },
+        { seconds: 2, id: "b" },
+        { seconds: 3, id: "c" },
+      ],
+    });
+    render(
+      <Provider store={store}>
+        <Context>
+          <Page />
+        </Context>
+      </Provider>,
+    );
+    fireEvent.press(screen.getAllByLabelText("duration")[2]);
+    within(
+      within(screen.getByLabelText("selected")).getByLabelText("duration"),
+    ).getByText("00:00:03");
+    fireEvent.press(screen.getAllByLabelText("duration")[1]);
+    // waiting for effect to happen
+    await new Promise((resolve) => resolve(true));
+    expect(cb.mock.calls).toHaveLength(1);
   });
   it("should duplicate an item", () => {
     const store = createStore();
@@ -96,9 +181,7 @@ describe("list page", () => {
         <Page />
       </Provider>,
     );
-    act(() => {
-      fireEvent.press(screen.getAllByLabelText("duplicate")[0]);
-    });
+    fireEvent.press(screen.getAllByLabelText("duplicate")[0]);
     const res = screen.getAllByLabelText("duration");
     expect(res.length).toBe(4);
     expect(within(res[0]).getByText("00:00:01"));
@@ -121,9 +204,7 @@ describe("list page", () => {
         <Page />
       </Provider>,
     );
-    act(() => {
-      fireEvent.press(screen.getAllByLabelText("remove")[0]);
-    });
+    fireEvent.press(screen.getAllByLabelText("remove")[0]);
     const res = screen.getAllByLabelText("duration");
     expect(res.length).toBe(2);
     expect(within(res[0]).getByText("00:00:02"));

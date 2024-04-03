@@ -1,13 +1,9 @@
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { getTimerUpdateEffect, timerListAtom } from ".";
-import { validateTimerListSchema } from "./model";
-
-import { useStorageAtom } from "@/hooks/storage";
+import { getTimerUpdateEffect } from ".";
 
 export function useInitTimerList(cb: () => void) {
   const effect = useMemo(() => getTimerUpdateEffect(cb), [cb]);
   useAtomValue(effect);
-  return useStorageAtom("timerLists", timerListAtom, validateTimerListSchema);
 }
