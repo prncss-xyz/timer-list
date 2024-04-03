@@ -5,14 +5,18 @@ import {
   screen,
   within,
 } from "@testing-library/react-native";
-import { createStore, Provider, useSetAtom } from "jotai";
+import { router } from "expo-router";
+import { createStore, Provider } from "jotai";
 import { ReactNode } from "react";
 
 import Page from "@/app/list";
 import { nowAtom } from "@/stores/now";
 import { timerListAtom } from "@/stores/timerLists";
 import { useInitTimerList } from "@/stores/timerLists/init";
-import { useInitCountDown } from "@/stores/countDown/init";
+
+jest.mock("expo-router", () => ({
+  router: { push: jest.fn() },
+}));
 
 describe("list page", () => {
   it("should render properly", () => {
@@ -88,10 +92,6 @@ describe("list page", () => {
       store.set(nowAtom, (now) => now + 1000);
     });
     within(screen.getByLabelText("countdown")).getByText("00:00:01");
-    fireEvent.press(screen.getByLabelText("countdown"));
-    act(() => {
-      store.set(nowAtom, (now) => now + 1000);
-    });
   });
   it("should reset timer", () => {
     const store = createStore();
@@ -209,5 +209,27 @@ describe("list page", () => {
     expect(res.length).toBe(2);
     expect(within(res[0]).getByText("00:00:02"));
     expect(within(res[1]).getByText("00:00:03"));
+  });
+  it("should select item and go to set-timer page", () => {
+    jest.resetAllMocks();
+    const store = createStore();
+    store.set(timerListAtom, {
+      index: 0,
+      items: [
+        { seconds: 1, id: "a" },
+        { seconds: 2, id: "b" },
+        { seconds: 3, id: "c" },
+      ],
+    });
+    render(
+      <Provider store={store}>
+        <Page />
+      </Provider>,
+    );
+    fireEvent.press(screen.getAllByLabelText("edit")[1]);
+    within(
+      within(screen.getByLabelText("selected")).getByLabelText("duration"),
+    ).getByText("00:00:02");
+    expect(router.push).toHaveBeenCalledWith("/set-timer/b");
   });
 });
