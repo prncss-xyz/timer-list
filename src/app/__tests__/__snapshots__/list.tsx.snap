@@ -612,6 +612,7 @@ exports[`list page should render properly 1`] = `
     </View>
   </RCTScrollView>,
   <View
+    accessibilityLabel="clear all"
     accessibilityState={
       {
         "busy": undefined,
