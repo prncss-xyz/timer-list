@@ -13,10 +13,22 @@ test("can edit timer and accept change, which persists reloading", async ({
   await expect(page.getByLabel("selected").getByLabel("duration")).toHaveText(
     "00:00:01",
   );
+});
+
+test("save timerList state", async ({ page }) => {
+  await page.goto("localhost:8081");
+  await page.getByLabel("clear all").click();
+  await page.getByLabel("edit").click();
+  await page.getByLabel("digit 2").click();
+  await page.getByLabel("done").click();
+  await expect(page.getByLabel("selected").getByLabel("duration")).toHaveText(
+    "00:00:02",
+  );
+  // saving of the state is debounced, so we have to wait for it
   await new Promise((resolve) => setTimeout(resolve, 1000));
   await page.reload();
   await expect(page.getByLabel("selected").getByLabel("duration")).toHaveText(
-    "00:00:01",
+    "00:00:02",
   );
 });
 
