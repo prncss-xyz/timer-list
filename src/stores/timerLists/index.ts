@@ -79,7 +79,7 @@ export const duplicateIdAtom = atom(null, (get, set, id: string) => {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
   const item = { ...items[index], id: getUUID() };
-  items = items.toSpliced(index, 0, item);
+  items = items.toSpliced(index + 1, 0, item);
   if (index <= currentIndex) currentIndex++;
   set(timerListAtom, { ...lists, index: currentIndex, items });
 });

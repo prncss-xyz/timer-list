@@ -3,6 +3,12 @@ import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
 import React, { useCallback, memo, useMemo } from "react";
 import { Text, Pressable, View, FlatList } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LayoutAnimationConfig,
+  LinearTransition,
+} from "react-native-reanimated";
 
 import { useActivateAtom } from "@/hooks/activateAtom";
 import {
@@ -15,9 +21,9 @@ import {
 import { timerActiveAtom } from "@/stores/timers";
 import { sizes, colors, styles, borderWidths, spaces } from "@/styles";
 
-function Remove({ id, color }: { id: string; color: string }) {
+function Remove({ timerId, color }: { timerId: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
-  const remove = useCallback(() => removeItem(id), [removeItem, id]);
+  const remove = useCallback(() => removeItem(timerId), [removeItem, timerId]);
   return (
     <Pressable
       accessibilityLabel="remove"
@@ -29,9 +35,12 @@ function Remove({ id, color }: { id: string; color: string }) {
   );
 }
 
-function Duplicate({ id, color }: { id: string; color: string }) {
+function Duplicate({ timerId, color }: { timerId: string; color: string }) {
   const duplicateItem = useSetAtom(duplicateIdAtom);
-  const duplicate = useCallback(() => duplicateItem(id), [duplicateItem, id]);
+  const duplicate = useCallback(
+    () => duplicateItem(timerId),
+    [duplicateItem, timerId],
+  );
   return (
     <Pressable
       accessibilityLabel="duplicate"
@@ -43,12 +52,12 @@ function Duplicate({ id, color }: { id: string; color: string }) {
   );
 }
 
-function Edit({ id, color }: { id: string; color: string }) {
+function Edit({ timerId, color }: { timerId: string; color: string }) {
   const setCurrentId = useSetAtom(currentIdAtom);
   const onPress = useCallback(() => {
-    router.push(`/set-timer/${id}`);
-    setCurrentId(id);
-  }, [setCurrentId, id]);
+    router.push(`/set-timer/${timerId}`);
+    setCurrentId(timerId);
+  }, [setCurrentId, timerId]);
   return (
     <Pressable
       accessibilityLabel="edit"
@@ -60,10 +69,18 @@ function Edit({ id, color }: { id: string; color: string }) {
   );
 }
 
-export function Duration({ id, color }: { id: string; color: string }) {
+export function Duration({
+  timerId,
+  color,
+}: {
+  timerId: string;
+  color: string;
+}) {
   const navigate = useSetAtom(currentIdAtom);
-  const activate = useCallback(() => navigate(id), [navigate, id]);
-  const text = useAtomValue(useMemo(() => getIdItemSecondsTextAtom(id), [id]));
+  const activate = useCallback(() => navigate(timerId), [navigate, timerId]);
+  const text = useAtomValue(
+    useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
+  );
   return (
     <Pressable accessibilityLabel="duration" onPress={activate}>
       <TimerView color={color} text={text} />
@@ -99,6 +116,18 @@ function Separtor() {
   );
 }
 
+const renderCell = (props: any) => {
+  return (
+    <Animated.View
+      {...props}
+      entering={FadeIn}
+      exiting={FadeOut}
+      style={{ width: "100%" }}
+      layout={LinearTransition}
+    />
+  );
+};
+
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, currentIdAtom);
   const playing = useAtomValue(timerActiveAtom);
@@ -111,32 +140,42 @@ const Item = memo(({ id }: { id: string }) => {
     <View
       accessibilityLabel={active ? "current" : undefined}
       style={{
-        padding: spaces[10],
+        paddingTop: spaces[10],
+        paddingBottom: spaces[10],
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        gap: spaces[15],
       }}
     >
-      <View style={{ flex: 1 }}>
-        <Duration id={id} color={color} />
+      <Duration timerId={id} color={color} />
+      <View
+        style={{
+          flexDirection: "row",
+          gap: spaces[15],
+        }}
+      >
+        <Duplicate timerId={id} color={color} />
+        <Remove timerId={id} color={color} />
+        <Edit timerId={id} color={color} />
       </View>
-      <Duplicate id={id} color={color} />
-      <Remove id={id} color={color} />
-      <Edit color={color} id={id} />
     </View>
   );
 });
 
-export function TimerList() {
+export const TimerList = () => {
   const items = useAtomValue(itemsAtom);
   return (
-    <FlatList
-      contentContainerStyle={{}}
-      ItemSeparatorComponent={() => <Separtor />}
-      data={items}
-      renderItem={({ item: { id } }) => <Item id={id} />}
-      keyExtractor={({ id }) => id}
-    />
+    /* this is not supported on web */
+    <LayoutAnimationConfig skipEntering skipExiting>
+      <FlatList
+        key="timerList"
+        contentContainerStyle={{}}
+        ItemSeparatorComponent={() => <Separtor />}
+        data={items}
+        renderItem={({ item: { id } }) => <Item id={id} />}
+        keyExtractor={({ id }) => id}
+        CellRendererComponent={renderCell}
+      />
+    </LayoutAnimationConfig>
   );
-}
+};
