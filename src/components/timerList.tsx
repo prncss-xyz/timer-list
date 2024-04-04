@@ -27,7 +27,7 @@ function Remove({ timerId, color }: { timerId: string; color: string }) {
   const remove = useCallback(() => removeItem(timerId), [removeItem, timerId]);
   return (
     <Pressable aria-label="remove" onPress={remove} style={styles.iconPlace}>
-      <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
+      <Ionicons color={color} name="trash-outline" size={sizes.icon} />
     </Pressable>
   );
 }

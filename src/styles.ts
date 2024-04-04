@@ -2,7 +2,7 @@ import { Platform, StyleSheet } from "react-native";
 
 export const sizes = {
   headSeparator: 35,
-  icon: 35,
+  icon: 32,
   digit: 50,
   screenMaxWidth: 500,
 };
