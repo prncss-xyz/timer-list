@@ -6,6 +6,8 @@ import { focusAtom } from "jotai-optics";
 import React, { ReactNode, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { WideButton } from "./wideButton";
+
 import { HeadSeparator } from "@/components/headSeparator";
 import { TimerView } from "@/components/timerView";
 import { useColor } from "@/hooks/color";
@@ -60,7 +62,9 @@ function ListBar() {
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
-        alignItems: "flex-end",
+        alignItems: "flex-start",
+        padding: spaces[5],
+        paddingBottom: 0,
       }}
     >
       <View style={{ width: sizes.icon }} />
@@ -123,13 +127,7 @@ function Done({ setText }: { setText: (text: string) => void }) {
     router.back();
   }, [setText, update]);
   const current = useColor("current");
-  return (
-    <Pressable onPress={onPress} aria-label="done">
-      <Text style={[styles.button, { color: current, borderColor: current }]}>
-        done
-      </Text>
-    </Pressable>
-  );
+  return <WideButton onPress={onPress} color={current} text="done" />;
 }
 
 function Grid() {

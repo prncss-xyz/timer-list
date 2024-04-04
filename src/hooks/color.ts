@@ -1,8 +1,8 @@
 import { useColorScheme } from "react-native";
 
-import { lightColors, darkColors } from "@/styles";
+import { lightColors, darkColors, Color } from "@/styles";
 
-export function useColor(name: keyof typeof lightColors) {
+export function useColor(name: Color) {
   if (useColorScheme() === "dark") return darkColors[name];
   return lightColors[name];
 }

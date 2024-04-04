@@ -12,7 +12,7 @@ import {
   timerActiveAtom,
   toggleTimerAtom,
 } from "@/stores/timers";
-import { sizes, styles } from "@/styles";
+import { sizes, spaces, styles } from "@/styles";
 
 function Reset({ color }: { color: string }) {
   const reset = useSetAtom(resetTimerAtom);
@@ -62,6 +62,8 @@ export function TimerBar() {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        padding: spaces[5],
+        paddingBottom: 0,
       }}
     >
       <PlayPause color={color} />

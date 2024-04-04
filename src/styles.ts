@@ -23,6 +23,8 @@ export const borderWidths = {
   light: 1,
 };
 
+export type Color = keyof typeof lightColors;
+
 // https://www.radix-ui.com/colors
 export const lightColors = {
   background: "#fff",
@@ -64,7 +66,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   timerViewList: {
-    padding: spaces[5],
     alignItems: "flex-start",
     justifyContent: "center",
   },

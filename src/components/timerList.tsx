@@ -134,6 +134,8 @@ const Item = memo(({ id }: { id: string }) => {
       style={{
         paddingTop: spaces[10],
         paddingBottom: spaces[10],
+        paddingLeft: spaces[5],
+        paddingRight: spaces[5],
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
