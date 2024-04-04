@@ -8,6 +8,8 @@ exports[`list page should render properly 1`] = `
         "alignItems": "center",
         "flexDirection": "row",
         "justifyContent": "space-between",
+        "padding": 5,
+        "paddingBottom": 0,
       }
     }
   >
@@ -44,8 +46,8 @@ exports[`list page should render properly 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "height": 35,
-          "width": 35,
+          "height": 32,
+          "width": 32,
         }
       }
     >
@@ -143,8 +145,8 @@ exports[`list page should render properly 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "height": 35,
-          "width": 35,
+          "height": 32,
+          "width": 32,
         }
       }
     >
@@ -228,6 +230,8 @@ exports[`list page should render properly 1`] = `
               "flexDirection": "row",
               "justifyContent": "space-between",
               "paddingBottom": 10,
+              "paddingLeft": 5,
+              "paddingRight": 5,
               "paddingTop": 10,
             }
           }
@@ -273,7 +277,6 @@ exports[`list page should render properly 1`] = `
                   {
                     "alignItems": "flex-start",
                     "justifyContent": "center",
-                    "padding": 5,
                   },
                   {
                     "fontFamily": "RobotoMono-Medium",
@@ -329,8 +332,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -369,8 +372,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -409,8 +412,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -462,6 +465,8 @@ exports[`list page should render properly 1`] = `
               "flexDirection": "row",
               "justifyContent": "space-between",
               "paddingBottom": 10,
+              "paddingLeft": 5,
+              "paddingRight": 5,
               "paddingTop": 10,
             }
           }
@@ -507,7 +512,6 @@ exports[`list page should render properly 1`] = `
                   {
                     "alignItems": "flex-start",
                     "justifyContent": "center",
-                    "padding": 5,
                   },
                   {
                     "fontFamily": "RobotoMono-Medium",
@@ -563,8 +567,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -603,8 +607,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -643,8 +647,8 @@ exports[`list page should render properly 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "height": 35,
-                  "width": 35,
+                  "height": 32,
+                  "width": 32,
                 }
               }
             >
@@ -686,6 +690,11 @@ exports[`list page should render properly 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "padding": 5,
+      }
+    }
   >
     <Text
       style={

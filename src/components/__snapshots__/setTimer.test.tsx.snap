@@ -5,9 +5,11 @@ exports[`set-timer should rendrer properly 1`] = `
   <View
     style={
       {
-        "alignItems": "flex-end",
+        "alignItems": "flex-start",
         "flexDirection": "row",
         "justifyContent": "space-between",
+        "padding": 5,
+        "paddingBottom": 0,
         "width": "100%",
       }
     }
@@ -15,7 +17,7 @@ exports[`set-timer should rendrer properly 1`] = `
     <View
       style={
         {
-          "width": 35,
+          "width": 32,
         }
       }
     />
@@ -82,8 +84,8 @@ exports[`set-timer should rendrer properly 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         {
-          "height": 35,
-          "width": 35,
+          "height": 32,
+          "width": 32,
         }
       }
     >
@@ -866,6 +868,11 @@ exports[`set-timer should rendrer properly 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "padding": 5,
+      }
+    }
   >
     <Text
       style={
