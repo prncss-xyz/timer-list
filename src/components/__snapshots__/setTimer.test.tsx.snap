@@ -20,15 +20,14 @@ exports[`set-timer should rendrer properly 1`] = `
       }
     />
     <View
-      accessibilityLabel="timer"
+      aria-label="timer"
     >
       <Text
         style={
           [
             {
-              "backgroundColor": "#fff",
               "borderColor": "#0090FF",
-              "color": "black",
+              "color": "#0090FF",
             },
             {
               "borderStyle": "solid",

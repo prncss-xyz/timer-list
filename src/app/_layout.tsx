@@ -11,13 +11,14 @@ import {
 import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
 import { useInter } from "@/fonts/inter";
 import { useRobotoMono } from "@/fonts/roboto-mono";
+import { useColor } from "@/hooks/color";
 import { usePlay } from "@/hooks/sound";
 import { useInitCountDown } from "@/stores/countDown/init";
 import { useInitNow } from "@/stores/now/init";
 import { useInitTimerList } from "@/stores/timerLists/init";
 import { useInitTimerListStorage } from "@/stores/timerLists/storage";
 import { resetTimerAtom } from "@/stores/timers";
-import { colors, sizes, spaces } from "@/styles";
+import { sizes, spaces } from "@/styles";
 
 function Container({ children }: { children: ReactNode }) {
   const insets = useSafeAreaInsets();
@@ -30,7 +31,7 @@ function Container({ children }: { children: ReactNode }) {
         paddingRight: insets.right,
         paddingBottom: insets.bottom + spaces[10],
         paddingLeft: insets.left,
-        backgroundColor: colors.background,
+        backgroundColor: useColor("background"),
       }}
     >
       <View

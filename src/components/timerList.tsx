@@ -11,6 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useActivateAtom } from "@/hooks/activateAtom";
+import { useColor } from "@/hooks/color";
 import {
   removeIdAtom,
   duplicateIdAtom,
@@ -19,17 +20,13 @@ import {
   getIdItemSecondsTextAtom,
 } from "@/stores/timerLists";
 import { timerActiveAtom } from "@/stores/timers";
-import { sizes, colors, styles, borderWidths, spaces } from "@/styles";
+import { sizes, styles, borderWidths, spaces } from "@/styles";
 
 function Remove({ timerId, color }: { timerId: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
   const remove = useCallback(() => removeItem(timerId), [removeItem, timerId]);
   return (
-    <Pressable
-      accessibilityLabel="remove"
-      onPress={remove}
-      style={styles.iconPlace}
-    >
+    <Pressable aria-label="remove" onPress={remove} style={styles.iconPlace}>
       <Ionicons color={color} name="close-circle-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -43,7 +40,7 @@ function Duplicate({ timerId, color }: { timerId: string; color: string }) {
   );
   return (
     <Pressable
-      accessibilityLabel="duplicate"
+      aria-label="duplicate"
       onPress={duplicate}
       style={styles.iconPlace}
     >
@@ -59,11 +56,7 @@ function Edit({ timerId, color }: { timerId: string; color: string }) {
     setCurrentId(timerId);
   }, [setCurrentId, timerId]);
   return (
-    <Pressable
-      accessibilityLabel="edit"
-      onPress={onPress}
-      style={styles.iconPlace}
-    >
+    <Pressable aria-label="edit" onPress={onPress} style={styles.iconPlace}>
       <Ionicons name="pencil" size={sizes.icon} color={color} />
     </Pressable>
   );
@@ -82,7 +75,7 @@ export function Duration({
     useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
   );
   return (
-    <Pressable accessibilityLabel="duration" onPress={activate}>
+    <Pressable aria-label="duration" onPress={activate}>
       <TimerView color={color} text={text} />
     </Pressable>
   );
@@ -108,7 +101,7 @@ function Separtor() {
     <View
       style={{
         width: "100%",
-        borderColor: colors.brand,
+        borderColor: useColor("brand"),
         borderWidth: 0,
         borderBottomWidth: borderWidths.light,
       }}
@@ -130,15 +123,14 @@ const renderCell = (props: any) => {
 
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, currentIdAtom);
-  const playing = useAtomValue(timerActiveAtom);
-  const color = active
-    ? playing
-      ? colors.playing
-      : colors.current
-    : colors.brand;
+  const timerActive = useAtomValue(timerActiveAtom);
+  const playing = useColor("playing");
+  const current = useColor("current");
+  const brand = useColor("brand");
+  const color = active ? (timerActive ? playing : current) : brand;
   return (
     <View
-      accessibilityLabel={active ? "current" : undefined}
+      aria-label={active ? "current" : undefined}
       style={{
         paddingTop: spaces[10],
         paddingBottom: spaces[10],

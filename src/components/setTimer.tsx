@@ -8,15 +8,9 @@ import { Pressable, Text, View } from "react-native";
 
 import { HeadSeparator } from "@/components/headSeparator";
 import { TimerView } from "@/components/timerView";
+import { useColor } from "@/hooks/color";
 import { getIdItemSecondsTextAtom } from "@/stores/timerLists";
-import {
-  borderWidths,
-  colors,
-  fontSizes,
-  sizes,
-  spaces,
-  styles,
-} from "@/styles";
+import { borderWidths, fontSizes, sizes, spaces, styles } from "@/styles";
 import { normalizeSeconds } from "@/utils/seconds";
 
 const rawTextAtom = atom("");
@@ -41,8 +35,8 @@ function backspaceText(str: string) {
 function Timer() {
   const text = useAtomValue(textAtom);
   return (
-    <View accessibilityLabel="timer">
-      <TimerView color={colors.brand} text={text} />
+    <View aria-label="timer">
+      <TimerView color={useColor("brand")} text={text} />
     </View>
   );
 }
@@ -50,11 +44,11 @@ function Timer() {
 function Cancel() {
   return (
     <Pressable
-      accessibilityLabel="cancel"
+      aria-label="cancel"
       onPress={router.back}
       style={styles.iconPlace}
     >
-      <Ionicons color={colors.brand} name="close" size={sizes.icon} />
+      <Ionicons color={useColor("brand")} name="close" size={sizes.icon} />
     </Pressable>
   );
 }
@@ -79,9 +73,10 @@ function ListBar() {
 function Digit({ text }: { text: string }) {
   const setText = useSetAtom(textAtom);
   const onPress = useCallback(() => setText(appendText(text)), [setText, text]);
+  const brand = useColor("brand");
   return (
     <Pressable
-      accessibilityLabel={`digit ${text}`}
+      aria-label={`digit ${text}`}
       onPress={onPress}
       style={{
         width: sizes.digit,
@@ -89,17 +84,12 @@ function Digit({ text }: { text: string }) {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        borderColor: colors.brand,
+        borderColor: brand,
         borderStyle: "solid",
         borderWidth: borderWidths.light,
       }}
     >
-      <Text
-        style={[
-          styles.mono500,
-          { fontSize: fontSizes[20], color: colors.brand },
-        ]}
-      >
+      <Text style={[styles.mono500, { fontSize: fontSizes[20], color: brand }]}>
         {text}
       </Text>
     </Pressable>
@@ -112,7 +102,7 @@ function Backspace() {
   return (
     <Pressable
       onPress={onPress}
-      accessibilityLabel="backspace"
+      aria-label="backspace"
       style={{
         width: sizes.digit,
         height: sizes.digit,
@@ -121,7 +111,7 @@ function Backspace() {
         alignItems: "center",
       }}
     >
-      <Ionicons color={colors.brand} name="backspace" size={sizes.digit} />
+      <Ionicons color={useColor("brand")} name="backspace" size={sizes.digit} />
     </Pressable>
   );
 }
@@ -131,15 +121,11 @@ function Done({ setText }: { setText: (text: string) => void }) {
   const onPress = useCallback(() => {
     update(setText);
     router.back();
-  }, [update]);
+  }, [setText, update]);
+  const current = useColor("current");
   return (
-    <Pressable onPress={onPress} accessibilityLabel="done">
-      <Text
-        style={[
-          styles.button,
-          { color: colors.current, borderColor: colors.current },
-        ]}
-      >
+    <Pressable onPress={onPress} aria-label="done">
+      <Text style={[styles.button, { color: current, borderColor: current }]}>
         done
       </Text>
     </Pressable>

@@ -24,9 +24,16 @@ export const borderWidths = {
 };
 
 // https://www.radix-ui.com/colors
-export const colors = {
-  text: "black",
+export const lightColors = {
   background: "#fff",
+  playing: "#FF92AD",
+  brand: "#0090FF",
+  danger: "#FFC53D",
+  current: "#3DD68C",
+};
+
+export const darkColors = {
+  background: "black",
   playing: "#FF92AD",
   brand: "#0090FF",
   danger: "#FFC53D",

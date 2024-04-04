@@ -10,8 +10,7 @@ const debounceDelai = 500;
 async function loadData(key: string) {
   const jsonValue = await AsyncStorage.getItem(key);
   if (jsonValue === null) return undefined;
-  /* return JSON.parse(jsonValue); */
-  return undefined
+  return JSON.parse(jsonValue);
 }
 
 function saveData(key: string, value: unknown) {
