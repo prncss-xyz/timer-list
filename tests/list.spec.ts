@@ -5,6 +5,8 @@ test("can edit timer and accept change, which persists reloading", async ({
 }) => {
   await page.goto("localhost:8081");
   await page.getByLabel("clear all").click();
+  // wait for animation to complete
+  await new Promise((resolve) => setTimeout(resolve, 300));
   await page.getByLabel("duplicate").click();
   await page.getByLabel("duplicate").nth(1).click();
   await page.getByLabel("edit").nth(1).click();
@@ -18,6 +20,8 @@ test("can edit timer and accept change, which persists reloading", async ({
 test("save timerList state", async ({ page }) => {
   await page.goto("localhost:8081");
   await page.getByLabel("clear all").click();
+  // wait for animation to complete
+  await new Promise((resolve) => setTimeout(resolve, 300));
   await page.getByLabel("edit").click();
   await page.getByLabel("digit 2").click();
   await page.getByLabel("done").click();
@@ -35,6 +39,8 @@ test("save timerList state", async ({ page }) => {
 test("select next timer after alarm", async ({ page }) => {
   await page.goto("localhost:8081");
   await page.getByLabel("clear all").click();
+  // wait for animation to complete
+  await new Promise((resolve) => setTimeout(resolve, 300));
   await page.getByLabel("edit").click();
   await page.getByLabel("digit 1").click();
   await page.getByLabel("done").click();
