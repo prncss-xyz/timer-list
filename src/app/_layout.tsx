@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useSetAtom } from "jotai";
 import { ReactNode } from "react";
@@ -60,7 +60,7 @@ export default function Layout() {
       <KeepAliveWhenTimerActive />
       <SafeAreaProvider>
         <Container>
-          <Stack />
+          <Slot />
           <StatusBar style="auto" />
         </Container>
       </SafeAreaProvider>
