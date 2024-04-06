@@ -3,12 +3,6 @@ import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
 import React, { useCallback, memo, useMemo } from "react";
 import { Text, Pressable, View, FlatList } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  LayoutAnimationConfig,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import { useActivateAtom } from "@/hooks/activateAtom";
 import { useColor } from "@/hooks/color";
@@ -109,18 +103,6 @@ function Separtor() {
   );
 }
 
-const renderCell = (props: any) => {
-  return (
-    <Animated.View
-      {...props}
-      entering={FadeIn}
-      exiting={FadeOut}
-      style={{ width: "100%" }}
-      layout={LinearTransition}
-    />
-  );
-};
-
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, currentIdAtom);
   const timerActive = useAtomValue(timerActiveAtom);
@@ -159,17 +141,13 @@ const Item = memo(({ id }: { id: string }) => {
 export const TimerList = () => {
   const items = useAtomValue(itemsAtom);
   return (
-    /* this is not supported on web */
-    <LayoutAnimationConfig skipEntering skipExiting>
-      <FlatList
-        key="timerList"
-        contentContainerStyle={{}}
-        ItemSeparatorComponent={() => <Separtor />}
-        data={items}
-        renderItem={({ item: { id } }) => <Item id={id} />}
-        keyExtractor={({ id }) => id}
-        CellRendererComponent={renderCell}
-      />
-    </LayoutAnimationConfig>
+    <FlatList
+      key="timerList"
+      contentContainerStyle={{}}
+      ItemSeparatorComponent={() => <Separtor />}
+      data={items}
+      renderItem={({ item: { id } }) => <Item id={id} />}
+      keyExtractor={({ id }) => id}
+    />
   );
 };

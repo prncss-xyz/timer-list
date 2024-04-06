@@ -5,6 +5,7 @@ import { focusAtom } from "jotai-optics";
 
 import { Item, normalize } from "./model";
 
+import { insert, remove, replace } from "@/utils/arrays";
 import { definedAtom } from "@/utils/definedAtom";
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getUUID } from "@/utils/uuid";
@@ -38,8 +39,7 @@ const currentItemAtom = atom(
   (get, set, item: Item) => {
     const lists = get(timerListAtom);
     let { index, items } = lists;
-    /* items = items.toSpliced(index, 1, item); */
-    items = { ...items }.splice(index, 1, item);
+    items = replace(items, index, item);
     set(timerListAtom, { ...lists, items });
   },
 );
@@ -80,8 +80,7 @@ export const duplicateIdAtom = atom(null, (get, set, id: string) => {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
   const item = { ...items[index], id: getUUID() };
-  /* items = items.toSpliced(index + 1, 0, item); */
-  items = { ...items }.splice(index + 1, 0, item);
+  items = insert(items, index + 1, item);
   if (index <= currentIndex) currentIndex++;
   set(timerListAtom, { ...lists, index: currentIndex, items });
 });
@@ -91,8 +90,7 @@ export const removeIdAtom = atom(null, (get, set, id: string) => {
   let { items, index: currentIndex } = lists;
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
-  /* items = items.toSpliced(index, 1); */
-  items = { ...items }.splice(index, 1);
+  items = remove(items, index);
   if (index < currentIndex) currentIndex--;
   set(timerListAtom, { ...lists, index: currentIndex, items });
 });

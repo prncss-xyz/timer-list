@@ -164,7 +164,6 @@ exports[`list page should render properly 1`] = `
     }
   />,
   <RCTScrollView
-    CellRendererComponent={[Function]}
     ItemSeparatorComponent={[Function]}
     contentContainerStyle={{}}
     data={
@@ -197,30 +196,9 @@ exports[`list page should render properly 1`] = `
   >
     <View>
       <View
-        animatedStyle={
-          {
-            "value": {},
-          }
-        }
-        cellKey="a"
-        collapsable={false}
-        entering={[Function]}
-        exiting={[Function]}
-        index={0}
-        item={
-          {
-            "id": "a",
-            "seconds": 2,
-          }
-        }
-        layout={[Function]}
         onFocusCapture={[Function]}
         onLayout={[Function]}
-        style={
-          {
-            "width": "100%",
-          }
-        }
+        style={null}
       >
         <View
           aria-label="current"
@@ -433,30 +411,9 @@ exports[`list page should render properly 1`] = `
         />
       </View>
       <View
-        animatedStyle={
-          {
-            "value": {},
-          }
-        }
-        cellKey="b"
-        collapsable={false}
-        entering={[Function]}
-        exiting={[Function]}
-        index={1}
-        item={
-          {
-            "id": "b",
-            "seconds": 3,
-          }
-        }
-        layout={[Function]}
         onFocusCapture={[Function]}
         onLayout={[Function]}
-        style={
-          {
-            "width": "100%",
-          }
-        }
+        style={null}
       >
         <View
           style={
