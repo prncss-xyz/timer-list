@@ -38,7 +38,8 @@ const currentItemAtom = atom(
   (get, set, item: Item) => {
     const lists = get(timerListAtom);
     let { index, items } = lists;
-    items = items.toSpliced(index, 1, item);
+    /* items = items.toSpliced(index, 1, item); */
+    items = { ...items }.splice(index, 1, item);
     set(timerListAtom, { ...lists, items });
   },
 );
@@ -79,7 +80,8 @@ export const duplicateIdAtom = atom(null, (get, set, id: string) => {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
   const item = { ...items[index], id: getUUID() };
-  items = items.toSpliced(index + 1, 0, item);
+  /* items = items.toSpliced(index + 1, 0, item); */
+  items = { ...items }.splice(index + 1, 0, item);
   if (index <= currentIndex) currentIndex++;
   set(timerListAtom, { ...lists, index: currentIndex, items });
 });
@@ -89,7 +91,8 @@ export const removeIdAtom = atom(null, (get, set, id: string) => {
   let { items, index: currentIndex } = lists;
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return;
-  items = items.toSpliced(index, 1);
+  /* items = items.toSpliced(index, 1); */
+  items = { ...items }.splice(index, 1);
   if (index < currentIndex) currentIndex--;
   set(timerListAtom, { ...lists, index: currentIndex, items });
 });
