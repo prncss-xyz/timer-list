@@ -5,8 +5,8 @@ import { focusAtom } from "jotai-optics";
 
 import { Item, normalize } from "./model";
 
-import { insert, remove, replace } from "@/utils/arrays";
-import { definedAtom } from "@/utils/definedAtom";
+import { insert, remove } from "@/utils/arrays";
+import { defined } from "@/utils/defined";
 import { fromSeconds, toSeconds } from "@/utils/seconds";
 import { getUUID } from "@/utils/uuid";
 
@@ -30,18 +30,18 @@ export const currentIndexAtom = focusAtom(timerListAtom, (o) =>
 );
 
 export const itemsAtom = focusAtom(timerListAtom, (o) => o.prop("items"));
+const indexAtom = focusAtom(timerListAtom, (o) => o.prop("index"));
 
+const currentItemAtomAtom = atom((get) => {
+  const index = get(indexAtom);
+  const res = focusAtom(itemsAtom, (o) => o.at(index));
+  return focusAtom(res, (o) =>
+    o.iso(defined({ id: "", seconds: 0 }), (x) => x),
+  );
+});
 const currentItemAtom = atom(
-  (get) => {
-    const { index, items } = get(timerListAtom);
-    return items[index];
-  },
-  (get, set, item: Item) => {
-    const lists = get(timerListAtom);
-    let { index, items } = lists;
-    items = replace(items, index, item);
-    set(timerListAtom, { ...lists, items });
-  },
+  (get) => get(get(currentItemAtomAtom)),
+  (get, set, item: Item) => set(get(currentItemAtomAtom), item),
 );
 
 export const currentIdAtom = atom(
@@ -52,7 +52,7 @@ export const currentIdAtom = atom(
     const lists = get(timerListAtom);
     const { items } = lists;
     const index = items.findIndex((item) => item.id === id);
-    set(timerListAtom, { ...lists, index, items });
+    set(indexAtom, index);
   },
 );
 
@@ -60,13 +60,14 @@ export const currentSecondsAtom = focusAtom(currentItemAtom, (o) =>
   o.prop("seconds"),
 );
 
-export const getIdItemAtom = (id: string) =>
-  definedAtom(
-    focusAtom(timerListAtom, (o) =>
-      o.prop("items").find((item) => item.id === id),
-    ),
-    { id: "", seconds: 0 },
+export const getIdItemAtom = (id: string) => {
+  const res = focusAtom(timerListAtom, (o) =>
+    o.prop("items").find((item) => item.id === id),
   );
+  return focusAtom(res, (o) =>
+    o.iso(defined({ id: "", seconds: 0 }), (x) => x),
+  );
+};
 
 export const getIdItemSecondsAtom = (id: string) =>
   focusAtom(getIdItemAtom(id), (o) => o.prop("seconds"));
