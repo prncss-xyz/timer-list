@@ -1,11 +1,12 @@
 import { useKeepAwake } from "expo-keep-awake";
 import { useAtomValue } from "jotai";
+import { View } from "react-native";
 
 import { timerActiveAtom } from "@/stores/timers";
 
 function KeepAlive() {
   useKeepAwake();
-  return null;
+  return <View />;
 }
 
 export function KeepAliveWhenTimerActive() {
