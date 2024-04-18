@@ -1,12 +1,11 @@
 const message = "unexpected undefined value";
 
-export function defined<T>(or: T) {
+export function defined<T>(or: T, tag = "") {
   return function (r: T | undefined) {
     if (r === undefined) {
       if (__DEV__) {
-        throw new Error(message);
+        console.error(message, tag);
       }
-      console.error(message);
       return or;
     }
     return r;

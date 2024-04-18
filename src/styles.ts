@@ -1,6 +1,7 @@
 import { Platform, StyleSheet } from "react-native";
 
 export const sizes = {
+  listHeight: 60,
   headSeparator: 35,
   icon: 32,
   digit: 50,

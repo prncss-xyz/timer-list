@@ -1,6 +1,6 @@
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useSetAtom } from "jotai";
+import { Provider, createStore, useSetAtom } from "jotai";
 import { ReactNode } from "react";
 import { View } from "react-native";
 import {
@@ -47,7 +47,13 @@ function Container({ children }: { children: ReactNode }) {
   );
 }
 
-export default function Layout() {
+const store = createStore();
+
+function WithStore({ children }: { children: ReactNode }) {
+  return <Provider store={store}>{children}</Provider>;
+}
+
+function CompositionRoot({ children }: { children: ReactNode }) {
   useInitNow();
   useInitCountDown(usePlay(require("@/../assets/beep.mp3")));
   useInitTimerList(useSetAtom(resetTimerAtom));
@@ -55,15 +61,21 @@ export default function Layout() {
   const interReady = useInter();
   const robotoMonoReady = useRobotoMono();
   if (!timerReady || !interReady || !robotoMonoReady) return null;
+  return <>{children}</>;
+}
+
+export default function Layout() {
   return (
-    <>
-      <KeepAliveWhenTimerActive />
-      <SafeAreaProvider>
-        <Container>
-          <Slot />
-          <StatusBar style="auto" />
-        </Container>
-      </SafeAreaProvider>
-    </>
+    <WithStore>
+      <CompositionRoot>
+        <KeepAliveWhenTimerActive />
+        <SafeAreaProvider>
+          <Container>
+            <Slot />
+            <StatusBar style="auto" />
+          </Container>
+        </SafeAreaProvider>
+      </CompositionRoot>
+    </WithStore>
   );
 }

@@ -36,7 +36,7 @@ const currentItemAtomAtom = atom((get) => {
   const index = get(indexAtom);
   const res = focusAtom(itemsAtom, (o) => o.at(index));
   return focusAtom(res, (o) =>
-    o.iso(defined({ id: "", seconds: 0 }), (x) => x),
+    o.iso(defined({ id: "", seconds: 0 }, "currentItem"), (x) => x),
   );
 });
 const currentItemAtom = atom(
@@ -65,7 +65,7 @@ export const getIdItemAtom = (id: string) => {
     o.prop("items").find((item) => item.id === id),
   );
   return focusAtom(res, (o) =>
-    o.iso(defined({ id: "", seconds: 0 }), (x) => x),
+    o.iso(defined({ id: "", seconds: 0 }, "getId"), (x) => x),
   );
 };
 

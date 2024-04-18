@@ -1,14 +1,18 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
-import React, { useCallback, memo, useMemo } from "react";
-import { Text, Pressable, View, FlatList } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  LayoutAnimationConfig,
-  LinearTransition,
-} from "react-native-reanimated";
+import React, {
+  createContext,
+  useCallback,
+  memo,
+  useMemo,
+  useRef,
+  useEffect,
+  ReactNode,
+  MutableRefObject,
+  useContext,
+} from "react";
+import { Text, Pressable, View, FlatList, Animated } from "react-native";
 
 import { useActivateAtom } from "@/hooks/activateAtom";
 import { useColor } from "@/hooks/color";
@@ -22,11 +26,89 @@ import {
 import { timerActiveAtom } from "@/stores/timers";
 import { sizes, styles, borderWidths, spaces } from "@/styles";
 
+const FadeOutCtx = createContext((_cb: () => void) => {});
+
+function useFadeOut(cb: () => void) {
+  const exitCb = useContext(FadeOutCtx);
+  return useCallback(() => exitCb(cb), [cb, exitCb]);
+}
+
+const duration = 300;
+/* const useNativeDriver = Platform.OS !== "web"; */
+const useNativeDriver = false;
+
+const ShouldAnimateContext = createContext<MutableRefObject<boolean>>({
+  current: true,
+});
+
+function useShouldAnimate() {
+  const ref = useContext(ShouldAnimateContext);
+  return ref.current;
+}
+
+function SkipAnimateOnMount({ children }: { children: ReactNode }) {
+  const mounting = useRef(false);
+  useEffect(() => {
+    mounting.current = true;
+  }, []);
+  return (
+    <ShouldAnimateContext.Provider value={mounting}>
+      {children}
+    </ShouldAnimateContext.Provider>
+  );
+}
+
+function ListAnim({ children }: { children: ReactNode }) {
+  const animate = useShouldAnimate();
+  const opacity = useRef(new Animated.Value(animate ? 0 : 1)).current;
+  const height = useRef(
+    new Animated.Value(animate ? 0 : sizes.listHeight),
+  ).current;
+  useEffect(() => {
+    if (!animate) return;
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration,
+        useNativeDriver,
+      }),
+      Animated.timing(height, {
+        toValue: sizes.listHeight,
+        duration,
+        useNativeDriver,
+      }),
+    ]).start();
+  }, [animate, opacity, height]);
+  const value = useCallback(
+    (cb: () => void) => {
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration,
+          useNativeDriver,
+        }),
+        Animated.timing(height, {
+          toValue: 0,
+          duration,
+          useNativeDriver,
+        }),
+      ]).start(cb);
+    },
+    [opacity, height],
+  );
+  return (
+    <FadeOutCtx.Provider value={value}>
+      <Animated.View style={{ opacity, height }}>{children}</Animated.View>
+    </FadeOutCtx.Provider>
+  );
+}
+
 function Remove({ timerId, color }: { timerId: string; color: string }) {
   const removeItem = useSetAtom(removeIdAtom);
   const remove = useCallback(() => removeItem(timerId), [removeItem, timerId]);
+  const cb = useFadeOut(remove);
   return (
-    <Pressable aria-label="remove" onPress={remove} style={styles.iconPlace}>
+    <Pressable aria-label="remove" onPress={cb} style={styles.iconPlace}>
       <Ionicons color={color} name="trash-outline" size={sizes.icon} />
     </Pressable>
   );
@@ -109,18 +191,6 @@ function Separtor() {
   );
 }
 
-const renderCell = (props: any) => {
-  return (
-    <Animated.View
-      {...props}
-      entering={FadeIn}
-      exiting={FadeOut}
-      style={{ width: "100%" }}
-      layout={LinearTransition}
-    />
-  );
-};
-
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, currentIdAtom);
   const timerActive = useAtomValue(timerActiveAtom);
@@ -129,38 +199,39 @@ const Item = memo(({ id }: { id: string }) => {
   const brand = useColor("brand");
   const color = active ? (timerActive ? playing : current) : brand;
   return (
-    <View
-      aria-label={active ? "current" : undefined}
-      style={{
-        paddingTop: spaces[10],
-        paddingBottom: spaces[10],
-        paddingLeft: spaces[5],
-        paddingRight: spaces[5],
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexDirection: "row",
-      }}
-    >
-      <Duration timerId={id} color={color} />
+    <ListAnim>
       <View
+        aria-label={active ? "current" : undefined}
         style={{
+          paddingTop: spaces[10],
+          paddingBottom: spaces[10],
+          paddingLeft: spaces[5],
+          paddingRight: spaces[5],
+          alignItems: "center",
+          justifyContent: "space-between",
           flexDirection: "row",
-          gap: spaces[15],
         }}
       >
-        <Duplicate timerId={id} color={color} />
-        <Remove timerId={id} color={color} />
-        <Edit timerId={id} color={color} />
+        <Duration timerId={id} color={color} />
+        <View
+          style={{
+            flexDirection: "row",
+            gap: spaces[15],
+          }}
+        >
+          <Duplicate timerId={id} color={color} />
+          <Remove timerId={id} color={color} />
+          <Edit timerId={id} color={color} />
+        </View>
       </View>
-    </View>
+    </ListAnim>
   );
 });
 
 export const TimerList = () => {
   const items = useAtomValue(itemsAtom);
   return (
-    /* this is not supported on web */
-    <LayoutAnimationConfig skipEntering skipExiting>
+    <SkipAnimateOnMount>
       <FlatList
         key="timerList"
         contentContainerStyle={{}}
@@ -168,8 +239,7 @@ export const TimerList = () => {
         data={items}
         renderItem={({ item: { id } }) => <Item id={id} />}
         keyExtractor={({ id }) => id}
-        CellRendererComponent={renderCell}
       />
-    </LayoutAnimationConfig>
+    </SkipAnimateOnMount>
   );
 };
