@@ -26,17 +26,10 @@ function Reset({ color }: { color: string }) {
 function PlayPause({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
   const active = useAtomValue(timerActiveAtom);
+  const label = active ? "pause" : "play";
   return (
-    <Pressable
-      aria-label={active ? "pause" : "play"}
-      onPress={toggle}
-      style={styles.iconPlace}
-    >
-      <Ionicons
-        color={color}
-        name={active ? "pause" : "play"}
-        size={sizes.icon}
-      />
+    <Pressable aria-label={label} onPress={toggle} style={styles.iconPlace}>
+      <Ionicons color={color} name={label} size={sizes.icon} />
     </Pressable>
   );
 }
@@ -54,8 +47,8 @@ function Countdown({ color }: { color: string }) {
 export function TimerBar() {
   const active = useAtomValue(timerActiveAtom);
   const playing = useColor("playing");
-  const current = useColor("current");
-  const color = active ? playing : current;
+  const activeColor = useColor("active");
+  const color = active ? playing : activeColor;
   return (
     <View
       style={{

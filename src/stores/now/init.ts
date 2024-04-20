@@ -12,6 +12,6 @@ export function useInitNow() {
       return setAtom(Date.now());
     }, resolution);
     return () => clearInterval(timer);
-  }, []);
+  }, [setAtom]);
   return true;
 }

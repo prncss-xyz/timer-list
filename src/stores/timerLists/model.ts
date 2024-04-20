@@ -10,27 +10,26 @@ const itemSchema = z.object({
 
 export type Item = z.infer<typeof itemSchema>;
 
-export function getNullItem() {
+export function getBasicItem() {
   return { seconds: 0, id: getUUID() };
 }
 
 const timerListSchema = z.object({
-  index: z.number(),
+  active: z.string(),
   items: z.array(itemSchema),
 });
 
 export type TimerList = z.infer<typeof timerListSchema>;
 
-export function getNullTimerList() {
-  return { index: 0, items: [getNullItem()] };
+function getBasicTimerList() {
+  const item = getBasicItem();
+  return { active: item.id, items: [item] };
 }
 
 export const validateTimerListSchema = fromError(timerListSchema.parse);
 
-export function normalize(lists: TimerList) {
-  const { index, items } = lists;
-  if (index > items.length - 1) lists = { ...lists, index: items.length - 1 };
-  if (index < 0) lists = { ...lists, index: 0 };
-  if (items.length === 0) lists = getNullTimerList();
-  return lists;
+export function normalize(timerList: TimerList): TimerList {
+  const { items } = timerList;
+  if (items.length === 0) timerList = getBasicTimerList();
+  return timerList;
 }

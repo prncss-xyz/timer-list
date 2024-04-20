@@ -12,16 +12,23 @@ import React, {
   MutableRefObject,
   useContext,
 } from "react";
-import { Text, Pressable, View, FlatList, Animated } from "react-native";
+import {
+  Text,
+  Pressable,
+  View,
+  FlatList,
+  Animated,
+  Platform,
+} from "react-native";
 
 import { useActivateAtom } from "@/hooks/activateAtom";
 import { useColor } from "@/hooks/color";
 import {
-  removeIdAtom,
-  duplicateIdAtom,
   itemsAtom,
-  currentIdAtom,
+  activeIdAtom,
   getIdItemSecondsTextAtom,
+  getRemoveIdAtom,
+  getDuplicateIdAtom,
 } from "@/stores/timerLists";
 import { timerActiveAtom } from "@/stores/timers";
 import { sizes, styles, borderWidths, spaces } from "@/styles";
@@ -34,8 +41,7 @@ function useFadeOut(cb: () => void) {
 }
 
 const duration = 300;
-/* const useNativeDriver = Platform.OS !== "web"; */
-const useNativeDriver = false;
+const useNativeDriver = Platform.OS !== "web";
 
 const ShouldAnimateContext = createContext<MutableRefObject<boolean>>({
   current: true,
@@ -61,9 +67,6 @@ function SkipAnimateOnMount({ children }: { children: ReactNode }) {
 function ListAnim({ children }: { children: ReactNode }) {
   const animate = useShouldAnimate();
   const opacity = useRef(new Animated.Value(animate ? 0 : 1)).current;
-  const height = useRef(
-    new Animated.Value(animate ? 0 : sizes.listHeight),
-  ).current;
   useEffect(() => {
     if (!animate) return;
     Animated.parallel([
@@ -72,13 +75,8 @@ function ListAnim({ children }: { children: ReactNode }) {
         duration,
         useNativeDriver,
       }),
-      Animated.timing(height, {
-        toValue: sizes.listHeight,
-        duration,
-        useNativeDriver,
-      }),
     ]).start();
-  }, [animate, opacity, height]);
+  }, [animate, opacity]);
   const value = useCallback(
     (cb: () => void) => {
       Animated.parallel([
@@ -87,25 +85,20 @@ function ListAnim({ children }: { children: ReactNode }) {
           duration,
           useNativeDriver,
         }),
-        Animated.timing(height, {
-          toValue: 0,
-          duration,
-          useNativeDriver,
-        }),
       ]).start(cb);
     },
-    [opacity, height],
+    [opacity],
   );
   return (
     <FadeOutCtx.Provider value={value}>
-      <Animated.View style={{ opacity, height }}>{children}</Animated.View>
+      <Animated.View style={{ opacity }}>{children}</Animated.View>
     </FadeOutCtx.Provider>
   );
 }
 
 function Remove({ timerId, color }: { timerId: string; color: string }) {
-  const removeItem = useSetAtom(removeIdAtom);
-  const remove = useCallback(() => removeItem(timerId), [removeItem, timerId]);
+  const removeAtom = useMemo(() => getRemoveIdAtom(timerId), [timerId]);
+  const remove = useSetAtom(removeAtom);
   const cb = useFadeOut(remove);
   return (
     <Pressable aria-label="remove" onPress={cb} style={styles.iconPlace}>
@@ -115,11 +108,8 @@ function Remove({ timerId, color }: { timerId: string; color: string }) {
 }
 
 function Duplicate({ timerId, color }: { timerId: string; color: string }) {
-  const duplicateItem = useSetAtom(duplicateIdAtom);
-  const duplicate = useCallback(
-    () => duplicateItem(timerId),
-    [duplicateItem, timerId],
-  );
+  const duplicateAtom = useMemo(() => getDuplicateIdAtom(timerId), [timerId]);
+  const duplicate = useSetAtom(duplicateAtom);
   return (
     <Pressable
       aria-label="duplicate"
@@ -132,11 +122,11 @@ function Duplicate({ timerId, color }: { timerId: string; color: string }) {
 }
 
 function Edit({ timerId, color }: { timerId: string; color: string }) {
-  const setCurrentId = useSetAtom(currentIdAtom);
+  const setActiveId = useSetAtom(activeIdAtom);
   const onPress = useCallback(() => {
     router.push(`/set-timer/${timerId}`);
-    setCurrentId(timerId);
-  }, [setCurrentId, timerId]);
+    setActiveId(timerId);
+  }, [setActiveId, timerId]);
   return (
     <Pressable aria-label="edit" onPress={onPress} style={styles.iconPlace}>
       <Ionicons name="pencil" size={sizes.icon} color={color} />
@@ -151,11 +141,12 @@ export function Duration({
   timerId: string;
   color: string;
 }) {
-  const navigate = useSetAtom(currentIdAtom);
+  const navigate = useSetAtom(activeIdAtom);
   const activate = useCallback(() => navigate(timerId), [navigate, timerId]);
   const text = useAtomValue(
     useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
   );
+  if (text === undefined) return null;
   return (
     <Pressable aria-label="duration" onPress={activate}>
       <TimerView color={color} text={text} />
@@ -191,17 +182,22 @@ function Separtor() {
   );
 }
 
+function getColor(active: boolean, timerActive: boolean) {
+  if (active) {
+    if (timerActive) return "playing";
+    return "active";
+  }
+  return "brand";
+}
+
 const Item = memo(({ id }: { id: string }) => {
-  const [active] = useActivateAtom(id, currentIdAtom);
+  const [active] = useActivateAtom(id, activeIdAtom);
   const timerActive = useAtomValue(timerActiveAtom);
-  const playing = useColor("playing");
-  const current = useColor("current");
-  const brand = useColor("brand");
-  const color = active ? (timerActive ? playing : current) : brand;
+  const color = useColor(getColor(active, timerActive));
   return (
     <ListAnim>
       <View
-        aria-label={active ? "current" : undefined}
+        aria-label={active ? "active" : undefined}
         style={{
           paddingTop: spaces[10],
           paddingBottom: spaces[10],
@@ -228,7 +224,7 @@ const Item = memo(({ id }: { id: string }) => {
   );
 });
 
-export const TimerList = () => {
+export function TimerList() {
   const items = useAtomValue(itemsAtom);
   return (
     <SkipAnimateOnMount>
@@ -242,4 +238,4 @@ export const TimerList = () => {
       />
     </SkipAnimateOnMount>
   );
-};
+}

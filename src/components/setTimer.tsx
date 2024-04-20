@@ -126,8 +126,8 @@ function Done({ setText }: { setText: (text: string) => void }) {
     update(setText);
     router.back();
   }, [setText, update]);
-  const current = useColor("current");
-  return <WideButton onPress={onPress} color={current} text="done" />;
+  const active = useColor("active");
+  return <WideButton onPress={onPress} color={active} text="done" />;
 }
 
 function Grid() {
@@ -161,6 +161,7 @@ export function SetTimer({ timerId }: { timerId: string }) {
   const [text, setText] = useAtom(
     useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
   );
+  if (text === undefined) return null;
   return (
     <Provider>
       {/* we can only pass serializable values, hence setText is not passed as an atom here, but as a prop later on */}

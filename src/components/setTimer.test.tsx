@@ -20,7 +20,7 @@ describe("set-timer", () => {
   it("should rendrer properly", () => {
     const store = createStore();
     store.set(timerListAtom, {
-      index: 0,
+      active: "a",
       items: [{ seconds: 1, id: "a" }],
     });
     const tree = render(
@@ -32,7 +32,7 @@ describe("set-timer", () => {
   });
   it("should append digits to timer", () => {
     const timerList: TimerList = {
-      index: 0,
+      active: "a",
       items: [{ seconds: 1, id: "a" }],
     };
     for (let i = 0; i < 10; ++i) {
@@ -52,7 +52,7 @@ describe("set-timer", () => {
   it("should append 00 to timer", () => {
     const store = createStore();
     store.set(timerListAtom, {
-      index: 0,
+      active: "a",
       // 23 * 3600 + 1 => "23:00:01"
       items: [{ seconds: 23 * 3600 + 1, id: "a" }],
     });
@@ -68,7 +68,7 @@ describe("set-timer", () => {
     jest.resetAllMocks();
     const store = createStore();
     store.set(timerListAtom, {
-      index: 0,
+      active: "a",
       items: [{ seconds: 1, id: "a" }],
     });
     render(
@@ -85,7 +85,7 @@ describe("set-timer", () => {
     jest.resetAllMocks();
     const store = createStore();
     store.set(timerListAtom, {
-      index: 0,
+      active: "a",
       items: [{ seconds: 1, id: "a" }],
     });
     render(
@@ -101,7 +101,7 @@ describe("set-timer", () => {
   it("should remove last character to timer", () => {
     const store = createStore();
     store.set(timerListAtom, {
-      index: 0,
+      active: "a",
       // 23 * 3600 + 1 => "12:00:34"
       items: [{ seconds: 12 * 3600 + 34, id: "a" }],
     });

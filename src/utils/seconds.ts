@@ -1,3 +1,5 @@
+import { optic } from "optics-ts";
+
 export function pad(char: string, len: number, value: string) {
   while (value.length < len) {
     value = char + value;
@@ -45,3 +47,5 @@ export function normalizeSeconds(input: string) {
 export function fromSeconds(input: number) {
   return toString(factorize(input));
 }
+
+export const secondsString = optic<number>().iso(fromSeconds, toSeconds);

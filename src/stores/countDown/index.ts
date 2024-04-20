@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
-import { currentSecondsAtom, currentIndexAtom } from "../timerLists";
+import { activeSecondsAtom, nextActiveItemAtom } from "../timerLists";
 import {
   timerElapsedAtom,
   timerActiveAtom,
@@ -13,23 +13,20 @@ import { fromSeconds } from "@/utils/seconds";
 
 const countDownMsAtom = atom((get) => {
   const elapsed = get(timerElapsedAtom);
-  const total = get(currentSecondsAtom) * 1000;
+  const seconds = get(activeSecondsAtom) ?? 0;
+  const total = seconds * 1000;
   return Math.max(0, total - elapsed);
 });
-
-export const countDownSecondsAtom = atom((get) =>
-  Math.ceil(get(countDownMsAtom) / 1000),
-);
 
 export const getAlarmEffect = (alarm: () => void) =>
   atomEffect((get, set) => {
     if (get(timerActiveAtom) === false || get(countDownMsAtom) > 0) return;
     set(stopTimerAtom);
-    set(currentIndexAtom, (index) => index + 1);
+    set(nextActiveItemAtom);
     set(resetTimerAtom);
     alarm();
   });
 
 export const countDownTextAtom = atom((get) =>
-  fromSeconds(get(countDownSecondsAtom)),
+  fromSeconds(Math.ceil(get(countDownMsAtom) / 1000)),
 );

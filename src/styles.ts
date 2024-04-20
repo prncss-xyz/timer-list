@@ -32,7 +32,7 @@ export const lightColors = {
   playing: "#FF92AD",
   brand: "#0090FF",
   danger: "#FFC53D",
-  current: "#3DD68C",
+  active: "#3DD68C",
 };
 
 export const darkColors = {
@@ -40,7 +40,7 @@ export const darkColors = {
   playing: "#FF92AD",
   brand: "#0090FF",
   danger: "#FFC53D",
-  current: "#3DD68C",
+  active: "#3DD68C",
 };
 
 export const styles = StyleSheet.create({

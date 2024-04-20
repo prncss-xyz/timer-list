@@ -1,19 +1,11 @@
-import { atom, WritableAtom, useAtom } from "jotai";
+import { WritableAtom, useAtom } from "jotai";
 import { useMemo } from "react";
 
-export function activateAtom<T, V>(
-  value: T,
-  inputAtom: WritableAtom<T, [T], V>,
-) {
-  return atom(
-    (get) => get(inputAtom) === value,
-    (_get, set) => set(inputAtom, value),
-  );
-}
+import { activateAtom } from "@/utils/atoms";
 
-export function useActivateAtom<T, V>(
-  value: T,
-  inputAtom: WritableAtom<T, [value: T], V>,
+export function useActivateAtom<Value, Result>(
+  value: Value,
+  inputAtom: WritableAtom<Value, [value: Value], Result>,
 ) {
   return useAtom(
     useMemo(() => activateAtom(value, inputAtom), [value, inputAtom]),

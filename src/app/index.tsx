@@ -5,6 +5,5 @@ export default function Page() {
   useFocusEffect(() => {
     router.replace("/list");
   });
-
   return null;
 }

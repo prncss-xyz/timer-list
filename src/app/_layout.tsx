@@ -49,6 +49,7 @@ function Container({ children }: { children: ReactNode }) {
 
 const store = createStore();
 
+// fix multiple stores issues
 function WithStore({ children }: { children: ReactNode }) {
   return <Provider store={store}>{children}</Provider>;
 }
