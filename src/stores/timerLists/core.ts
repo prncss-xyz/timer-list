@@ -23,7 +23,7 @@ export function removeId(id: string) {
       let index = items.findIndex((item) => item.id === id);
       if (index + 1 === items.length) index = Math.max(0, index - 1);
       else index = index + 1;
-      active = items.at(index)?.id ?? "";
+      active = items[index].id;
     }
     return {
       ...timerList,

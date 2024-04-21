@@ -14,10 +14,10 @@ jest.mock("@/utils/uuid", () => ({
 
 describe("core", () => {
   describe("duplicateId", () => {
-    it("should do nothing when element do not exist", () => {
+    it("does nothing when element do not exist", () => {
       expect(duplicateId("zzz")(timerList)).toEqual(timerList);
     });
-    it("should duplicate active element", () => {
+    it("duplicates active element", () => {
       expect(duplicateId("b")(timerList)).toEqual({
         active: "x",
         items: [
@@ -28,7 +28,7 @@ describe("core", () => {
         ],
       });
     });
-    it("should duplicate non-active element", () => {
+    it("duplicates non-active element", () => {
       expect(duplicateId("a")(timerList)).toEqual({
         active: "b",
         items: [
@@ -41,7 +41,7 @@ describe("core", () => {
     });
   });
   describe("removeId", () => {
-    it("when removing active element which is not last element of the list, should move active element next", () => {
+    it("when removing active element which is not last element of the list, moves active element next", () => {
       expect(removeId("b")(timerList)).toEqual({
         active: "c",
         items: [
@@ -50,7 +50,7 @@ describe("core", () => {
         ],
       });
     });
-    it("when removing active element which is last element of the list, should move active element next", () => {
+    it("when removing active element which is last element of the list, moves active element next", () => {
       expect(
         removeId("c")({
           active: "c",
@@ -68,7 +68,7 @@ describe("core", () => {
         ],
       });
     });
-    test("when removing non-active element, should keep active element", () => {
+    test("when removing non-active element, keeps active element", () => {
       expect(removeId("c")(timerList)).toEqual({
         active: "b",
         items: [

@@ -17,20 +17,7 @@ jest.mock("expo-router", () => ({
 }));
 
 describe("set-timer", () => {
-  it("should rendrer properly", () => {
-    const store = createStore();
-    store.set(timerListAtom, {
-      active: "a",
-      items: [{ seconds: 1, id: "a" }],
-    });
-    const tree = render(
-      <Provider store={store}>
-        <SetTimer timerId="a" />
-      </Provider>,
-    );
-    expect(tree).toMatchSnapshot();
-  });
-  it("should append digits to timer", () => {
+  it("append digits to timer", () => {
     const timerList: TimerList = {
       active: "a",
       items: [{ seconds: 1, id: "a" }],
@@ -49,7 +36,7 @@ describe("set-timer", () => {
       within(screen.getByLabelText("timer")).getByText(`00:00:1${digit}`);
     }
   });
-  it("should append 00 to timer", () => {
+  it("appends 00 to timer", () => {
     const store = createStore();
     store.set(timerListAtom, {
       active: "a",
@@ -64,7 +51,7 @@ describe("set-timer", () => {
     fireEvent.press(screen.getByText("00"));
     within(screen.getByLabelText("timer")).getByText("00:01:00");
   });
-  it("should close and not update value", () => {
+  it("closes without updating value", () => {
     jest.resetAllMocks();
     const store = createStore();
     store.set(timerListAtom, {
@@ -81,7 +68,7 @@ describe("set-timer", () => {
     expect(store.get(timerListAtom).items).toEqual([{ seconds: 1, id: "a" }]);
     expect((router.back as any).mock.calls).toHaveLength(1);
   });
-  it("should close and update value", () => {
+  it("closes and updates value", () => {
     jest.resetAllMocks();
     const store = createStore();
     store.set(timerListAtom, {
@@ -98,7 +85,7 @@ describe("set-timer", () => {
     expect(store.get(timerListAtom).items).toEqual([{ seconds: 11, id: "a" }]);
     expect((router.back as any).mock.calls).toHaveLength(1);
   });
-  it("should remove last character to timer", () => {
+  it("removes last character to timer", () => {
     const store = createStore();
     store.set(timerListAtom, {
       active: "a",

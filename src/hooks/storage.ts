@@ -1,3 +1,6 @@
+// TODO: use jotai/utils atomWithStorage
+// needs to deal with asynchrony and mock AsyncStorage
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PrimitiveAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomEffect } from "jotai-effect";
@@ -8,6 +11,7 @@ import { getDebouncer } from "@/utils/debouncer";
 const debounceDelai = 500;
 
 async function loadData(key: string) {
+  if (key === "") return undefined;
   const jsonValue = await AsyncStorage.getItem(key);
   if (jsonValue === null) return undefined;
   return JSON.parse(jsonValue);

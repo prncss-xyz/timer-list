@@ -34,10 +34,12 @@ export const nextActiveItemAtom = atom(null, (_get, set) => {
 
 export const itemsAtom = focusAtom(timerListAtom, (o) => o.prop("items"));
 
+const getIdItemSecondsAtom = (id: string) =>
+  focusAtom(itemsAtom, (o) => o.find((item) => item.id === id).prop("seconds"));
+
 export const getIdItemSecondsTextAtom = (id: string) =>
-  focusAtom(timerListAtom, (o) =>
+  focusAtom(itemsAtom, (o) =>
     o
-      .prop("items")
       .find((item) => item.id === id)
       .prop("seconds")
       .compose(secondsString),
@@ -55,8 +57,9 @@ export const clearItemsAtom = atom(null, (_get, set) => {
   set(itemsAtom, []);
 });
 
-export const activeSecondsAtom = resolvedAtom(activeIdAtom, (id: string) =>
-  focusAtom(itemsAtom, (o) => o.find((item) => item.id === id).prop("seconds")),
+export const activeSecondsAtom = resolvedAtom(
+  activeIdAtom,
+  getIdItemSecondsAtom,
 );
 
 export const getTimerUpdateEffect = (cb: () => void) =>

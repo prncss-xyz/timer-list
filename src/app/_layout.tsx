@@ -57,11 +57,13 @@ function WithStore({ children }: { children: ReactNode }) {
 function CompositionRoot({ children }: { children: ReactNode }) {
   useInitNow();
   useInitCountDown(usePlay(require("@/../assets/beep.mp3")));
-  useInitTimerList(useSetAtom(resetTimerAtom));
-  const timerReady = useInitTimerListStorage("timerList");
+  const timerListReady = useInitTimerList(
+    "timerList",
+    useSetAtom(resetTimerAtom),
+  );
   const interReady = useInter();
   const robotoMonoReady = useRobotoMono();
-  if (!timerReady || !interReady || !robotoMonoReady) return null;
+  if (!timerListReady || !interReady || !robotoMonoReady) return null;
   return <>{children}</>;
 }
 

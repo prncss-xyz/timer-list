@@ -29,6 +29,5 @@ export const timerActiveAtom = atom(
 );
 
 export const stopTimerAtom = atom(null, (get, set) => {
-  const timer = get(timerAtom);
-  if (timer.type === "timer_active") set(timerAtom, stop(timer, get(nowAtom)));
+  set(timerAtom, stop(get(timerAtom), get(nowAtom)));
 });

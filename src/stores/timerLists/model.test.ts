@@ -3,7 +3,7 @@ import { normalize } from "./model";
 describe("timerLists", () => {
   describe("model", () => {
     describe("normalize", () => {
-      it("should make sure items is not empty", () => {
+      it("makes sure items is not empty", () => {
         const normalized = normalize({ active: "", items: [] });
         expect(normalized.items).toHaveLength(1);
         expect(

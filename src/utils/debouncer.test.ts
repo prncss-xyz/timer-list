@@ -1,7 +1,7 @@
 import { getDebouncer } from "./debouncer";
 
 describe("debouncer", () => {
-  it("should ", async () => {
+  it("return a function which debounces calls", async () => {
     const delai = 500;
     const cb = jest.fn();
     const debounced = getDebouncer(cb, delai);

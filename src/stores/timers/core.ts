@@ -8,13 +8,14 @@ export type TimerAcive = {
 };
 export type Timer = TimerStopped | TimerAcive;
 
-export function stop(timer: TimerAcive, now: number): TimerStopped {
+export function stop(timer: Timer, now: number): TimerStopped {
+  if (timer.type === "timer_stopped") return timer;
   return { type: "timer_stopped", elapsed: now - timer.since };
 }
-export function start(timer: TimerStopped, now: number): TimerAcive {
+export function start(timer: Timer, now: number): TimerAcive {
+  if (timer.type === "timer_active") return timer;
   return { type: "timer_active", since: now - timer.elapsed };
 }
-
 export function timerToggle(timer: Timer, now: number): Timer {
   if (timer.type === "timer_active") return stop(timer, now);
   return start(timer, now);
