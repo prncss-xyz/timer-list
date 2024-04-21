@@ -14,3 +14,4 @@ This is a small timer app (WIP), supplemented with a "playlist", i.e. a list of 
 - state management: jotai, optics-ts
 - validation: zod
 - testing: jest, react native testing library, fast-check, playwright
+
