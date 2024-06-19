@@ -11,12 +11,16 @@ import { SetTimer } from "./setTimer";
 
 import { timerListAtom } from "@/stores/timerLists";
 import { TimerList } from "@/stores/timerLists/model";
+import { mockLocalStorage } from "@/utils/localStorage";
 
 jest.mock("expo-router", () => ({
   router: { back: jest.fn() },
 }));
 
 describe("set-timer", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   it("append digits to timer", () => {
     const timerList: TimerList = {
       active: "a",

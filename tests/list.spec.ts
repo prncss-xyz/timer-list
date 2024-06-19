@@ -40,7 +40,7 @@ test("select next timer after alarm", async ({ page }) => {
 });
 
 test("/list screenshot", async ({ page }) => {
-  await page.goto(local + "/list");
+  await page.goto(local);
   await expect(page).toHaveScreenshot();
   await page.getByLabel("play").click();
   await expect(page).toHaveScreenshot();

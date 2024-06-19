@@ -5,12 +5,16 @@ import { ClearList } from "./clearList";
 
 import { timerListAtom } from "@/stores/timerLists";
 import { TimerList } from "@/stores/timerLists/model";
+import { mockLocalStorage } from "@/utils/localStorage";
 
 jest.mock("@/utils/uuid", () => ({
   getUUID: () => "x",
 }));
 
 describe("clearList", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   it("clears timerList", () => {
     const timerList: TimerList = {
       active: "a",

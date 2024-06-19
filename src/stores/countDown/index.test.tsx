@@ -4,28 +4,18 @@ import { Provider, createStore } from "jotai";
 import { countDownTextAtom } from ".";
 import { useInitCountDown } from "./init";
 import { nowAtom } from "../now";
-import { timerListAtom } from "../timerLists";
 import { timerActiveAtom, toggleTimerAtom } from "../timers";
 
 import { delai } from "@/utils/tests";
+import { mockLocalStorage } from "@/utils/localStorage";
 
 describe("countDown", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   it("do not rings before times expires, rings when times expires and updates to next item", async () => {
     const alarm = jest.fn();
     const store = createStore();
-    store.set(timerListAtom, {
-      active: "a",
-      items: [
-        {
-          id: "a",
-          seconds: 1,
-        },
-        {
-          id: "b",
-          seconds: 2,
-        },
-      ],
-    });
     function Context() {
       useInitCountDown(alarm);
       return null;

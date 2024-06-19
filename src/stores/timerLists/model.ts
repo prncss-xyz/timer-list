@@ -14,7 +14,7 @@ export function getBasicItem() {
   return { seconds: 0, id: getUUID() };
 }
 
-const timerListSchema = z.object({
+export const timerListSchema = z.object({
   active: z.string(),
   items: z.array(itemSchema),
 });

@@ -5,11 +5,12 @@ import { activeIdAtom, activeSecondsAtom, timerListAtom } from ".";
 import { useInitTimerList } from "./init";
 
 import { delai } from "@/utils/tests";
-jest.mock("@/hooks/storage", () => ({
-  useStorageAtom: () => true,
-}));
+import { mockLocalStorage } from "@/utils/localStorage";
 
 describe("timerLists", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   describe("timerUpdateEffect", () => {
     it("triggers when active id change", async () => {
       const store = createStore();
@@ -23,7 +24,7 @@ describe("timerLists", () => {
         ],
       });
       function Context() {
-        useInitTimerList("", cb);
+        useInitTimerList(cb);
         return null;
       }
       render(
@@ -47,7 +48,7 @@ describe("timerLists", () => {
         ],
       });
       function Context() {
-        useInitTimerList("", cb);
+        useInitTimerList(cb);
         return null;
       }
       render(

@@ -12,20 +12,20 @@ import { RawTimerList } from "./raw";
 
 import { timerListAtom } from "@/stores/timerLists";
 import { useInitTimerList } from "@/stores/timerLists/init";
+import { mockLocalStorage } from "@/utils/localStorage";
 
 jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
 }));
 
-jest.mock("@/hooks/storage", () => ({
-  useStorageAtom: () => true,
-}));
-
 describe("timerList", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   it("selects timer by clicking, and fire on change", async () => {
     const cb = jest.fn();
     function Context({ children }: { children: ReactNode }) {
-      useInitTimerList("", cb);
+      useInitTimerList(cb);
       return children;
     }
     const store = createStore();

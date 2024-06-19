@@ -11,8 +11,12 @@ import { TimerBar } from "./timerBar";
 
 import { nowAtom } from "@/stores/now";
 import { timerListAtom } from "@/stores/timerLists";
+import { mockLocalStorage } from "@/utils/localStorage";
 
 describe("timerBar", () => {
+  beforeEach(() => {
+    mockLocalStorage();
+  });
   it("decreases count when playing, and keeps count when not playing (plause-play button)", () => {
     const store = createStore();
     store.set(timerListAtom, {

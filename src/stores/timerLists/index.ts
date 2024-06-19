@@ -4,15 +4,16 @@ import { atomEffect } from "jotai-effect";
 import { focusAtom } from "jotai-optics";
 
 import { duplicateId, nextActiveItem, removeId } from "./core";
-import { normalize } from "./model";
+import { normalize, validateTimerListSchema } from "./model";
 
-import { resolvedAtom } from "@/utils/atoms";
+import { atomWtihStorageValidated, resolvedAtom } from "@/utils/atoms";
 import { secondsString } from "@/utils/seconds";
 import { getUUID } from "@/utils/uuid";
 
 /* const rawTimerListAtom = atom(normalize({ index: "", items: [] })); */
 const uuid = getUUID();
-const rawTimerListAtom = atom(
+const rawTimerListAtom = atomWtihStorageValidated(
+  "timerList",
   normalize({
     active: uuid,
     items: [
@@ -21,7 +22,9 @@ const rawTimerListAtom = atom(
       { seconds: 3, id: getUUID() },
     ],
   }),
+  validateTimerListSchema,
 );
+
 export const timerListAtom = focusAtom(rawTimerListAtom, (o) =>
   o.rewrite(normalize),
 );
