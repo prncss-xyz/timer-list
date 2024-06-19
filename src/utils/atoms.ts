@@ -17,6 +17,16 @@ export function resolvedAtom<Reference, Value, Args extends unknown[], Result>(
   return insideAtom(atom((get) => valueFactory(get(referenceAtom))));
 }
 
+export function activateAtom<Value, Result>(
+  value: Value,
+  inputAtom: WritableAtom<Value, [Value], Result>,
+) {
+  return atom(
+    (get) => get(inputAtom) === value,
+    (_get, set) => set(inputAtom, value),
+  );
+}
+
 // https://jotai.org/docs/utilities/storage
 export function atomWtihStorageValidated<T>(
   key: string,
