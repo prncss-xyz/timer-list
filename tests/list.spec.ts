@@ -39,8 +39,8 @@ test("select next timer after alarm", async ({ page }) => {
   await expect(page.getByLabel("active").getByText("00:00:12")).toBeVisible();
 });
 
-test("/list screenshot", async ({ page }) => {
-  await delai(300);
+// FIXME: this test doesnt give the same result on desktop and in CI for Chromium (fine on Firefox)
+test.skip("/list screenshot", async ({ page }) => {
   await page.goto(local);
   await expect(page).toHaveScreenshot();
   await page.getByLabel("play").click();
