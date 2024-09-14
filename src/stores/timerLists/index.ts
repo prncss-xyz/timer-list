@@ -1,7 +1,8 @@
 // we use the plural form in filename as it will eventually manage many lisits
+import { findOne, prop, rewrite, pipe } from "@constellar/core";
+import { focusAtom } from "@constellar/jotai";
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
-import { focusAtom } from "jotai-optics";
 
 import { duplicateId, nextActiveItem, removeId } from "./core";
 import { normalize, validateTimerListSchema } from "./model";
@@ -25,27 +26,33 @@ const rawTimerListAtom = atomWtihStorageValidated(
   validateTimerListSchema,
 );
 
-export const timerListAtom = focusAtom(rawTimerListAtom, (o) =>
-  o.rewrite(normalize),
-);
+export const timerListAtom = focusAtom(rawTimerListAtom, rewrite(normalize));
 
-export const activeIdAtom = focusAtom(timerListAtom, (o) => o.prop("active"));
+export const activeIdAtom = focusAtom(timerListAtom, prop("active"));
 
 export const nextActiveItemAtom = atom(null, (_get, set) => {
   set(timerListAtom, nextActiveItem);
 });
 
-export const itemsAtom = focusAtom(timerListAtom, (o) => o.prop("items"));
+export const itemsAtom = focusAtom(timerListAtom, prop("items"));
 
 const getIdItemSecondsAtom = (id: string) =>
-  focusAtom(itemsAtom, (o) => o.find((item) => item.id === id).prop("seconds"));
+  focusAtom(
+    itemsAtom,
+    pipe(
+      findOne((item) => item.id === id),
+      prop("seconds"),
+    ),
+  );
 
 export const getIdItemSecondsTextAtom = (id: string) =>
-  focusAtom(itemsAtom, (o) =>
-    o
-      .find((item) => item.id === id)
-      .prop("seconds")
-      .compose(secondsString),
+  focusAtom(
+    itemsAtom,
+    pipe(
+      findOne((item) => item.id === id),
+      prop("seconds"),
+      secondsString,
+    ),
   );
 
 export const getDuplicateIdAtom = (id: string) =>

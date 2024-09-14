@@ -9,7 +9,7 @@ import { useColor } from "@/hooks/color";
 import { countDownTextAtom } from "@/stores/countDown";
 import {
   resetTimerAtom,
-  timerActiveAtom,
+  timerRunningAtom,
   toggleTimerAtom,
 } from "@/stores/timers";
 import { sizes, spaces, styles } from "@/styles";
@@ -25,8 +25,8 @@ function Reset({ color }: { color: string }) {
 
 function PlayPause({ color }: { color: string }) {
   const toggle = useSetAtom(toggleTimerAtom);
-  const active = useAtomValue(timerActiveAtom);
-  const label = active ? "pause" : "play";
+  const running = useAtomValue(timerRunningAtom);
+  const label = running ? "pause" : "play";
   return (
     <Pressable aria-label={label} onPress={toggle} style={styles.iconPlace}>
       <Ionicons color={color} name={label} size={sizes.icon} />
@@ -45,10 +45,10 @@ function Countdown({ color }: { color: string }) {
 }
 
 export function TimerBar() {
-  const active = useAtomValue(timerActiveAtom);
+  const running = useAtomValue(timerRunningAtom);
   const playing = useColor("playing");
   const activeColor = useColor("active");
-  const color = active ? playing : activeColor;
+  const color = running ? playing : activeColor;
   return (
     <View
       style={{

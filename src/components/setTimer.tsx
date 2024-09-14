@@ -1,8 +1,9 @@
+import { rewrite } from "@constellar/core";
+import { focusAtom } from "@constellar/jotai";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Provider, atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
-import { focusAtom } from "jotai-optics";
 import React, { ReactNode, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
@@ -16,7 +17,7 @@ import { borderWidths, fontSizes, sizes, spaces, styles } from "@/styles";
 import { normalizeSeconds } from "@/utils/seconds";
 
 const rawTextAtom = atom("");
-const textAtom = focusAtom(rawTextAtom, (o) => o.rewrite(normalizeSeconds));
+const textAtom = focusAtom(rawTextAtom, rewrite(normalizeSeconds));
 const updateAtom = atom(null, (get, _set, cb: (text: string) => void) => {
   cb(get(textAtom));
 });

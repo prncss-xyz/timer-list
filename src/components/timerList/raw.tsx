@@ -15,7 +15,7 @@ import {
   getRemoveIdAtom,
   getDuplicateIdAtom,
 } from "@/stores/timerLists";
-import { timerActiveAtom } from "@/stores/timers";
+import { timerRunningAtom } from "@/stores/timers";
 import { sizes, styles, borderWidths, spaces } from "@/styles";
 
 function Remove({ timerId, color }: { timerId: string; color: string }) {
@@ -119,7 +119,7 @@ function getColor(active: boolean, timerActive: boolean) {
 
 const Item = memo(({ id }: { id: string }) => {
   const [active] = useActivateAtom(id, activeIdAtom);
-  const timerActive = useAtomValue(timerActiveAtom);
+  const timerActive = useAtomValue(timerRunningAtom);
   const color = useColor(getColor(active, timerActive));
   return (
     <View

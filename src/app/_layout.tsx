@@ -8,7 +8,6 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
-import { KeepAliveWhenTimerActive } from "@/components/keepAlive";
 import { useInter } from "@/fonts/inter";
 import { useRobotoMono } from "@/fonts/roboto-mono";
 import { useColor } from "@/hooks/color";
@@ -67,7 +66,6 @@ export default function Layout() {
   return (
     <WithStore>
       <CompositionRoot>
-        <KeepAliveWhenTimerActive />
         <SafeAreaProvider>
           <Container>
             <Slot />

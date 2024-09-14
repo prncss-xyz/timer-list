@@ -4,8 +4,8 @@ import { Provider, createStore } from "jotai";
 import { activeIdAtom, activeSecondsAtom, timerListAtom } from ".";
 import { useInitTimerList } from "./init";
 
-import { delai } from "@/utils/tests";
 import { mockLocalStorage } from "@/utils/localStorage";
+import { delai } from "@/utils/tests";
 
 describe("timerLists", () => {
   beforeEach(() => {

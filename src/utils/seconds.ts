@@ -1,4 +1,4 @@
-import { optic } from "optics-ts";
+import { lens } from "@constellar/core";
 
 export function pad(char: string, len: number, value: string) {
   while (value.length < len) {
@@ -48,4 +48,7 @@ export function fromSeconds(input: number) {
   return toString(factorize(input));
 }
 
-export const secondsString = optic<number>().iso(fromSeconds, toSeconds);
+export const secondsString = lens({
+  getter: fromSeconds,
+  setter: toSeconds,
+});

@@ -1,5 +1,6 @@
+import { at } from "@constellar/core";
+import { focusAtom } from "@constellar/jotai";
 import { atom, createStore } from "jotai";
-import { focusAtom } from "jotai-optics";
 
 import { activateAtom, resolvedAtom } from "./atoms";
 
@@ -7,7 +8,7 @@ describe("atoms", () => {
   describe("resolvedAtom", () => {
     const referenceAtom = atom(1);
     const listAtom = atom(["a", "b", "c"]);
-    const valueFactory = (i: number) => focusAtom(listAtom, (o) => o.at(i));
+    const valueFactory = (i: number) => focusAtom(listAtom, at(i));
     const valueAtom = resolvedAtom(referenceAtom, valueFactory);
     it("resolves reference", () => {
       const store = createStore();

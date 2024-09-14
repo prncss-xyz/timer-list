@@ -1,33 +1,22 @@
+import { machineAtom, selectAtom } from "@constellar/jotai";
 import { atom } from "jotai";
 
-import { Timer, getElapsed, stop, setElapsed, timerToggle } from "./core";
+import { timerMachine } from "./machine";
+import { nowAtom } from "../now";
 
-import { nowAtom } from "@/stores/now";
+export const timerAtom = machineAtom(timerMachine());
 
-const timerAtom = atom<Timer>({
-  type: "timer_stopped",
-  elapsed: 0,
+export const timerRunningAtom = selectAtom(
+  timerAtom,
+  (timer) => timer.type === "running",
+);
+
+export const resetTimerAtom = atom(null, (get, set) => {
+  set(timerAtom, { type: "reset", now: get(nowAtom) });
 });
 
-export const timerElapsedAtom = atom(
-  (get) => getElapsed(get(timerAtom), get(nowAtom)),
-  (get, set, elapsed: number) => {
-    set(timerAtom, setElapsed(get(timerAtom), elapsed, get(nowAtom)));
-  },
-);
-
-export const resetTimerAtom = atom(null, (_get, set) =>
-  set(timerElapsedAtom, 0),
-);
-
-export const toggleTimerAtom = atom(null, (get, set) =>
-  set(timerAtom, timerToggle(get(timerAtom), get(nowAtom))),
-);
-
-export const timerActiveAtom = atom(
-  (get) => get(timerAtom).type === "timer_active",
-);
-
-export const stopTimerAtom = atom(null, (get, set) => {
-  set(timerAtom, stop(get(timerAtom), get(nowAtom)));
+export const toggleTimerAtom = atom(null, (get, set) => {
+  set(timerAtom, { type: "toggle", now: get(nowAtom) });
 });
+
+export const timerCountAtom = atom((get) => get(timerAtom).count(get(nowAtom)));

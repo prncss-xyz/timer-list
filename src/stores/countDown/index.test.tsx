@@ -4,10 +4,10 @@ import { Provider, createStore } from "jotai";
 import { countDownTextAtom } from ".";
 import { useInitCountDown } from "./init";
 import { nowAtom } from "../now";
-import { timerActiveAtom, toggleTimerAtom } from "../timers";
+import { timerRunningAtom, toggleTimerAtom } from "../timers";
 
-import { delai } from "@/utils/tests";
 import { mockLocalStorage } from "@/utils/localStorage";
+import { delai } from "@/utils/tests";
 
 describe("countDown", () => {
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe("countDown", () => {
       </Provider>,
     );
     store.set(toggleTimerAtom);
-    expect(store.get(timerActiveAtom)).toBeTruthy();
+    expect(store.get(timerRunningAtom)).toBeTruthy();
     store.set(nowAtom, (x) => x + 500);
     await delai(0);
     expect(alarm.mock.calls).toEqual([]);
