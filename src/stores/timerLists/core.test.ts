@@ -1,4 +1,4 @@
-import { duplicateId, removeId } from "./core";
+import { duplicate, remove } from "./core";
 
 const timerList = {
   active: "b",
@@ -8,17 +8,16 @@ const timerList = {
     { seconds: 3, id: "c" },
   ],
 };
-jest.mock("@/utils/uuid", () => ({
-  getUUID: () => "x",
-}));
 
 describe("core", () => {
   describe("duplicateId", () => {
     it("does nothing when element do not exist", () => {
-      expect(duplicateId("zzz")(timerList)).toEqual(timerList);
+      expect(duplicate({ source: "zzz", target: "x" }, timerList)).toEqual(
+        timerList,
+      );
     });
     it("duplicates active element", () => {
-      expect(duplicateId("b")(timerList)).toEqual({
+      expect(duplicate({ source: "b", target: "x" }, timerList)).toEqual({
         active: "x",
         items: [
           { seconds: 1, id: "a" },
@@ -29,7 +28,7 @@ describe("core", () => {
       });
     });
     it("duplicates non-active element", () => {
-      expect(duplicateId("a")(timerList)).toEqual({
+      expect(duplicate({ source: "a", target: "x" }, timerList)).toEqual({
         active: "b",
         items: [
           { seconds: 1, id: "a" },
@@ -42,7 +41,7 @@ describe("core", () => {
   });
   describe("removeId", () => {
     it("when removing active element which is not last element of the list, moves active element next", () => {
-      expect(removeId("b")(timerList)).toEqual({
+      expect(remove({ source: "b", target: "x" }, timerList)).toEqual({
         active: "c",
         items: [
           { seconds: 1, id: "a" },
@@ -52,14 +51,17 @@ describe("core", () => {
     });
     it("when removing active element which is last element of the list, moves active element next", () => {
       expect(
-        removeId("c")({
-          active: "c",
-          items: [
-            { seconds: 1, id: "a" },
-            { seconds: 2, id: "b" },
-            { seconds: 3, id: "c" },
-          ],
-        }),
+        remove(
+          { source: "c", target: "x" },
+          {
+            active: "c",
+            items: [
+              { seconds: 1, id: "a" },
+              { seconds: 2, id: "b" },
+              { seconds: 3, id: "c" },
+            ],
+          },
+        ),
       ).toEqual({
         active: "b",
         items: [
@@ -69,7 +71,7 @@ describe("core", () => {
       });
     });
     test("when removing non-active element, keeps active element", () => {
-      expect(removeId("c")(timerList)).toEqual({
+      expect(remove({ source: "c", target: "x" }, timerList)).toEqual({
         active: "b",
         items: [
           { seconds: 1, id: "a" },

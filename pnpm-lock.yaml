@@ -12,11 +12,11 @@ importers:
         specifier: ^7.18.9
         version: 7.18.9(@babel/core@7.24.4)
       '@constellar/core':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.0.5
+        version: 2.0.5
       '@constellar/jotai':
-        specifier: ^2.0.3
-        version: 2.0.3(@constellar/core@2.0.3)(jotai@2.8.0(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: ^2.0.5
+        version: 2.0.5(@constellar/core@2.0.5)(jotai@2.8.0(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@expo-google-fonts/inter':
         specifier: ^0.2.3
         version: 0.2.3
@@ -922,13 +922,13 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@constellar/core@2.0.3':
-    resolution: {integrity: sha512-T5XaIe5knqhe4GJpYD88j0bxz9t0T7GRuk+Htc6vdX9dAVq09XtHE+hYqNA7tx3SjAyrWdV0a301+1S9gSAATQ==}
+  '@constellar/core@2.0.5':
+    resolution: {integrity: sha512-FFY89XBQ+sgNyN9bcgxgntO1mlDwfUepsxhvwLc9rt2Rl5rsxg7TUyu/HozyF63elK/loaVweq17g/ZCImmxmA==}
 
-  '@constellar/jotai@2.0.3':
-    resolution: {integrity: sha512-OJlXK2s+HBwyKUpYRANJO/cBI+4LJd0S22LerzGNmkUph8FzSYYX6BJieM+ftLvzo5kd7orPEBM49VGSjshdIw==}
+  '@constellar/jotai@2.0.5':
+    resolution: {integrity: sha512-nblt2s+2rGhFG5b9z9VtfOqto3olqDfb1EzbPWljzy0EW95rs4GLWVfhHquFFCZpYb+fxkn5z+lLxwf8UyDDJg==}
     peerDependencies:
-      '@constellar/core': ^2.0.3
+      '@constellar/core': ^2.0.5
       jotai: '>=2.0.0'
       react: '>=18.0.0'
 
@@ -6402,11 +6402,11 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@constellar/core@2.0.3': {}
+  '@constellar/core@2.0.5': {}
 
-  '@constellar/jotai@2.0.3(@constellar/core@2.0.3)(jotai@2.8.0(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@constellar/jotai@2.0.5(@constellar/core@2.0.5)(jotai@2.8.0(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@constellar/core': 2.0.3
+      '@constellar/core': 2.0.5
       jotai: 2.8.0(@types/react@18.2.79)(react@18.2.0)
       react: 18.2.0
 

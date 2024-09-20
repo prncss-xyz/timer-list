@@ -1,76 +1,84 @@
 // we use the plural form in filename as it will eventually manage many lisits
-import { findOne, prop, rewrite, pipe } from "@constellar/core";
-import { focusAtom } from "@constellar/jotai";
-import { atom } from "jotai";
+import {
+  findOne,
+  prop,
+  fixstateMachine,
+  flow,
+  eq,
+  put,
+  view,
+  valueOr,
+} from "@constellar/core";
+import { machineAtom, valueEventAtom } from "@constellar/jotai";
+import { atomWithStorage } from "jotai/utils";
 import { atomEffect } from "jotai-effect";
 
-import { duplicateId, nextActiveItem, removeId } from "./core";
-import { normalize, validateTimerListSchema } from "./model";
+import { duplicate, next, remove, clear, TimerList } from "./core";
 
-import { atomWtihStorageValidated, resolvedAtom } from "@/utils/atoms";
-import { secondsString } from "@/utils/seconds";
-import { getUUID } from "@/utils/uuid";
+import { resolvedAtom } from "@/utils/atoms";
 
 /* const rawTimerListAtom = atom(normalize({ index: "", items: [] })); */
-const uuid = getUUID();
-const rawTimerListAtom = atomWtihStorageValidated(
-  "timerList",
-  normalize({
-    active: uuid,
+
+const activeO = flow(eq<TimerList>(), prop("active"));
+const secondsO = (id: string) =>
+  flow(
+    eq<TimerList>(),
+    prop("items"),
+    findOne((item) => item.id === id),
+    prop("seconds"),
+    valueOr(0),
+  );
+
+function init() {
+  return {
+    active: "_0",
     items: [
-      { seconds: 1, id: uuid },
-      { seconds: 2, id: getUUID() },
-      { seconds: 3, id: getUUID() },
+      { seconds: 1, id: "_0" },
+      { seconds: 2, id: "_1" },
+      { seconds: 3, id: "_2" },
     ],
-  }),
-  validateTimerListSchema,
-);
+  };
+}
 
-export const timerListAtom = focusAtom(rawTimerListAtom, rewrite(normalize));
-
-export const activeIdAtom = focusAtom(timerListAtom, prop("active"));
-
-export const nextActiveItemAtom = atom(null, (_get, set) => {
-  set(timerListAtom, nextActiveItem);
+const timerListMachine = fixstateMachine({
+  init,
+  events: {
+    setActiveId: ({ target }: { target: string }, state) =>
+      put(activeO, target)(state),
+    setItemSeconds: (
+      { target, seconds }: { target: string; seconds: number },
+      state,
+    ) => put(secondsO(target), seconds)(state),
+    next,
+    duplicate,
+    remove,
+    clear,
+  },
 });
 
-export const itemsAtom = focusAtom(timerListAtom, prop("items"));
+// this is used for testing
+export const timerListKey = "v0";
 
-const getIdItemSecondsAtom = (id: string) =>
-  focusAtom(
-    itemsAtom,
-    pipe(
-      findOne((item) => item.id === id),
-      prop("seconds"),
-    ),
-  );
-
-export const getIdItemSecondsTextAtom = (id: string) =>
-  focusAtom(
-    itemsAtom,
-    pipe(
-      findOne((item) => item.id === id),
-      prop("seconds"),
-      secondsString,
-    ),
-  );
-
-export const getDuplicateIdAtom = (id: string) =>
-  atom(null, (_get, set) => set(timerListAtom, duplicateId(id)));
-
-export const getRemoveIdAtom = (id: string) =>
-  atom(null, (_get, set) => {
-    set(timerListAtom, removeId(id));
-  });
-
-export const clearItemsAtom = atom(null, (_get, set) => {
-  set(itemsAtom, []);
+export const timerListAtom = machineAtom(timerListMachine(), {
+  atomFactory: (init) => atomWithStorage(timerListKey, init),
 });
 
-export const activeSecondsAtom = resolvedAtom(
-  activeIdAtom,
-  getIdItemSecondsAtom,
+export const activeIdAtom = valueEventAtom(
+  timerListAtom,
+  (state) => state.active,
+  (target, send) => send({ type: "setActiveId", target }),
 );
+
+export const getItemSecondsAtom = (target: string) =>
+  valueEventAtom(timerListAtom, view(secondsO(target)), (seconds, send) =>
+    send({
+      type: "setItemSeconds",
+      target,
+      seconds,
+    }),
+  );
+
+export const activeSecondsAtom = resolvedAtom(activeIdAtom, getItemSecondsAtom);
 
 export const getTimerUpdateEffect = (cb: () => void) =>
   atomEffect((get) => {

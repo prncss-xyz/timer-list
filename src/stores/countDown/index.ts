@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
 import { nowAtom } from "../now";
-import { activeSecondsAtom, nextActiveItemAtom } from "../timerLists";
+import { activeSecondsAtom, timerListAtom } from "../timerLists";
 import { timerAtom, timerCountAtom } from "../timers";
 
 import { fromSeconds } from "@/utils/seconds";
@@ -21,7 +21,7 @@ export const getAlarmEffect = (alarm: () => void) =>
     if (get(countDownAtom) > 0) return;
     const now = get(nowAtom);
     set(timerAtom, { type: "stop", now });
-    set(nextActiveItemAtom);
+    set(timerListAtom, { type: "next" });
     set(timerAtom, { type: "reset", now });
     alarm();
   });

@@ -1,3 +1,5 @@
+import { prop } from "@constellar/core";
+import { focusAtom, viewAtom } from "@constellar/jotai";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
@@ -9,18 +11,21 @@ import { useFadeOut } from "./animation";
 import { useActivateAtom } from "@/hooks/activateAtom";
 import { useColor } from "@/hooks/color";
 import {
-  itemsAtom,
   activeIdAtom,
-  getIdItemSecondsTextAtom,
-  getRemoveIdAtom,
-  getDuplicateIdAtom,
+  getItemSecondsAtom,
+  timerListAtom,
 } from "@/stores/timerLists";
 import { timerRunningAtom } from "@/stores/timers";
 import { sizes, styles, borderWidths, spaces } from "@/styles";
+import { secondsString } from "@/utils/seconds";
+import { getUUID } from "@/utils/uuid";
 
 function Remove({ timerId, color }: { timerId: string; color: string }) {
-  const removeAtom = useMemo(() => getRemoveIdAtom(timerId), [timerId]);
-  const remove = useSetAtom(removeAtom);
+  const send = useSetAtom(timerListAtom);
+  const remove = useCallback(
+    () => send({ type: "remove", source: timerId, target: getUUID() }),
+    [send, timerId],
+  );
   const cb = useFadeOut(remove);
   return (
     <Pressable aria-label="remove" onPress={cb} style={styles.iconPlace}>
@@ -30,8 +35,11 @@ function Remove({ timerId, color }: { timerId: string; color: string }) {
 }
 
 function Duplicate({ timerId, color }: { timerId: string; color: string }) {
-  const duplicateAtom = useMemo(() => getDuplicateIdAtom(timerId), [timerId]);
-  const duplicate = useSetAtom(duplicateAtom);
+  const send = useSetAtom(timerListAtom);
+  const duplicate = useCallback(
+    () => send({ type: "duplicate", source: timerId, target: getUUID() }),
+    [send, timerId],
+  );
   return (
     <Pressable
       aria-label="duplicate"
@@ -79,9 +87,12 @@ export function DurationText({
   color: string;
   timerId: string;
 }) {
-  const text = useAtomValue(
-    useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
+  const itemSecondsAtom = useMemo(() => getItemSecondsAtom(timerId), [timerId]);
+  const textAtom = useMemo(
+    () => focusAtom(itemSecondsAtom, secondsString),
+    [itemSecondsAtom],
   );
+  const text = useAtomValue(textAtom);
   return (
     <Text
       style={[
@@ -148,6 +159,8 @@ const Item = memo(({ id }: { id: string }) => {
     </View>
   );
 });
+
+const itemsAtom = viewAtom(timerListAtom, prop("items"));
 
 export function RawTimerList({
   CellRendererComponent,

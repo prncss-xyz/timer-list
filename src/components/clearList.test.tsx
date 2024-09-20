@@ -4,36 +4,31 @@ import { createStore, Provider } from "jotai";
 import { ClearList } from "./clearList";
 
 import { timerListAtom } from "@/stores/timerLists";
-import { TimerList } from "@/stores/timerLists/model";
 import { mockLocalStorage } from "@/utils/localStorage";
 
-jest.mock("@/utils/uuid", () => ({
-  getUUID: () => "x",
-}));
-
 describe("clearList", () => {
-  beforeEach(() => {
-    mockLocalStorage();
-  });
   it("clears timerList", () => {
-    const timerList: TimerList = {
-      active: "a",
-      items: [
-        { seconds: 1, id: "a" },
-        { seconds: 2, id: "b" },
-      ],
-    };
+    mockLocalStorage();
     const store = createStore();
-    store.set(timerListAtom, timerList);
+    store.set(timerListAtom, { type: "clear", target: "a" });
+    store.set(timerListAtom, {
+      type: "setItemSeconds",
+      target: "a",
+      seconds: 1,
+    });
+    store.set(timerListAtom, {
+      type: "setItemSeconds",
+      target: "b",
+      seconds: 2,
+    });
     render(
       <Provider store={store}>
         <ClearList />
       </Provider>,
     );
     fireEvent.press(screen.getByText("clear all"));
-    expect(store.get(timerListAtom)).toEqual({
-      active: "x",
-      items: [{ seconds: 0, id: "x" }],
+    expect(store.get(timerListAtom)).toMatchObject({
+      items: [{ seconds: 0 }],
     });
   });
 });

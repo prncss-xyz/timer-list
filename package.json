@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
-    "@constellar/core": "^2.0.3",
-    "@constellar/jotai": "^2.0.3",
+    "@constellar/core": "^2.0.5",
+    "@constellar/jotai": "^2.0.5",
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo-google-fonts/roboto-mono": "^0.2.3",
     "@expo/metro-runtime": "~3.2.3",

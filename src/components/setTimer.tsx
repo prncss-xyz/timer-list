@@ -12,9 +12,9 @@ import { WideButton } from "./wideButton";
 import { HeadSeparator } from "@/components/headSeparator";
 import { TimerView } from "@/components/timerView";
 import { useColor } from "@/hooks/color";
-import { getIdItemSecondsTextAtom } from "@/stores/timerLists";
+import { getItemSecondsAtom } from "@/stores/timerLists";
 import { borderWidths, fontSizes, sizes, spaces, styles } from "@/styles";
-import { normalizeSeconds } from "@/utils/seconds";
+import { normalizeSeconds, secondsString } from "@/utils/seconds";
 
 const rawTextAtom = atom("");
 const textAtom = focusAtom(rawTextAtom, rewrite(normalizeSeconds));
@@ -159,10 +159,12 @@ function Grid() {
 }
 
 export function SetTimer({ timerId }: { timerId: string }) {
-  const [text, setText] = useAtom(
-    useMemo(() => getIdItemSecondsTextAtom(timerId), [timerId]),
+  const itemSecondsAtom = useMemo(() => getItemSecondsAtom(timerId), [timerId]);
+  const textAtom = useMemo(
+    () => focusAtom(itemSecondsAtom, secondsString),
+    [itemSecondsAtom],
   );
-  if (text === undefined) return null;
+  const [text, setText] = useAtom(textAtom);
   return (
     <Provider>
       {/* we can only pass serializable values, hence setText is not passed as an atom here, but as a prop later on */}
