@@ -1,4 +1,5 @@
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -19,8 +20,8 @@ jest.mock("expo-router", () => ({
 }));
 
 // TODO: find an efficient way to inject custom store values
-describe.skip("timerList", () => {
-  it("selects timer by clicking, and fire on change", async () => {
+describe("timerList", () => {
+  it.skip("selects timer by clicking, and fire on change", async () => {
     mockLocalStorage();
     const cb = jest.fn();
     function Context({ children }: { children: ReactNode }) {
@@ -28,22 +29,6 @@ describe.skip("timerList", () => {
       return children;
     }
     const store = createStore();
-    store.set(timerListAtom, { type: "clear", target: "a" });
-    store.set(timerListAtom, {
-      type: "setItemSeconds",
-      target: "a",
-      seconds: 1,
-    });
-    store.set(timerListAtom, {
-      type: "setItemSeconds",
-      target: "b",
-      seconds: 2,
-    });
-    store.set(timerListAtom, {
-      type: "setItemSeconds",
-      target: "c",
-      seconds: 3,
-    });
     render(
       <Provider store={store}>
         <Context>
@@ -51,16 +36,33 @@ describe.skip("timerList", () => {
         </Context>
       </Provider>,
     );
+    act(() => {
+      store.set(timerListAtom, { type: "clear", target: "a" });
+      store.set(timerListAtom, {
+        type: "setItemSeconds",
+        target: "a",
+        seconds: 1,
+      });
+      store.set(timerListAtom, {
+        type: "setItemSeconds",
+        target: "b",
+        seconds: 2,
+      });
+      store.set(timerListAtom, {
+        type: "setItemSeconds",
+        target: "c",
+        seconds: 3,
+      });
+    });
     fireEvent.press(screen.getAllByLabelText("duration")[2]);
     within(
       within(screen.getByLabelText("active")).getByLabelText("duration"),
     ).getByText("00:00:03");
     fireEvent.press(screen.getAllByLabelText("duration")[1]);
     // waiting for effect to happen
-    await new Promise((resolve) => resolve(true));
     expect(cb.mock.calls).toHaveLength(1);
   });
-  it.only("duplicate an item", async () => {
+  it.skip("duplicate an item", async () => {
     mockLocalStorage({
       [timerListKey]: {
         active: "a",
@@ -79,7 +81,6 @@ describe.skip("timerList", () => {
       </Provider>,
     );
     await new Promise((resolve) => setTimeout(resolve, 100));
-    console.log(store.get(timerListAtom));
     fireEvent.press(screen.getAllByLabelText("duplicate")[0]);
     const res = screen.getAllByLabelText("duration");
     expect(res.length).toBe(5);
@@ -89,7 +90,7 @@ describe.skip("timerList", () => {
     expect(within(res[3]).getByText("00:00:03"));
     expect(within(res[4]).getByText("00:00:04"));
   });
-  it("remove an item", async () => {
+  it.skip("remove an item", async () => {
     mockLocalStorage();
     const store = createStore();
     store.set(timerListAtom, { type: "clear", target: "a" });
@@ -119,7 +120,7 @@ describe.skip("timerList", () => {
     expect(within(res[0]).getByText("00:00:02"));
     expect(within(res[1]).getByText("00:00:03"));
   });
-  it("selects an item and go to set-timer page", async () => {
+  it.skip("selects an item and go to set-timer page", async () => {
     mockLocalStorage();
     const store = createStore();
     store.set(timerListAtom, { type: "clear", target: "a" });

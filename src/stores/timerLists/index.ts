@@ -2,7 +2,7 @@
 import {
   findOne,
   prop,
-  fixstateMachine,
+  simpleStateMachine,
   flow,
   eq,
   put,
@@ -40,7 +40,7 @@ function init() {
   };
 }
 
-const timerListMachine = fixstateMachine({
+const timerListMachine = simpleStateMachine({
   init,
   events: {
     setActiveId: ({ target }: { target: string }, state) =>

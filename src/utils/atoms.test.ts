@@ -2,7 +2,7 @@ import { at } from "@constellar/core";
 import { focusAtom } from "@constellar/jotai";
 import { atom, createStore } from "jotai";
 
-import { activateAtom, resolvedAtom } from "./atoms";
+import { resolvedAtom } from "./atoms";
 
 describe("atoms", () => {
   describe("resolvedAtom", () => {
@@ -18,17 +18,6 @@ describe("atoms", () => {
       const store = createStore();
       expect(store.set(valueAtom, "x"));
       expect(store.get(valueAtom)).toBe("x");
-    });
-  });
-  describe("activate atom", () => {
-    const valueAtom = atom(1);
-    const acAtom = activateAtom(0, valueAtom);
-    it("updates value to reference", () => {
-      const store = createStore();
-      expect(store.get(acAtom)).toBeFalsy();
-      expect(store.set(acAtom));
-      expect(store.get(acAtom)).toBeTruthy();
-      expect(store.get(valueAtom)).toBe(0);
     });
   });
 });

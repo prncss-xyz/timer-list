@@ -1,5 +1,10 @@
 import { prop } from "@constellar/core";
-import { focusAtom, viewAtom } from "@constellar/jotai";
+import {
+  focusAtom,
+  viewAtom,
+  disabledFocusAtom,
+  selectAtom,
+} from "@constellar/jotai";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
@@ -8,7 +13,6 @@ import { Text, Pressable, View, FlatList } from "react-native";
 
 import { useFadeOut } from "./animation";
 
-import { useActivateAtom } from "@/hooks/activateAtom";
 import { useColor } from "@/hooks/color";
 import {
   activeIdAtom,
@@ -129,7 +133,11 @@ function getColor(active: boolean, timerActive: boolean) {
 }
 
 const Item = memo(({ id }: { id: string }) => {
-  const [active] = useActivateAtom(id, activeIdAtom);
+  const activeAtom = useMemo(
+    () => selectAtom(activeIdAtom, (id_) => id_ === id),
+    [id],
+  );
+  const active = useAtomValue(activeAtom);
   const timerActive = useAtomValue(timerRunningAtom);
   const color = useColor(getColor(active, timerActive));
   return (

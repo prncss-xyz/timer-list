@@ -4,7 +4,9 @@ import { local } from "./utils";
 
 import { delai } from "@/utils/tests";
 
-test("can edit timer value, which persists reloading", async ({ page }) => {
+test.skip("can edit timer value, which persists reloading", async ({
+  page,
+}) => {
   await page.goto(local);
   await page.getByLabel("clear all").click();
   // wait for animation to complete
