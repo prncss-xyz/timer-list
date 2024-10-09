@@ -4,45 +4,38 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "timer-list",
   slug: "timer-list",
-  scheme: "timer-list",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/icon.png",
-  userInterfaceStyle: "light",
+  icon: "./assets/images/icon.png",
+  scheme: "myapp",
+  userInterfaceStyle: "automatic",
   splash: {
-    image: "./assets/splash.png",
+    image: "./assets/images/splash.png",
     resizeMode: "contain",
     backgroundColor: "#ffffff",
   },
-  assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
+      foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
-    package: "com.prncssxyz.timerlist",
-    blockedPermissions: [
-      "android.permission.RECORD_AUDIO",
-      "android.permission.CAMERA",
-    ],
   },
   web: {
     bundler: "metro",
-    favicon: "./assets/favicon.png",
     output: "static",
+    favicon: "./assets/images/favicon.png",
   },
-  plugins: ["expo-router"],
-  extra: {
-    router: {
-      origin: false,
-    },
-    eas: {
-      projectId: "d2ffcf8f-d946-4d83-9691-add36120da7b",
-    },
-  },
+  plugins: [
+    [
+      "expo-router",
+      {
+        root: "./src/routes",
+      },
+    ],
+  ],
   experiments: {
     baseUrl: process.env.BASE_URL ?? "/timer-list",
     typedRoutes: true,

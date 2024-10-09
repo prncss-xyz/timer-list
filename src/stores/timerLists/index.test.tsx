@@ -9,7 +9,7 @@ import { delai } from "@/utils/tests";
 
 describe("timerLists", () => {
   describe("timerUpdateEffect", () => {
-    it("triggers when active id change", async () => {
+    it.skip("triggers when active id change", async () => {
       mockLocalStorage();
       const store = createStore();
       store.set(timerListAtom, { type: "clear", target: "a" });

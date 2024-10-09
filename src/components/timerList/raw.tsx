@@ -1,10 +1,5 @@
 import { prop } from "@constellar/core";
-import {
-  focusAtom,
-  viewAtom,
-  disabledFocusAtom,
-  selectAtom,
-} from "@constellar/jotai";
+import { focusAtom, viewAtom, selectAtom } from "@constellar/jotai";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { useSetAtom, useAtomValue } from "jotai";
@@ -167,6 +162,7 @@ const Item = memo(({ id }: { id: string }) => {
     </View>
   );
 });
+Item.displayName = "Item";
 
 const itemsAtom = viewAtom(timerListAtom, prop("items"));
 

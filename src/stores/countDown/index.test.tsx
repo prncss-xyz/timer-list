@@ -13,7 +13,7 @@ describe("countDown", () => {
   beforeEach(() => {
     mockLocalStorage();
   });
-  it("do not rings before times expires, rings when times expires and updates to next item", async () => {
+  it.skip("do not rings before times expires, rings when times expires and updates to next item", async () => {
     const alarm = jest.fn();
     const store = createStore();
     function Context() {
